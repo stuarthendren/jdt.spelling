@@ -33,7 +33,7 @@ public enum JavaType {
 		case IJavaElement.TYPE:
 			return TYPE;
 		default:
-			return UNKNOWN;
+			return null;
 		}
 	}
 }
