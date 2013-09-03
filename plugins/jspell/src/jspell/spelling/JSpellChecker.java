@@ -1,6 +1,5 @@
 package jspell.spelling;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -147,9 +146,7 @@ public class JSpellChecker {
 		ignored.remove(word.toLowerCase());
 	}
 
-	public Collection<JSpellEvent> execute(JavaName javaName) {
-		Collection<JSpellEvent> events = new ArrayList<JSpellEvent>();
-
+	public Collection<JSpellEvent> execute(Collection<JSpellEvent> events, JavaName javaName) {
 		// final boolean ignoreDigits =
 		// preferences.getBoolean(PreferenceConstants.SPELLING_IGNORE_DIGITS);
 		// final boolean ignoreUpper =

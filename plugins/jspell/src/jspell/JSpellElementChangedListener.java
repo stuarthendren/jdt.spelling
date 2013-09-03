@@ -1,5 +1,6 @@
 package jspell;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import jspell.processor.JSpellProcessor;
@@ -66,18 +67,21 @@ public class JSpellElementChangedListener implements IElementChangedListener {
 		} else {
 			return;
 		}
+		Collection<JSpellEvent> events = new ArrayList<JSpellEvent>();
+		cascadeHandle(events, element);
 		processor.prepare(element);
-		cascadeHandle(element);
+		processor.process(events);
+
 	}
 
-	private void cascadeHandle(IJavaElement element) {
+	private void cascadeHandle(Collection<JSpellEvent> events, IJavaElement element) {
 
-		handle(element);
+		handle(events, element);
 		if (element instanceof IParent) {
 			IParent parent = (IParent) element;
 			try {
 				for (IJavaElement child : parent.getChildren()) {
-					cascadeHandle(child);
+					cascadeHandle(events, child);
 				}
 			} catch (JavaModelException e) {
 				JSpellPlugin.log(e);
@@ -85,18 +89,14 @@ public class JSpellElementChangedListener implements IElementChangedListener {
 		}
 	}
 
-	private void handle(IJavaElement element) {
+	private void handle(Collection<JSpellEvent> events, IJavaElement element) {
 		JavaType convert = JavaType.convert(element);
 		if (convert == null) {
 			// Ignore element
 			return;
 		}
 		JavaNameType javaNameType = JSpellConfiguration.getInstance().getJavaNameType(convert);
-		processJavaName(new JavaName(javaNameType, element));
-	}
-
-	private void processJavaName(JavaName name) {
-		Collection<JSpellEvent> events = checker.execute(name);
-		processor.process(events);
+		JavaName javaName = new JavaName(javaNameType, element);
+		checker.execute(events, javaName);
 	}
 }
