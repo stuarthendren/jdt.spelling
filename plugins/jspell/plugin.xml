@@ -62,5 +62,11 @@
       <startup
             class="jspell.Startup"></startup>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="jspell.JSpellPluginPrefs">
+      </initializer>
+   </extension>
 
 </plugin>
