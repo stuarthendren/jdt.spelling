@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.jdt.ui.quickAssistProcessors">
+      <quickAssistProcessor
+            class="jspell.assist.JSpellQuickAssistProcessor"
+            id="jspell.quickAssistProcessor1">
+      </quickAssistProcessor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="jspell"
+            includeOnPreferencePage="true"
+         colorPreferenceKey="jspell.marker.color"
+         colorPreferenceValue="192,255,192"
+         contributesToHeader="false"
+         highlightPreferenceKey="jspell.marker.highlight"
+         highlightPreferenceValue="true"
+         label="Java Spelling Marker"
+         overviewRulerPreferenceKey="jspell.marker.overview"
+         overviewRulerPreferenceValue="true"
+         presentationLayer="0"
+         textPreferenceKey="jspell.marker.text"
+         textPreferenceValue="true"
+         textStylePreferenceValue="PROBLEM_UNDERLINE"
+         verticalRulerPreferenceKey="jspell.marker.ruler"
+         verticalRulerPreferenceValue="true">
+      </specification>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerUpdaters">
+      <updater
+            class="jspell.marker.JSpellMarkerUpdater"
+            id="jspell.updater"
+            markerType="jspell.marker">
+      </updater>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            markerType="jspell.marker"
+            name="jspell"
+            super="org.eclipse.ui.workbench.texteditor.spelling">
+      </type>
+   </extension>
+   <extension
+         id="jspell.marker"
+         name="JSpell"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.jdt.ui.internal.spelling">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="jspell.Startup"></startup>
+   </extension>
+
+</plugin>
