@@ -16,7 +16,7 @@ import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 
 public class JSpellMarkerFactory {
 
-	private static final String JSPELL_MARKER = "jspell.marker";
+	public static final String JSPELL_MARKER = "jspell.marker";
 
 	public IMarker create(IResource resource) {
 		try {

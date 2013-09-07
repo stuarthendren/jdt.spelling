@@ -9,8 +9,7 @@ public class JSpellMarkerUpdater implements IMarkerUpdater {
 
 	@Override
 	public String getMarkerType() {
-		// TODO Auto-generated method stub
-		return null;
+		return JSpellMarkerFactory.JSPELL_MARKER;
 	}
 
 	@Override
@@ -22,7 +21,7 @@ public class JSpellMarkerUpdater implements IMarkerUpdater {
 	@Override
 	public boolean updateMarker(IMarker marker, IDocument document, Position position) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }
