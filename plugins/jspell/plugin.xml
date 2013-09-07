@@ -12,21 +12,25 @@
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
             annotationType="jspell"
+            colorPreferenceKey="jspell.marker.color"
+            colorPreferenceValue="255,0,0"
+            contributesToHeader="false"
+            highlightPreferenceKey="jspell.marker.highlight"
+            highlightPreferenceValue="true"
+            icon="icons/marker.gif"
             includeOnPreferencePage="true"
-         colorPreferenceKey="jspell.marker.color"
-         colorPreferenceValue="192,255,192"
-         contributesToHeader="false"
-         highlightPreferenceKey="jspell.marker.highlight"
-         highlightPreferenceValue="true"
-         label="Java Spelling Marker"
-         overviewRulerPreferenceKey="jspell.marker.overview"
-         overviewRulerPreferenceValue="true"
-         presentationLayer="0"
-         textPreferenceKey="jspell.marker.text"
-         textPreferenceValue="true"
-         textStylePreferenceValue="PROBLEM_UNDERLINE"
-         verticalRulerPreferenceKey="jspell.marker.ruler"
-         verticalRulerPreferenceValue="true">
+            label="Java Spelling Marker"
+            overviewRulerPreferenceKey="jspell.marker.overview"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="0"
+            quickFixIcon="icons/marker.gif"
+            showInNextPrevDropdownToolbarAction="true"
+            textPreferenceKey="jspell.marker.text"
+            textPreferenceValue="true"
+            textStylePreferenceKey="jspell.marker.style"
+            textStylePreferenceValue="PROBLEM_UNDERLINE"
+            verticalRulerPreferenceKey="jspell.marker.ruler"
+            verticalRulerPreferenceValue="true">
       </specification>
    </extension>
    <extension
