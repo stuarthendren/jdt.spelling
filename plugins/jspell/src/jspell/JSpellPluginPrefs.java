@@ -10,6 +10,12 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
 
+	public static final String JSPEL_MARKER_COLOR = "jspell.marker.color";
+	public static final String JSPEL_MARKER_HIGHLIGHT = "jspell.marker.highlight";
+	public static final String JSPEL_MARKER_OVERVIEW = "jspell.marker.overview";
+	public static final String JSPEL_MARKER_TEXT = "jspell.marker.text";
+	public static final String JSPEL_MARKER_RULER = "jspell.marker.ruler";
+
 	@Override
 	public void initializeDefaultPreferences() {
 		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(JSpellPlugin.getPluginId());
