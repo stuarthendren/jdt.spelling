@@ -5,7 +5,8 @@
          point="org.eclipse.jdt.ui.quickAssistProcessors">
       <quickAssistProcessor
             class="jspell.assist.JSpellQuickAssistProcessor"
-            id="jspell.quickAssistProcessor1">
+            id="jspell.assist.JSpellQuickAssistProcessor"
+            name="JSpell">
       </quickAssistProcessor>
    </extension>
    <extension
@@ -71,6 +72,13 @@
       <initializer
             class="jspell.JSpellPluginPrefs">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="jspell.resolution.JSpellMarkerResolutionGenerator"
+            markerType="jspell.marker">
+      </markerResolutionGenerator>
    </extension>
 
 </plugin>
