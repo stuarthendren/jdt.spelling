@@ -10,6 +10,8 @@ public class Messages {
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(JSpellPlugin.getPluginId());
 
+	public static String JSpellPlugin_internal_error;
+
 	/**
 	 * Fetches a message for the specified key
 	 * 
