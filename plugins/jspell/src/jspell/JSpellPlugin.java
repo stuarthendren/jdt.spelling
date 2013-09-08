@@ -1,6 +1,8 @@
 package jspell;
 
 import jspell.messages.Messages;
+import jspell.spelling.JSpellChecker;
+import jspell.spelling.JSpellCheckerFactory;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -25,6 +27,8 @@ public class JSpellPlugin extends AbstractUIPlugin {
 	private static final int INTERNAL_ERROR = 0;
 
 	private static JSpellPlugin jSpellPlugin;
+
+	private final JSpellChecker spellChecker;
 
 	public static JSpellPlugin getDefault() {
 		return jSpellPlugin;
@@ -83,6 +87,8 @@ public class JSpellPlugin extends AbstractUIPlugin {
 	public JSpellPlugin() {
 		super();
 		jSpellPlugin = this;
+		JSpellCheckerFactory checkerFactory = new JSpellCheckerFactory();
+		spellChecker = checkerFactory.getSpellChecker();
 	}
 
 	@Override
@@ -94,6 +100,10 @@ public class JSpellPlugin extends AbstractUIPlugin {
 		} finally {
 			super.stop(context);
 		}
+	}
+
+	public JSpellChecker getSpellChecker() {
+		return spellChecker;
 	}
 
 	private IWorkbenchPage internalGetActivePage() {

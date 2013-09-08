@@ -21,5 +21,6 @@ Require-Bundle: org.eclipse.core.runtime,
  net.sf.eclipsecs.checkstyle;bundle-version="5.6.0",
  net.sf.eclipsecs.core;bundle-version="5.6.0",
  net.sf.eclipsecs.doc;bundle-version="5.6.0",
- org.eclipse.ui.ide;bundle-version="3.8.2"
+ org.eclipse.ui.ide;bundle-version="3.8.2",
+ org.eclipse.jdt.core.manipulation;bundle-version="1.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

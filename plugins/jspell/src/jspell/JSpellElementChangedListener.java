@@ -90,13 +90,6 @@ public class JSpellElementChangedListener implements IElementChangedListener {
 	}
 
 	private void handle(Collection<JSpellEvent> events, IJavaElement element) {
-		JavaType convert = JavaType.convert(element);
-		if (convert == null) {
-			// Ignore element
-			return;
-		}
-		JavaNameType javaNameType = JSpellConfiguration.getInstance().getJavaNameType(convert);
-		JavaName javaName = new JavaName(javaNameType, element);
-		checker.execute(events, javaName);
+		checker.execute(events, element);
 	}
 }

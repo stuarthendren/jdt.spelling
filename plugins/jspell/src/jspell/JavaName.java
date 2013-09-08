@@ -18,8 +18,16 @@ public class JavaName {
 		return element;
 	}
 
+	public JavaNameType getType() {
+		return type;
+	}
+
 	public String[] getWords() {
 		return type.getWords(element.getElementName());
+	}
+
+	public String getName() {
+		return element.getElementName();
 	}
 
 	@Override
@@ -51,4 +59,5 @@ public class JavaName {
 		}
 		return offset;
 	}
+
 }

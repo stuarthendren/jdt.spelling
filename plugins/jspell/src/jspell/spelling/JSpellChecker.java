@@ -1,15 +1,23 @@
 package jspell.spelling;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import jspell.JSpellConfiguration;
 import jspell.JavaName;
+import jspell.JavaNameType;
+import jspell.JavaType;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.ISpellDictionary;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.RankedWordProposal;
 import org.eclipse.jdt.ui.PreferenceConstants;
@@ -146,7 +154,15 @@ public class JSpellChecker {
 		ignored.remove(word.toLowerCase());
 	}
 
-	public Collection<JSpellEvent> execute(Collection<JSpellEvent> events, JavaName javaName) {
+	public void execute(Collection<JSpellEvent> events, IJavaElement element) {
+		JavaType convert = JavaType.convert(element);
+		if (convert == null) {
+			// Ignore element
+			return;
+		}
+		JavaNameType javaNameType = JSpellConfiguration.getInstance().getJavaNameType(convert);
+		JavaName javaName = new JavaName(javaNameType, element);
+
 		// final boolean ignoreDigits =
 		// preferences.getBoolean(PreferenceConstants.SPELLING_IGNORE_DIGITS);
 		// final boolean ignoreUpper =
@@ -173,10 +189,9 @@ public class JSpellChecker {
 			}
 
 		}
-		return events;
 	}
 
-	public Set<RankedWordProposal> getProposals(final String word, final boolean sentence) {
+	public List<String> getProposals(final String word, final boolean sentence) {
 
 		// synchronizing might not be needed here since getProposals is
 		// a read-only access and only called in the same thread as
@@ -187,14 +202,20 @@ public class JSpellChecker {
 		}
 
 		ISpellDictionary dictionary = null;
-		final HashSet<RankedWordProposal> proposals = new HashSet<RankedWordProposal>();
+		final SortedSet<RankedWordProposal> proposals = new TreeSet<RankedWordProposal>();
 
 		for (final Iterator<ISpellDictionary> iterator = copy.iterator(); iterator.hasNext();) {
 
 			dictionary = iterator.next();
 			proposals.addAll(dictionary.getProposals(word, sentence));
 		}
-		return proposals;
+
+		List<String> words = new ArrayList<String>(proposals.size());
+		for (RankedWordProposal proposal : proposals) {
+			words.add(proposal.getText());
+		}
+
+		return words;
 	}
 
 	public final void ignoreWord(final String word) {

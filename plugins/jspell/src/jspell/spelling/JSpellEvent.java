@@ -1,10 +1,16 @@
 package jspell.spelling;
 
+import java.util.List;
+
 import jspell.JavaName;
+import jspell.JavaNameType;
 
 import org.eclipse.jdt.core.IJavaElement;
 
 public class JSpellEvent {
+
+	private static final String CORRECT = "correct";
+	private static final String INCORRECT = "incorrect";
 
 	private final JSpellChecker javaSpellChecker;
 	private final int index;
@@ -40,17 +46,35 @@ public class JSpellEvent {
 		return word.length();
 	}
 
+	public List<String> getProposals() {
+		return javaSpellChecker.getProposals(word, false);
+	}
+
+	public String getNewName(String replacement) {
+
+		JavaNameType type = javaName.getType();
+		replacement = type.getCase(index).convert(replacement);
+
+		StringBuilder builder = new StringBuilder(javaName.getName());
+		builder.replace(getOffset(), getLength(), replacement);
+		return builder.toString();
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(word);
 		sb.append(" ");
 		if (error) {
-			sb.append("incorrect");
+			sb.append(INCORRECT);
 		} else {
-			sb.append("correct");
+			sb.append(CORRECT);
 		}
 
 		return sb.toString();
+	}
+
+	public String getWord() {
+		return word;
 	}
 
 }
