@@ -15,6 +15,7 @@ import jspell.JSpellConfiguration;
 import jspell.JavaName;
 import jspell.JavaNameType;
 import jspell.JavaType;
+import jspell.dictionary.PersistentSpellDictionary;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.IJavaElement;
@@ -69,9 +70,14 @@ public class JSpellChecker {
 	private final Set<ISpellDictionary> dictionaries = Collections.synchronizedSet(new HashSet<ISpellDictionary>());
 
 	/**
-	 * The words to be ignored. Synchronized to avoid concurrent modifications.
+	 * The dictionary used for added words.
 	 */
-	private final Set<String> ignored = Collections.synchronizedSet(new HashSet<String>());
+	private final PersistentSpellDictionary additionsDictionary;
+
+	/**
+	 * The dictionary used for ignored words
+	 */
+	private final PersistentSpellDictionary ignoreDictionary;
 
 	/**
 	 * The preference store. Assumes the <code>IPreferenceStore</code> implementation is thread
@@ -94,7 +100,10 @@ public class JSpellChecker {
 	 * @param locale
 	 *            the locale
 	 */
-	public JSpellChecker(IPreferenceStore preferences, Locale locale) {
+	public JSpellChecker(PersistentSpellDictionary additionsDictionary, PersistentSpellDictionary ignoreDictionary,
+			IPreferenceStore preferences, Locale locale) {
+		this.additionsDictionary = additionsDictionary;
+		this.ignoreDictionary = ignoreDictionary;
 		Assert.isLegal(preferences != null);
 		Assert.isLegal(locale != null);
 
@@ -134,24 +143,15 @@ public class JSpellChecker {
 
 	public void addWord(final String word) {
 		// synchronizing is necessary as this is a write access
-		Set<ISpellDictionary> copy;
-		synchronized (dictionaries) {
-			copy = new HashSet<ISpellDictionary>(dictionaries);
-		}
-
-		final String addable = word.toLowerCase();
-		for (final Iterator<ISpellDictionary> iterator = copy.iterator(); iterator.hasNext();) {
-			ISpellDictionary dictionary = iterator.next();
-			if (dictionary.acceptsWords()) {
-				dictionary.addWord(addable);
+		synchronized (additionsDictionary) {
+			final String addable = word.toLowerCase();
+			if (additionsDictionary.acceptsWords()) {
+				additionsDictionary.addWord(addable);
+			} else {
+				throw new IllegalStateException("Unable to add to dictionary");
 			}
 		}
 
-	}
-
-	public final void checkWord(final String word) {
-		// synchronizing is necessary as this is a write access
-		ignored.remove(word.toLowerCase());
 	}
 
 	public void execute(Collection<JSpellEvent> events, IJavaElement element) {
@@ -179,15 +179,12 @@ public class JSpellChecker {
 			if (word != null) {
 
 				// synchronizing is necessary as this is called inside the reconciler
-				if (!ignored.contains(word)) {
-					if (!isCorrect(word)) {
-						events.add(new JSpellEvent(this, i, word, javaName, true));
-					} else {
-						events.add(new JSpellEvent(this, i, word, javaName, false));
-					}
+				if (!isCorrect(word)) {
+					events.add(new JSpellEvent(this, i, word, javaName, true));
+				} else {
+					events.add(new JSpellEvent(this, i, word, javaName, false));
 				}
 			}
-
 		}
 	}
 
@@ -220,18 +217,20 @@ public class JSpellChecker {
 
 	public final void ignoreWord(final String word) {
 		// synchronizing is necessary as this is a write access
-		ignored.add(word.toLowerCase());
+		synchronized (ignoreDictionary) {
+			ignoreDictionary.addWord(word);
+		}
 	}
 
 	public final boolean isCorrect(final String word) {
+		if (ignoreDictionary.isCorrect(word)) {
+			return true;
+		}
+
 		// synchronizing is necessary as this is called from execute
 		Set<ISpellDictionary> copy;
 		synchronized (dictionaries) {
 			copy = new HashSet<ISpellDictionary>(dictionaries);
-		}
-
-		if (ignored.contains(word.toLowerCase())) {
-			return true;
 		}
 
 		ISpellDictionary dictionary = null;
@@ -245,10 +244,6 @@ public class JSpellChecker {
 		return false;
 	}
 
-	/*
-	 * @see org.eclipse.spelling.done.ISpellChecker#removeDictionary(org.eclipse.spelling.done.
-	 * ISpellDictionary)
-	 */
 	public final void removeDictionary(final ISpellDictionary dictionary) {
 		// synchronizing is necessary as this is a write access
 		dictionaries.remove(dictionary);
@@ -256,5 +251,17 @@ public class JSpellChecker {
 
 	public Locale getLocale() {
 		return locale;
+	}
+
+	public void clearIgnoredWords() {
+		synchronized (ignoreDictionary) {
+			ignoreDictionary.clear();
+		}
+	}
+
+	public void clearAddedWords() {
+		synchronized (additionsDictionary) {
+			additionsDictionary.clear();
+		}
 	}
 }

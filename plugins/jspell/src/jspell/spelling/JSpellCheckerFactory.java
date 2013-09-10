@@ -16,31 +16,38 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import jspell.JSpellPlugin;
+import jspell.dictionary.PersistentSpellDictionary;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.ISpellDictionary;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.LocaleSensitiveSpellDictionary;
-import org.eclipse.jdt.internal.ui.text.spelling.engine.PersistentSpellDictionary;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.osgi.framework.Bundle;
 
+@SuppressWarnings("restriction")
 public class JSpellCheckerFactory {
 
 	private static final String DICTIONARY_LOCATION = "dictionaries";
+	private static final String ADDED_DICTIONARY = "added.dic";
+	private static final String IGNORE_DICTIONARY = "ignored.dic";
 
 	private final Set<ISpellDictionary> dictionaries;
 
 	private Map<Locale, ISpellDictionary> localeDictionaries;
 
 	private PersistentSpellDictionary userDictionary;
+	private PersistentSpellDictionary addedDictionary;
+	private PersistentSpellDictionary ignoredDictionary;
 
 	private JSpellChecker checker;
 
 	public JSpellCheckerFactory() {
 
 		dictionaries = new HashSet<ISpellDictionary>();
-		// dictionaries.add(new TaskTagDictionary());
 
 		try {
 
@@ -82,7 +89,12 @@ public class JSpellCheckerFactory {
 
 		resetSpellChecker();
 
-		checker = new JSpellChecker(store, locale);
+		PersistentSpellDictionary added = new PersistentSpellDictionary(
+				getWorkspaceDictionaryLocation(ADDED_DICTIONARY));
+		PersistentSpellDictionary ignored = new PersistentSpellDictionary(
+				getWorkspaceDictionaryLocation(IGNORE_DICTIONARY));
+
+		checker = new JSpellChecker(added, ignored, store, locale);
 		resetUserDictionary();
 
 		for (Iterator<ISpellDictionary> iterator = dictionaries.iterator(); iterator.hasNext();) {
@@ -254,6 +266,17 @@ public class JSpellCheckerFactory {
 			}
 		}
 		checker = null;
+	}
+
+	private URL getWorkspaceDictionaryLocation(String dictionary) {
+		Bundle bundle = Platform.getBundle(JSpellPlugin.getPluginId());
+		IPath path = Platform.getStateLocation(bundle).append(DICTIONARY_LOCATION).append(dictionary);
+		try {
+			return new URL("file", null, path.toString());
+		} catch (MalformedURLException e) {
+			JSpellPlugin.log(e);
+		}
+		return null;
 	}
 
 }

@@ -1,5 +1,6 @@
 package jspell.dictionary;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -8,6 +9,7 @@ import java.nio.charset.Charset;
 
 import jspell.JSpellPlugin;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.AbstractSpellDictionary;
 
 /**
@@ -28,6 +30,12 @@ public class PersistentSpellDictionary extends AbstractSpellDictionary {
 	 */
 	public PersistentSpellDictionary(final URL url) {
 		fLocation = url;
+		File file = new File(url.getFile());
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			JSpellPlugin.log(e);
+		}
 	}
 
 	/*
@@ -75,15 +83,16 @@ public class PersistentSpellDictionary extends AbstractSpellDictionary {
 			JSpellPlugin.log(exception);
 			return;
 		} finally {
-			try {
-				if (fileStream != null) {
-					fileStream.close();
-				}
-			} catch (IOException e) {
-			}
+			IOUtils.closeQuietly(fileStream);
 		}
 
 		hashWord(word);
+	}
+
+	public void clear() {
+		File file = new File(fLocation.getPath());
+		file.delete();
+		unload();
 	}
 
 	@Override
