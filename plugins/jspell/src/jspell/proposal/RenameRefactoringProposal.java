@@ -7,26 +7,24 @@ import jspell.JSpellPluginImages;
 import jspell.messages.Messages;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
-import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.jdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.jdt.ui.refactoring.RenameSupport;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.jdt.ui.text.java.correction.ICommandAccess;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension6;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchWindow;
 
 /**
  * A quick assist proposal that starts the Rename refactoring.
@@ -36,17 +34,13 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 
 	private final String label;
 	private final int relevance;
-	private final JavaEditor editor;
+	private final IEditorPart editor;
 	private final IJavaElement javaElement;
-	private final ICompilationUnit compilationUnit;
 
 	private final String newName;
-	private Point originalSelection;
 
-	public RenameRefactoringProposal(JavaEditor editor, ICompilationUnit compilationUnit, IJavaElement javaElement,
-			String changedWord, String newName) {
+	public RenameRefactoringProposal(IEditorPart editor, IJavaElement javaElement, String changedWord, String newName) {
 		this.editor = editor;
-		this.compilationUnit = compilationUnit;
 		this.javaElement = javaElement;
 		this.newName = newName;
 		label = Messages.RenameRefactoringProposal_Change_to + newName;
@@ -55,21 +49,15 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 
 	@Override
 	public void apply(IDocument document) {
-
-		ISourceViewer viewer = editor.getViewer();
-		originalSelection = viewer.getSelectedRange();
-
-		// cretaing
 		try {
 			RenameJavaElementDescriptor descriptor = createRenameDescriptor(javaElement, newName);
 			RenameSupport renameSupport = RenameSupport.create(descriptor);
 
-			// running
 			Shell shell = editor.getSite().getShell();
+			IWorkbenchWindow workbenchWindow = editor.getSite().getWorkbenchWindow();
 
-			renameSupport.perform(shell, editor.getSite().getWorkbenchWindow());
-			restoreFullSelection();
-			JavaModelUtil.reconcile(compilationUnit);
+			renameSupport.perform(shell, workbenchWindow);
+
 		} catch (JavaModelException e) {
 			JSpellPlugin.log(e);
 		} catch (InterruptedException e) {
@@ -80,10 +68,6 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 			JSpellPlugin.log(e);
 		}
 	}
-
-	// private ICompilationUnit getCompilationUnit() {
-	// return (ICompilationUnit) EditorUtility.getEditorInputJavaElement(editor, false);
-	// }
 
 	@Override
 	public Point getSelection(IDocument document) {
@@ -110,9 +94,6 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 		return JSpellPluginImages.getImage(JSpellPluginImages.CORRECT);
 	}
 
-	/*
-	 * @see ICompletionProposal#getContextInformation()
-	 */
 	@Override
 	public IContextInformation getContextInformation() {
 		return null;
@@ -125,7 +106,6 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 
 	@Override
 	public String getCommandId() {
-		// return IJavaEditorActionDefinitionIds.RENAME_ELEMENT;
 		return null;
 	}
 
@@ -215,10 +195,4 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 		return descriptor;
 	}
 
-	private void restoreFullSelection() {
-		if (originalSelection.y != 0) {
-			int originalOffset = originalSelection.x;
-			editor.getViewer().setSelectedRange(originalOffset, newName.length());
-		}
-	}
 }

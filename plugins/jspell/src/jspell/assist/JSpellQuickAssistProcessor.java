@@ -15,7 +15,6 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.jdt.internal.ui.text.correction.AssistContext;
 import org.eclipse.jdt.ui.text.java.IInvocationContext;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
@@ -23,19 +22,11 @@ import org.eclipse.jdt.ui.text.java.IProblemLocation;
 import org.eclipse.jdt.ui.text.java.IQuickAssistProcessor;
 import org.eclipse.ui.IEditorPart;
 
+@SuppressWarnings("restriction")
 public class JSpellQuickAssistProcessor implements IQuickAssistProcessor {
 
 	@Override
 	public boolean hasAssists(IInvocationContext context) throws CoreException {
-		if (!(context instanceof AssistContext)) {
-			return false;
-		}
-		IEditorPart editor = ((AssistContext) context).getEditor();
-		if (!(editor instanceof JavaEditor)) {
-			return false;
-		}
-		JavaEditor javaEditor = (JavaEditor) editor;
-
 		ASTNode node = context.getCoveredNode();
 		if (!(node instanceof SimpleName)) {
 			return false;
@@ -49,7 +40,6 @@ public class JSpellQuickAssistProcessor implements IQuickAssistProcessor {
 		return true;
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public IJavaCompletionProposal[] getAssists(IInvocationContext context, IProblemLocation[] locations)
 			throws CoreException {
@@ -58,10 +48,6 @@ public class JSpellQuickAssistProcessor implements IQuickAssistProcessor {
 			return null;
 		}
 		IEditorPart editor = ((AssistContext) context).getEditor();
-		if (!(editor instanceof JavaEditor)) {
-			return null;
-		}
-		JavaEditor javaEditor = (JavaEditor) editor;
 
 		ICompilationUnit compilationUnit = context.getCompilationUnit();
 		IJavaElement element = compilationUnit.getElementAt(context.getSelectionOffset());
@@ -78,7 +64,7 @@ public class JSpellQuickAssistProcessor implements IQuickAssistProcessor {
 					String word = event.getWord();
 					String newName = event.getNewName(proposal);
 
-					proposals.add(new RenameRefactoringProposal(javaEditor, compilationUnit, element, word, newName));
+					proposals.add(new RenameRefactoringProposal(editor, element, word, newName));
 				}
 
 			}
