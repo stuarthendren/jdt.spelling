@@ -56,7 +56,9 @@ public class JSpellEvent {
 		replacement = type.getCase(index).convert(replacement);
 
 		StringBuilder builder = new StringBuilder(javaName.getName());
-		builder.replace(getOffset(), getLength(), replacement);
+
+		builder.replace(getOffset(), getOffset() + getLength(), replacement);
+
 		return builder.toString();
 	}
 
