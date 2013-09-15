@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
+import org.eclipse.jdt.internal.ui.text.correction.AssistContext;
 import org.eclipse.jdt.ui.refactoring.RenameSupport;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.jdt.ui.text.java.correction.ICommandAccess;
@@ -22,25 +23,23 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
 /**
  * A quick assist proposal that starts the Rename refactoring.
  */
+@SuppressWarnings("restriction")
 public class RenameRefactoringProposal implements IJavaCompletionProposal, ICompletionProposalExtension6,
 		ICommandAccess {
 
 	private final String label;
 	private final int relevance;
-	private final IEditorPart editor;
 	private final IJavaElement javaElement;
-
 	private final String newName;
+	private final AssistContext context;
 
-	public RenameRefactoringProposal(IEditorPart editor, IJavaElement javaElement, String changedWord, String newName) {
-		this.editor = editor;
+	public RenameRefactoringProposal(AssistContext context, IJavaElement javaElement, String changedWord, String newName) {
+		this.context = context;
 		this.javaElement = javaElement;
 		this.newName = newName;
 		label = Messages.RenameRefactoringProposal_Change_to + newName;
@@ -53,10 +52,9 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 			RenameJavaElementDescriptor descriptor = createRenameDescriptor(javaElement, newName);
 			RenameSupport renameSupport = RenameSupport.create(descriptor);
 
-			Shell shell = editor.getSite().getShell();
-			IWorkbenchWindow workbenchWindow = editor.getSite().getWorkbenchWindow();
+			IWorkbenchWindow workbenchWindow = context.getEditor().getSite().getWorkbenchWindow();
 
-			renameSupport.perform(shell, workbenchWindow);
+			renameSupport.perform(workbenchWindow.getShell(), workbenchWindow);
 
 		} catch (JavaModelException e) {
 			JSpellPlugin.log(e);
@@ -67,11 +65,6 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 		} catch (CoreException e) {
 			JSpellPlugin.log(e);
 		}
-	}
-
-	@Override
-	public Point getSelection(IDocument document) {
-		return null;
 	}
 
 	@Override
@@ -193,6 +186,11 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 			descriptor.setRenameSetters(true);
 		}
 		return descriptor;
+	}
+
+	@Override
+	public final Point getSelection(final IDocument document) {
+		return new Point(context.getOffset(), newName.length());
 	}
 
 }
