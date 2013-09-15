@@ -5,3 +5,4 @@ Bundle-SymbolicName: jspell.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: jspell
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit
