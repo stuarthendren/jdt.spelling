@@ -6,7 +6,7 @@ public class Messages {
 
 	public static String AddWordProposal_add;
 
-	public static String IgnoreWordProposal_add;
+	public static String IgnoreWordProposal_ignore;
 
 	public static String RenameRefactoringProposal_Change_to;
 

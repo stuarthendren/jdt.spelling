@@ -6,6 +6,7 @@ import java.util.List;
 
 import jspell.JSpellPlugin;
 import jspell.proposal.AddWordProposal;
+import jspell.proposal.IgnoreWordProposal;
 import jspell.proposal.RenameRefactoringProposal;
 import jspell.spelling.JSpellChecker;
 import jspell.spelling.JSpellEvent;
@@ -65,6 +66,7 @@ public class JSpellQuickAssistProcessor implements IQuickAssistProcessor {
 					String newName = event.getNewName(proposal);
 					proposals.add(new RenameRefactoringProposal(assistContext, element, word, newName));
 				}
+				proposals.add(new IgnoreWordProposal(assistContext, element, word));
 				proposals.add(new AddWordProposal(assistContext, element, word));
 			}
 		}

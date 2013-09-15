@@ -8,30 +8,30 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
 
 /**
- * Proposal to add the unknown word to the added dictionary.
+ * Proposal to ignore the unknown word.
  * 
  */
-public class AddWordProposal extends AbstractWordProposal {
+public class IgnoreWordProposal extends AbstractWordProposal {
 
-	private static final int RELEVANCE = 7;
+	private static final int RELEVANCE = 6;
 
 	/**
 	 * Creates a new add word proposal
 	 * 
 	 * @param word
-	 *            The word to add
+	 *            The word to ignore
 	 * @param context
 	 *            The invocation context
 	 * @param element
 	 *            the java element to re-evaluate
 	 */
-	public AddWordProposal(IQuickAssistInvocationContext context, IJavaElement element, String word) {
-		super(context, element, RELEVANCE, Messages.AddWordProposal_add, JSpellPluginImages.ADD, word);
+	public IgnoreWordProposal(IQuickAssistInvocationContext context, IJavaElement element, String word) {
+		super(context, element, RELEVANCE, Messages.IgnoreWordProposal_ignore, JSpellPluginImages.REMOVE, word);
 	}
 
 	@Override
 	protected void process(JSpellChecker spellChecker, String word) {
-		spellChecker.addWord(word);
+		spellChecker.ignoreWord(word);
 	}
 
 }
