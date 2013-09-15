@@ -109,6 +109,8 @@ public class JSpellChecker {
 
 		this.preferences = preferences;
 		this.locale = locale;
+
+		addDictionary(this.additionsDictionary);
 	}
 
 	/*
@@ -119,26 +121,6 @@ public class JSpellChecker {
 	public final void addDictionary(final ISpellDictionary dictionary) {
 		// synchronizing is necessary as this is a write access
 		dictionaries.add(dictionary);
-	}
-
-	public boolean acceptsWords() {
-		// synchronizing might not be needed here since acceptWords is
-		// a read-only access and only called in the same thread as
-		// the modifying methods add/checkWord (?)
-		Set<ISpellDictionary> copy;
-		synchronized (dictionaries) {
-			copy = new HashSet<ISpellDictionary>(dictionaries);
-		}
-
-		ISpellDictionary dictionary = null;
-		for (final Iterator<ISpellDictionary> iterator = copy.iterator(); iterator.hasNext();) {
-
-			dictionary = iterator.next();
-			if (dictionary.acceptsWords()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public void addWord(final String word) {

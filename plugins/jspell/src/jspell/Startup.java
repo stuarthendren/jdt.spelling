@@ -1,8 +1,6 @@
 package jspell;
 
-import jspell.marker.JSpellMarkerFactory;
-import jspell.processor.JSpellProcessor;
-import jspell.spelling.JSpellChecker;
+import jspell.engine.JSpellEngine;
 
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
@@ -13,12 +11,8 @@ public class Startup implements IStartup {
 	public void earlyStartup() {
 		new JSpellPlugin();
 
-		JSpellChecker spellChecker = JSpellPlugin.getDefault().getSpellChecker();
-
-		JSpellMarkerFactory markerFactory = new JSpellMarkerFactory();
-		JSpellProcessor processor = new JSpellProcessor(markerFactory);
-
-		JavaCore.addElementChangedListener(new JSpellElementChangedListener(spellChecker, processor));
+		JSpellEngine spellEngine = JSpellPlugin.getDefault().getSpellEngine();
+		JavaCore.addElementChangedListener(spellEngine);
 	}
 
 }

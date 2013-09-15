@@ -1,6 +1,9 @@
 package jspell;
 
+import jspell.engine.JSpellEngine;
+import jspell.marker.JSpellMarkerFactory;
 import jspell.messages.Messages;
+import jspell.processor.JSpellProcessor;
 import jspell.spelling.JSpellChecker;
 import jspell.spelling.JSpellCheckerFactory;
 
@@ -29,6 +32,8 @@ public class JSpellPlugin extends AbstractUIPlugin {
 	private static JSpellPlugin jSpellPlugin;
 
 	private final JSpellChecker spellChecker;
+
+	private final JSpellEngine spellEngine;
 
 	public static JSpellPlugin getDefault() {
 		return jSpellPlugin;
@@ -87,8 +92,14 @@ public class JSpellPlugin extends AbstractUIPlugin {
 	public JSpellPlugin() {
 		super();
 		jSpellPlugin = this;
+
 		JSpellCheckerFactory checkerFactory = new JSpellCheckerFactory();
 		spellChecker = checkerFactory.getSpellChecker();
+
+		JSpellMarkerFactory markerFactory = new JSpellMarkerFactory();
+		JSpellProcessor processor = new JSpellProcessor(markerFactory);
+
+		spellEngine = new JSpellEngine(spellChecker, processor);
 	}
 
 	@Override
@@ -104,6 +115,10 @@ public class JSpellPlugin extends AbstractUIPlugin {
 
 	public JSpellChecker getSpellChecker() {
 		return spellChecker;
+	}
+
+	public JSpellEngine getSpellEngine() {
+		return spellEngine;
 	}
 
 	private IWorkbenchPage internalGetActivePage() {

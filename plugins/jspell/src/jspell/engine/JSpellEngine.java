@@ -1,8 +1,9 @@
-package jspell;
+package jspell.engine;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import jspell.JSpellPlugin;
 import jspell.processor.JSpellProcessor;
 import jspell.spelling.JSpellChecker;
 import jspell.spelling.JSpellEvent;
@@ -16,13 +17,13 @@ import org.eclipse.jdt.core.IParent;
 import org.eclipse.jdt.core.ISourceReference;
 import org.eclipse.jdt.core.JavaModelException;
 
-public class JSpellElementChangedListener implements IElementChangedListener {
+public class JSpellEngine implements IElementChangedListener {
 
 	private final JSpellChecker checker;
 
 	private final JSpellProcessor processor;
 
-	public JSpellElementChangedListener(JSpellChecker checker, JSpellProcessor processor) {
+	public JSpellEngine(JSpellChecker checker, JSpellProcessor processor) {
 		this.checker = checker;
 		this.processor = processor;
 	}
@@ -48,6 +49,10 @@ public class JSpellElementChangedListener implements IElementChangedListener {
 		}
 
 		IJavaElement element = delta.getElement();
+		checkElement(element);
+	}
+
+	public void checkElement(IJavaElement element) {
 		ICompilationUnit cu = (ICompilationUnit) element.getAncestor(IJavaElement.COMPILATION_UNIT);
 
 		if (cu == null) {

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jspell.JSpellPlugin;
+import jspell.proposal.AddWordProposal;
 import jspell.proposal.RenameRefactoringProposal;
 import jspell.spelling.JSpellChecker;
 import jspell.spelling.JSpellEvent;
@@ -47,7 +48,8 @@ public class JSpellQuickAssistProcessor implements IQuickAssistProcessor {
 		if (!(context instanceof AssistContext)) {
 			return null;
 		}
-		IEditorPart editor = ((AssistContext) context).getEditor();
+		AssistContext assistContext = (AssistContext) context;
+		IEditorPart editor = assistContext.getEditor();
 
 		ICompilationUnit compilationUnit = context.getCompilationUnit();
 		IJavaElement element = compilationUnit.getElementAt(context.getSelectionOffset());
@@ -60,13 +62,12 @@ public class JSpellQuickAssistProcessor implements IQuickAssistProcessor {
 		List<IJavaCompletionProposal> proposals = new ArrayList<IJavaCompletionProposal>();
 		for (JSpellEvent event : events) {
 			if (event.isError()) {
+				String word = event.getWord();
 				for (String proposal : event.getProposals()) {
-					String word = event.getWord();
 					String newName = event.getNewName(proposal);
-
 					proposals.add(new RenameRefactoringProposal(editor, element, word, newName));
 				}
-
+				proposals.add(new AddWordProposal(assistContext, element, word));
 			}
 		}
 

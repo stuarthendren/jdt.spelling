@@ -4,6 +4,10 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages {
 
+	public static String AddWordProposal_add;
+
+	public static String IgnoreWordProposal_add;
+
 	public static String RenameRefactoringProposal_Change_to;
 
 	public static String RenameRefactoringProposal_additionalInfo;
