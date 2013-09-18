@@ -1,4 +1,4 @@
-package jspell;
+package jspell.spelling;
 
 public enum Case {
 

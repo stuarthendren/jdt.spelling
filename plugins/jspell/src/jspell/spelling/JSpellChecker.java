@@ -12,8 +12,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import jspell.JSpellConfiguration;
-import jspell.JavaName;
-import jspell.JavaNameType;
 import jspell.JavaType;
 import jspell.dictionary.PersistentSpellDictionary;
 
@@ -145,12 +143,6 @@ public class JSpellChecker {
 		JavaNameType javaNameType = JSpellConfiguration.getInstance().getJavaNameType(convert);
 		JavaName javaName = new JavaName(javaNameType, element);
 
-		// final boolean ignoreDigits =
-		// preferences.getBoolean(PreferenceConstants.SPELLING_IGNORE_DIGITS);
-		// final boolean ignoreUpper =
-		// preferences.getBoolean(PreferenceConstants.SPELLING_IGNORE_UPPER);
-		// final boolean ignoreNonLetters =
-		// preferences.getBoolean(PreferenceConstants.SPELLING_IGNORE_NON_LETTERS);
 		final boolean ignoreSingleLetters = preferences.getBoolean(PreferenceConstants.SPELLING_IGNORE_SINGLE_LETTERS);
 
 		javaName.setIgnoreSingleLetters(ignoreSingleLetters);

@@ -40,8 +40,6 @@ public class JSpellCheckerFactory {
 	private Map<Locale, ISpellDictionary> localeDictionaries;
 
 	private PersistentSpellDictionary userDictionary;
-	private PersistentSpellDictionary addedDictionary;
-	private PersistentSpellDictionary ignoredDictionary;
 
 	private JSpellChecker checker;
 

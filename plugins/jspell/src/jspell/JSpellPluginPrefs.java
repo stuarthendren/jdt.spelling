@@ -1,5 +1,7 @@
 package jspell;
 
+import jspell.spelling.JavaNameType;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;

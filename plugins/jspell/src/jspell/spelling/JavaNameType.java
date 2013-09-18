@@ -1,10 +1,10 @@
-package jspell;
+package jspell.spelling;
 
 public enum JavaNameType {
 
-	UPPER_CAMEL_CASE("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])", null, 0),
+	UPPER_CAMEL_CASE("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])", 0),
 
-	LOWER_CAMEL_CASE("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])", null, 0) {
+	LOWER_CAMEL_CASE("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])", 0) {
 		@Override
 		public Case getCase(int position) {
 			if (position == 0) {
@@ -14,7 +14,7 @@ public enum JavaNameType {
 		}
 	},
 
-	DOT("\\.", '.', 1) {
+	DOT("\\.", 1) {
 
 		@Override
 		public Case getCase(int position) {
@@ -23,7 +23,7 @@ public enum JavaNameType {
 
 	},
 
-	UPPER("_", '_', 1) {
+	UPPER("_", 1) {
 		@Override
 		public Case getCase(int position) {
 			return Case.UPPER;
@@ -34,11 +34,8 @@ public enum JavaNameType {
 
 	private final int l;
 
-	private final Character separator;
-
-	private JavaNameType(String split, Character separator, int l) {
+	private JavaNameType(String split, int l) {
 		this.split = split;
-		this.separator = separator;
 		this.l = l;
 	}
 

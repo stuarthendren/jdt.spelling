@@ -1,5 +1,7 @@
 package jspell;
 
+import jspell.spelling.JavaNameType;
+
 public class JSpellConfiguration {
 
 	private static final JSpellConfiguration INSTANCE = new JSpellConfiguration();

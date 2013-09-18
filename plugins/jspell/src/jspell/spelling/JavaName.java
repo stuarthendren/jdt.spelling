@@ -1,4 +1,4 @@
-package jspell;
+package jspell.spelling;
 
 import org.eclipse.jdt.core.IJavaElement;
 

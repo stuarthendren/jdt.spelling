@@ -2,8 +2,6 @@ package jspell.spelling;
 
 import java.util.List;
 
-import jspell.JavaName;
-import jspell.JavaNameType;
 
 import org.eclipse.jdt.core.IJavaElement;
 
