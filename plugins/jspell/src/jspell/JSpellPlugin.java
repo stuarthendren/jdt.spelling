@@ -12,6 +12,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
@@ -105,9 +106,7 @@ public class JSpellPlugin extends AbstractUIPlugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {
-
-			// dispose resources
-
+			JavaCore.removeElementChangedListener(spellEngine);
 		} finally {
 			super.stop(context);
 		}
@@ -119,6 +118,12 @@ public class JSpellPlugin extends AbstractUIPlugin {
 
 	public JSpellEngine getSpellEngine() {
 		return spellEngine;
+	}
+
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		JavaCore.addElementChangedListener(spellEngine);
 	}
 
 	private IWorkbenchPage internalGetActivePage() {

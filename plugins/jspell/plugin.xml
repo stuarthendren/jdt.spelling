@@ -2,6 +2,10 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.ui.startup">
+      <startup></startup>
+   </extension>
+   <extension
          point="org.eclipse.jdt.ui.quickAssistProcessors">
       <quickAssistProcessor
             class="jspell.assist.JSpellQuickAssistProcessor"
@@ -61,11 +65,6 @@
       <persistent
             value="true">
       </persistent>
-   </extension>
-   <extension
-         point="org.eclipse.ui.startup">
-      <startup
-            class="jspell.Startup"></startup>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
