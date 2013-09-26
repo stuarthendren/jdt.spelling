@@ -1,10 +1,17 @@
 package jspell.spelling;
 
+import java.util.regex.Pattern;
+
+/*
+ * Numbers can be separated when the separator size is zero, this means they are easier to handle later
+ * but other numbers are included in words to maintain the separator lengths and calculate offsets
+ * 
+ */
 public enum JavaNameType {
 
-	UPPER_CAMEL_CASE("UpperCamelCase", "(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])", 0),
+	UPPER_CAMEL_CASE("UpperCamelCase", "(?<!^)(?=[A-Z0-9][a-z]*)", 0),
 
-	LOWER_CAMEL_CASE("lowerCamelCase", "(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])", 0) {
+	LOWER_CAMEL_CASE("lowerCamelCase", "(?<!^)(?=[A-Z0-9][a-z]*)", 0) {
 		@Override
 		public Case getCase(int position) {
 			if (position == 0) {
@@ -15,7 +22,6 @@ public enum JavaNameType {
 	},
 
 	DOT("lower.package.name", "\\.", 1) {
-
 		@Override
 		public Case getCase(int position) {
 			return Case.LOWER;
@@ -30,20 +36,20 @@ public enum JavaNameType {
 		}
 	};
 
-	private final String split;
-
 	private final int l;
 
 	private final String displayName;
 
-	private JavaNameType(String displayName, String split, int l) {
+	private final Pattern pattern;
+
+	private JavaNameType(String displayName, String regex, int l) {
 		this.displayName = displayName;
-		this.split = split;
 		this.l = l;
+		this.pattern = Pattern.compile(regex);
 	}
 
 	public String[] getWords(String name) {
-		return name.split(split);
+		return pattern.split(name, 0);
 	}
 
 	public int getSeparatorLength() {
