@@ -15,6 +15,7 @@ import jspell.JSpellConfiguration;
 import jspell.JavaType;
 import jspell.dictionary.PersistentSpellDictionary;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.ISpellDictionary;
@@ -33,6 +34,22 @@ public class JSpellChecker {
 	 * @return <code>true</code> iff this word contains digits, <code>false></code> otherwise
 	 */
 	protected static boolean isDigits(final String word) {
+		for (int index = 0; index < word.length(); index++) {
+			if (!Character.isDigit(word.charAt(index))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Does this word contain digits?
+	 * 
+	 * @param word
+	 *            the word to check
+	 * @return <code>true</code> iff this word contains digits, <code>false></code> otherwise
+	 */
+	protected static boolean containsDigits(final String word) {
 
 		for (int index = 0; index < word.length(); index++) {
 
@@ -41,25 +58,6 @@ public class JSpellChecker {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Does this word contain upper-case letters only?
-	 * 
-	 * @param word
-	 *            The word to check
-	 * @return <code>true</code> iff this word only contains upper-case letters, <code>false</code>
-	 *         otherwise
-	 */
-	protected static boolean isUpperCase(final String word) {
-
-		for (int index = word.length() - 1; index >= 0; index--) {
-
-			if (Character.isLowerCase(word.charAt(index))) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	/**
@@ -197,6 +195,10 @@ public class JSpellChecker {
 	}
 
 	public final boolean isCorrect(final String word) {
+		if (StringUtils.isEmpty(word) || isDigits(word)) {
+			return true;
+		}
+
 		if (ignoreDictionary.isCorrect(word)) {
 			return true;
 		}
