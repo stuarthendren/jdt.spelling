@@ -73,13 +73,6 @@
       </initializer>
    </extension>
    <extension
-         point="org.eclipse.ui.ide.markerResolution">
-      <markerResolutionGenerator
-            class="jspell.resolution.JSpellMarkerResolutionGenerator"
-            markerType="jspell.marker">
-      </markerResolutionGenerator>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.jdt.ui.preferences.JavaBasePreferencePage"
