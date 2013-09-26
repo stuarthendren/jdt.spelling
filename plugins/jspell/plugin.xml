@@ -39,14 +39,6 @@
       </specification>
    </extension>
    <extension
-         point="org.eclipse.ui.editors.markerUpdaters">
-      <updater
-            class="jspell.marker.JSpellMarkerUpdater"
-            id="jspell.updater"
-            markerType="jspell.marker">
-      </updater>
-   </extension>
-   <extension
          point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
