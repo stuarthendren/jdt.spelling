@@ -79,5 +79,14 @@
             markerType="jspell.marker">
       </markerResolutionGenerator>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.jdt.ui.preferences.JavaBasePreferencePage"
+            class="jspell.preferences.JSpellPreferencePage"
+            id="jspell.preferences.JSpellPreferencePage"
+            name="Java type spelling">
+      </page>
+   </extension>
 
 </plugin>

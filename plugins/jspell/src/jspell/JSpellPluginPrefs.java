@@ -20,6 +20,10 @@ public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
+		JSpellPluginPrefs.restoreDefaults();
+	}
+
+	public static void restoreDefaults() {
 		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(JSpellPlugin.getPluginId());
 
 		prefs.put(JavaType.TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
@@ -29,6 +33,7 @@ public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
 		prefs.put(JavaType.PACKAGE_DECLARATION.name(), JavaNameType.DOT.name());
 		prefs.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		prefs.put(JavaType.LOCAL_VARIABLE.name(), JavaNameType.LOWER_CAMEL_CASE.name());
+		prefs.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 
 		try {
 			prefs.flush();

@@ -6,7 +6,30 @@ import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.JavaModelException;
 
 public enum JavaType {
-	TYPE, ANNOTATION, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE_DECLARATION, CONSTANT, UNKNOWN;
+	TYPE("Type", "Classes, Interfaces..."), ANNOTATION("Annotation"), FIELD("Field"), LOCAL_VARIABLE("Local variable"), METHOD(
+			"Method"), PACKAGE_DECLARATION("Package"), CONSTANT("Constant", "static final field");
+
+	private final String displayName;
+
+	private final String tooltip;
+
+	JavaType(String displayName) {
+		this.displayName = displayName;
+		this.tooltip = "";
+	}
+
+	JavaType(String displayName, String tooltip) {
+		this.displayName = displayName;
+		this.tooltip = tooltip;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public String getTooltip() {
+		return tooltip;
+	}
 
 	public static JavaType convert(IJavaElement javaElement) {
 		switch (javaElement.getElementType()) {
@@ -21,7 +44,7 @@ public enum JavaType {
 					return CONSTANT;
 				}
 			} catch (JavaModelException e) {
-				return UNKNOWN;
+				return null;
 			}
 			return FIELD;
 		case IJavaElement.LOCAL_VARIABLE:
