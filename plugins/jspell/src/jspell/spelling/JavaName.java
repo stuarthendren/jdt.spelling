@@ -45,11 +45,6 @@ public class JavaName {
 		return sb.toString();
 	}
 
-	public void setIgnoreSingleLetters(boolean ignoreSingleLetters) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public int getOffset(int i) {
 		int offset = 0;
 		String[] words = getWords();

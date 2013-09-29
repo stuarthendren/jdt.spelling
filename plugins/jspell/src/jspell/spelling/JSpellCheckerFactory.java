@@ -92,7 +92,7 @@ public class JSpellCheckerFactory {
 		PersistentSpellDictionary ignored = new PersistentSpellDictionary(
 				getWorkspaceDictionaryLocation(IGNORE_DICTIONARY));
 
-		checker = new JSpellChecker(added, ignored, store, locale);
+		checker = new JSpellChecker(added, ignored, locale);
 		resetUserDictionary();
 
 		for (Iterator<ISpellDictionary> iterator = dictionaries.iterator(); iterator.hasNext();) {

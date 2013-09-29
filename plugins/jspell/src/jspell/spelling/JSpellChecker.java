@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.ISpellDictionary;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.RankedWordProposal;
-import org.eclipse.jdt.ui.PreferenceConstants;
-import org.eclipse.jface.preference.IPreferenceStore;
 
 @SuppressWarnings("restriction")
 public class JSpellChecker {
@@ -76,12 +74,6 @@ public class JSpellChecker {
 	private final PersistentSpellDictionary ignoreDictionary;
 
 	/**
-	 * The preference store. Assumes the <code>IPreferenceStore</code> implementation is thread
-	 * safe.
-	 */
-	private final IPreferenceStore preferences;
-
-	/**
 	 * The locale of this checker.
 	 * 
 	 * @since 3.3
@@ -97,13 +89,11 @@ public class JSpellChecker {
 	 *            the locale
 	 */
 	public JSpellChecker(PersistentSpellDictionary additionsDictionary, PersistentSpellDictionary ignoreDictionary,
-			IPreferenceStore preferences, Locale locale) {
+			Locale locale) {
 		this.additionsDictionary = additionsDictionary;
 		this.ignoreDictionary = ignoreDictionary;
-		Assert.isLegal(preferences != null);
 		Assert.isLegal(locale != null);
 
-		this.preferences = preferences;
 		this.locale = locale;
 
 		addDictionary(this.additionsDictionary);
@@ -140,10 +130,6 @@ public class JSpellChecker {
 		}
 		JavaNameType javaNameType = JSpellConfiguration.getInstance().getJavaNameType(convert);
 		JavaName javaName = new JavaName(javaNameType, element);
-
-		final boolean ignoreSingleLetters = preferences.getBoolean(PreferenceConstants.SPELLING_IGNORE_SINGLE_LETTERS);
-
-		javaName.setIgnoreSingleLetters(ignoreSingleLetters);
 
 		String[] words = javaName.getWords();
 		for (int i = 0; i < words.length; i++) {
