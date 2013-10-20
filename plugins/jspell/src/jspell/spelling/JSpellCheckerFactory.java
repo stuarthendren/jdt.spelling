@@ -270,11 +270,17 @@ public class JSpellCheckerFactory {
 		Bundle bundle = Platform.getBundle(JSpellPlugin.getPluginId());
 		IPath path = Platform.getStateLocation(bundle).append(DICTIONARY_LOCATION).append(dictionary);
 		try {
+			File file = path.toFile();
+			if (!file.exists()) {
+				file.mkdirs();
+				file.createNewFile();
+			}
 			return new URL("file", null, path.toString());
 		} catch (MalformedURLException e) {
+			JSpellPlugin.log(e);
+		} catch (IOException e) {
 			JSpellPlugin.log(e);
 		}
 		return null;
 	}
-
 }
