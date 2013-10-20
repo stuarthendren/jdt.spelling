@@ -14,10 +14,10 @@
       <specification
             annotationType="jspell"
             colorPreferenceKey="jspell.marker.color"
-            colorPreferenceValue="255,0,0"
+            colorPreferenceValue="255,100,26"
             contributesToHeader="false"
             highlightPreferenceKey="jspell.marker.highlight"
-            highlightPreferenceValue="true"
+            highlightPreferenceValue="false"
             icon="icons/marker.gif"
             includeOnPreferencePage="true"
             label="Java Spelling Marker"
@@ -29,7 +29,7 @@
             textPreferenceKey="jspell.marker.text"
             textPreferenceValue="true"
             textStylePreferenceKey="jspell.marker.style"
-            textStylePreferenceValue="PROBLEM_UNDERLINE"
+            textStylePreferenceValue="UNDERLINE"
             verticalRulerPreferenceKey="jspell.marker.ruler"
             verticalRulerPreferenceValue="true">
       </specification>
