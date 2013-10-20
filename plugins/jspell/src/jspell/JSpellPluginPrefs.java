@@ -27,11 +27,13 @@ public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
 		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(JSpellPlugin.getPluginId());
 
 		prefs.put(JavaType.TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
+		prefs.put(JavaType.ENUM_TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
 		prefs.put(JavaType.ANNOTATION.name(), JavaNameType.UPPER_CAMEL_CASE.name());
 		prefs.put(JavaType.CONSTANT.name(), JavaNameType.UPPER.name());
 		prefs.put(JavaType.METHOD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		prefs.put(JavaType.PACKAGE_DECLARATION.name(), JavaNameType.DOT.name());
 		prefs.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
+		prefs.put(JavaType.ENUM_INSTANCE.name(), JavaNameType.UPPER.name());
 		prefs.put(JavaType.LOCAL_VARIABLE.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		prefs.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 

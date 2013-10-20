@@ -3,10 +3,12 @@ package jspell;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 
 public enum JavaType {
-	TYPE("Type", "Classes, Interfaces..."), ANNOTATION("Annotation"), FIELD("Field"), LOCAL_VARIABLE("Local variable"), METHOD(
+	TYPE("Type", "Classes, Interfaces..."), ENUM_TYPE("Enum", "Enum declaration"), ENUM_INSTANCE("Enumeration",
+			"Enum instance"), ANNOTATION("Annotation"), FIELD("Field"), LOCAL_VARIABLE("Local variable"), METHOD(
 			"Method"), PACKAGE_DECLARATION("Package"), CONSTANT("Constant", "static final field");
 
 	private final String displayName;
@@ -40,11 +42,15 @@ public enum JavaType {
 		case IJavaElement.FIELD:
 			IMember member = (IMember) javaElement;
 			try {
-				if (Flags.isFinal(member.getFlags())) {
+				int flags = member.getFlags();
+				if (Flags.isStatic(flags) && Flags.isFinal(flags)) {
 					return CONSTANT;
 				}
+				if (Flags.isEnum(flags)) {
+					return ENUM_INSTANCE;
+				}
 			} catch (JavaModelException e) {
-				return null;
+				// IGNORE
 			}
 			return FIELD;
 		case IJavaElement.LOCAL_VARIABLE:
@@ -54,6 +60,14 @@ public enum JavaType {
 		case IJavaElement.PACKAGE_DECLARATION:
 			return PACKAGE_DECLARATION;
 		case IJavaElement.TYPE:
+			IType type = (IType) javaElement;
+			try {
+				if (type.isEnum()) {
+					return ENUM_TYPE;
+				}
+			} catch (JavaModelException e) {
+				// IGNORE
+			}
 			return TYPE;
 		default:
 			return null;
