@@ -8,8 +8,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaModelStatusConstants;
-import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.ISourceRange;
+import org.eclipse.jdt.core.ISourceReference;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.compiler.CharOperation;
 import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
@@ -36,10 +36,10 @@ public class JSpellMarkerFactory {
 			IMarker marker = create(resource);
 
 			ISourceRange range = null;
-			if (javaElement instanceof IMember) {
-				IMember member = (IMember) javaElement;
+			if (javaElement instanceof ISourceReference) {
+				ISourceReference sourceReference = (ISourceReference) javaElement;
 				try {
-					range = member.getNameRange();
+					range = sourceReference.getNameRange();
 				} catch (JavaModelException e) {
 					if (e.getJavaModelStatus().getCode() != IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST) {
 						throw e;
