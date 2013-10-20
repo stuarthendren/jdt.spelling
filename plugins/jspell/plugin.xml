@@ -2,10 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.startup">
-      <startup></startup>
-   </extension>
-   <extension
          point="org.eclipse.jdt.ui.quickAssistProcessors">
       <quickAssistProcessor
             class="jspell.assist.JSpellQuickAssistProcessor"
@@ -72,6 +68,12 @@
             id="jspell.preferences.JSpellPreferencePage"
             name="Java type spelling">
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="jspell.JSpellStartup">
+      </startup>
    </extension>
 
 </plugin>

@@ -64,7 +64,11 @@ public class JSpellPlugin extends AbstractUIPlugin {
 		return PLUGIN_ID;
 	}
 
-	public static void log(IStatus status) {
+	public static void logMessage(String message) {
+		log(new Status(IStatus.INFO, getPluginId(), message));
+	}
+
+	private static void log(IStatus status) {
 		getDefault().getLog().log(status);
 	}
 
