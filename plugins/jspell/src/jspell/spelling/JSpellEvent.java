@@ -2,6 +2,7 @@ package jspell.spelling;
 
 import java.util.List;
 
+import jspell.messages.Messages;
 
 import org.eclipse.jdt.core.IJavaElement;
 
@@ -33,7 +34,7 @@ public class JSpellEvent {
 	}
 
 	public String getMessage() {
-		return word + " has incorrect spelling";
+		return word + Messages.JSpellChecker_has_incorrect_spelling;
 	}
 
 	public int getOffset() {
@@ -45,7 +46,7 @@ public class JSpellEvent {
 	}
 
 	public List<String> getProposals() {
-		return javaSpellChecker.getProposals(word, false);
+		return javaSpellChecker.getProposals(word);
 	}
 
 	public String getNewName(String replacement) {

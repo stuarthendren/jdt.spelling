@@ -24,6 +24,8 @@ import org.eclipse.jdt.internal.ui.text.spelling.engine.RankedWordProposal;
 @SuppressWarnings("restriction")
 public class JSpellChecker {
 
+	private final JSpellConfiguration configuration;
+
 	/**
 	 * Does this word contain digits?
 	 * 
@@ -88,8 +90,9 @@ public class JSpellChecker {
 	 * @param locale
 	 *            the locale
 	 */
-	public JSpellChecker(PersistentSpellDictionary additionsDictionary, PersistentSpellDictionary ignoreDictionary,
-			Locale locale) {
+	public JSpellChecker(JSpellConfiguration configuration, PersistentSpellDictionary additionsDictionary,
+			PersistentSpellDictionary ignoreDictionary, Locale locale) {
+		this.configuration = configuration;
 		this.additionsDictionary = additionsDictionary;
 		this.ignoreDictionary = ignoreDictionary;
 		Assert.isLegal(locale != null);
@@ -128,7 +131,7 @@ public class JSpellChecker {
 			// Ignore element
 			return;
 		}
-		JavaNameType javaNameType = JSpellConfiguration.getInstance().getJavaNameType(convert);
+		JavaNameType javaNameType = configuration.getJavaNameType(convert);
 		JavaName javaName = new JavaName(javaNameType, element);
 
 		String[] words = javaName.getWords();
@@ -146,7 +149,7 @@ public class JSpellChecker {
 		}
 	}
 
-	public List<String> getProposals(final String word, final boolean sentence) {
+	public List<String> getProposals(final String word) {
 
 		// synchronizing might not be needed here since getProposals is
 		// a read-only access and only called in the same thread as
@@ -162,7 +165,7 @@ public class JSpellChecker {
 		for (final Iterator<ISpellDictionary> iterator = copy.iterator(); iterator.hasNext();) {
 
 			dictionary = iterator.next();
-			proposals.addAll(dictionary.getProposals(word, sentence));
+			proposals.addAll(dictionary.getProposals(word, false));
 		}
 
 		List<String> words = new ArrayList<String>(proposals.size());

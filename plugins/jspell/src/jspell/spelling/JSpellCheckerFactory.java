@@ -2,7 +2,6 @@ package jspell.spelling;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -15,13 +14,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import jspell.JSpellConfiguration;
 import jspell.JSpellPlugin;
 import jspell.dictionary.PersistentSpellDictionary;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.ISpellDictionary;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.LocaleSensitiveSpellDictionary;
 import org.eclipse.jdt.ui.PreferenceConstants;
@@ -38,8 +37,6 @@ public class JSpellCheckerFactory {
 	private final Set<ISpellDictionary> dictionaries;
 
 	private Map<Locale, ISpellDictionary> localeDictionaries;
-
-	private PersistentSpellDictionary userDictionary;
 
 	private JSpellChecker checker;
 
@@ -77,9 +74,6 @@ public class JSpellCheckerFactory {
 
 		IPreferenceStore store = JSpellPlugin.getDefault().getPreferenceStore();
 		Locale locale = getCurrentLocale(store);
-		if (userDictionary == null && "".equals(locale.toString())) {
-			return null;
-		}
 
 		if (checker != null && checker.getLocale().equals(locale)) {
 			return checker;
@@ -92,8 +86,9 @@ public class JSpellCheckerFactory {
 		PersistentSpellDictionary ignored = new PersistentSpellDictionary(
 				getWorkspaceDictionaryLocation(IGNORE_DICTIONARY));
 
-		checker = new JSpellChecker(added, ignored, locale);
-		resetUserDictionary();
+		JSpellConfiguration configuration = JSpellConfiguration.getInstance();
+
+		checker = new JSpellChecker(configuration, added, ignored, locale);
 
 		for (Iterator<ISpellDictionary> iterator = dictionaries.iterator(); iterator.hasNext();) {
 			ISpellDictionary dictionary = iterator.next();
@@ -214,46 +209,6 @@ public class JSpellCheckerFactory {
 		}
 
 		return defaultLocale;
-	}
-
-	private synchronized void resetUserDictionary() {
-		if (checker == null) {
-			return;
-		}
-
-		// Update user dictionary
-		if (userDictionary != null) {
-			checker.removeDictionary(userDictionary);
-			userDictionary.unload();
-			userDictionary = null;
-		}
-
-		IPreferenceStore store = JavaPlugin.getDefault().getPreferenceStore();
-		String filePath = store.getString(PreferenceConstants.SPELLING_USER_DICTIONARY);
-
-		if (filePath.length() > 0) {
-			try {
-				File file = new File(filePath);
-				if (!file.exists() && !file.createNewFile()) {
-					return;
-				}
-
-				final URL url = new URL("file", null, filePath); //$NON-NLS-1$
-				InputStream stream = url.openStream();
-				if (stream != null) {
-					try {
-						userDictionary = new PersistentSpellDictionary(url);
-						checker.addDictionary(userDictionary);
-					} finally {
-						stream.close();
-					}
-				}
-			} catch (MalformedURLException exception) {
-				// Do nothing
-			} catch (IOException exception) {
-				// Do nothing
-			}
-		}
 	}
 
 	private synchronized void resetSpellChecker() {
