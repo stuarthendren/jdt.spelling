@@ -116,18 +116,14 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 	private RenameJavaElementDescriptor createRenameDescriptor(IJavaElement javaElement, String newName)
 			throws JavaModelException {
 
-		int elementType = javaElement.getElementType();
-
 		String contributionId;
-		switch (elementType) {
+		switch (javaElement.getElementType()) {
 		case IJavaElement.JAVA_PROJECT:
 			contributionId = IJavaRefactorings.RENAME_JAVA_PROJECT;
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-			contributionId = IJavaRefactorings.RENAME_SOURCE_FOLDER;
-			break;
-		case IJavaElement.PACKAGE_FRAGMENT:
+		case IJavaElement.PACKAGE_DECLARATION:
 			contributionId = IJavaRefactorings.RENAME_PACKAGE;
+			javaElement = javaElement.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
 			break;
 		case IJavaElement.COMPILATION_UNIT:
 			contributionId = IJavaRefactorings.RENAME_COMPILATION_UNIT;
@@ -162,8 +158,11 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 		}
 
 		RenameJavaElementDescriptor descriptor = new RenameJavaElementDescriptor(contributionId);
+		descriptor.setProject(javaElement.getJavaProject().getElementName());
 		descriptor.setJavaElement(javaElement);
 		descriptor.setNewName(newName);
+
+		int elementType = javaElement.getElementType();
 
 		if (elementType != IJavaElement.PACKAGE_FRAGMENT_ROOT) {
 			descriptor.setUpdateReferences(true);
@@ -180,6 +179,7 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 		case IJavaElement.FIELD:
 			descriptor.setUpdateTextualOccurrences(true);
 		}
+
 		switch (elementType) {
 		case IJavaElement.FIELD:
 			descriptor.setRenameGetters(true);
