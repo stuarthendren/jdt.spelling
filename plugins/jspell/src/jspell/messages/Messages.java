@@ -16,6 +16,8 @@ public class Messages {
 
 	public static String JSpellChecker_has_incorrect_spelling;
 
+	public static String JSpellPluginPrefs_single_letter;
+
 	static {
 		NLS.initializeMessages(Messages.class.getName(), Messages.class);
 	}

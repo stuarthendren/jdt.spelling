@@ -7,12 +7,14 @@ import java.util.Map.Entry;
 import jspell.JSpellPlugin;
 import jspell.JSpellPluginPrefs;
 import jspell.JavaType;
+import jspell.messages.Messages;
 import jspell.spelling.JavaNameType;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -23,6 +25,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private final Map<Combo, JavaType> comboMap = new HashMap<Combo, JavaType>();
+
+	private Button singleLetter;
 
 	public JSpellPreferencePage() {
 		setPreferenceStore(JSpellPlugin.getDefault().getPreferenceStore());
@@ -36,7 +40,18 @@ public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPr
 	@Override
 	protected void performDefaults() {
 		JSpellPluginPrefs.restoreDefaults();
+		setValues();
 		super.performDefaults();
+	}
+
+	public void setValues() {
+		for (Entry<Combo, JavaType> entry : comboMap.entrySet()) {
+			Combo combo = entry.getKey();
+			JavaType javaType = entry.getValue();
+			combo.setText(JSpellPluginPrefs.getJavaNameType(javaType).getDisplayName());
+		}
+
+		singleLetter.setSelection(JSpellPluginPrefs.getBoolean(JSpellPluginPrefs.JSPELL_SINGLE_LETTER, true));
 	}
 
 	@Override
@@ -59,10 +74,16 @@ public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPr
 
 			Combo combo = new Combo(parentComposite, SWT.NONE);
 			combo.setItems(names);
-			combo.setText(JSpellPluginPrefs.getJavaNameType(type).getDisplayName());
 			comboMap.put(combo, type);
 			grab.applyTo(combo);
 		}
+
+		Label label = new Label(parentComposite, SWT.NONE);
+		label.setText(Messages.JSpellPluginPrefs_single_letter);
+
+		singleLetter = new Button(parentComposite, SWT.CHECK);
+
+		setValues();
 
 		return parentComposite;
 	}
@@ -81,6 +102,8 @@ public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPr
 					JSpellPluginPrefs.setJavaNameType(javaType, value);
 				}
 			}
+
+			JSpellPluginPrefs.setBoolean(JSpellPluginPrefs.JSPELL_SINGLE_LETTER, singleLetter.getSelection());
 
 			// rebuild?
 
