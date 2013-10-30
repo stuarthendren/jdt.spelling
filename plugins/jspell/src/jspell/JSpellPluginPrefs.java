@@ -1,5 +1,8 @@
 package jspell;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jspell.spelling.JavaNameType;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -14,8 +17,23 @@ public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
 	public static final String JSPELL_MARKER_OVERVIEW = "jspell.marker.overview";
 	public static final String JSPELL_MARKER_TEXT = "jspell.marker.text";
 	public static final String JSPELL_MARKER_RULER = "jspell.marker.ruler";
+	public static final String JSPELL_IGNORE_SINGLE_LETTER = "jspell.ignore.single.letter";
 
-	public static final String JSPELL_SINGLE_LETTER = "jspell.single.letter";
+	private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>();
+
+	static {
+		DEFAULTS.put(JavaType.TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
+		DEFAULTS.put(JavaType.ENUM_TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
+		DEFAULTS.put(JavaType.ANNOTATION.name(), JavaNameType.UPPER_CAMEL_CASE.name());
+		DEFAULTS.put(JavaType.CONSTANT.name(), JavaNameType.UPPER.name());
+		DEFAULTS.put(JavaType.METHOD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
+		DEFAULTS.put(JavaType.PACKAGE_DECLARATION.name(), JavaNameType.DOT.name());
+		DEFAULTS.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
+		DEFAULTS.put(JavaType.ENUM_INSTANCE.name(), JavaNameType.UPPER.name());
+		DEFAULTS.put(JavaType.LOCAL_VARIABLE.name(), JavaNameType.LOWER_CAMEL_CASE.name());
+		DEFAULTS.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
+		DEFAULTS.put(JSPELL_IGNORE_SINGLE_LETTER, true);
+	}
 
 	@Override
 	public void initializeDefaultPreferences() {
@@ -25,17 +43,17 @@ public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
 	public static void restoreDefaults() {
 		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(JSpellPlugin.getPluginId());
 
-		prefs.put(JavaType.TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
-		prefs.put(JavaType.ENUM_TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
-		prefs.put(JavaType.ANNOTATION.name(), JavaNameType.UPPER_CAMEL_CASE.name());
-		prefs.put(JavaType.CONSTANT.name(), JavaNameType.UPPER.name());
-		prefs.put(JavaType.METHOD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
-		prefs.put(JavaType.PACKAGE_DECLARATION.name(), JavaNameType.DOT.name());
-		prefs.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
-		prefs.put(JavaType.ENUM_INSTANCE.name(), JavaNameType.UPPER.name());
-		prefs.put(JavaType.LOCAL_VARIABLE.name(), JavaNameType.LOWER_CAMEL_CASE.name());
-		prefs.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
-		prefs.putBoolean(JSPELL_SINGLE_LETTER, true);
+		restoreDefaultString(prefs, JavaType.TYPE.name());
+		restoreDefaultString(prefs, JavaType.ENUM_TYPE.name());
+		restoreDefaultString(prefs, JavaType.ANNOTATION.name());
+		restoreDefaultString(prefs, JavaType.CONSTANT.name());
+		restoreDefaultString(prefs, JavaType.METHOD.name());
+		restoreDefaultString(prefs, JavaType.PACKAGE_DECLARATION.name());
+		restoreDefaultString(prefs, JavaType.FIELD.name());
+		restoreDefaultString(prefs, JavaType.ENUM_INSTANCE.name());
+		restoreDefaultString(prefs, JavaType.LOCAL_VARIABLE.name());
+		restoreDefaultString(prefs, JavaType.FIELD.name());
+		restoreDefaultBoolean(prefs, JSPELL_IGNORE_SINGLE_LETTER);
 
 		try {
 			prefs.flush();
@@ -44,19 +62,31 @@ public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
 		}
 	}
 
-	public static boolean getBoolean(String prefId, boolean defaultValue) {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(JSpellPlugin.getPluginId());
-		return prefs.getBoolean(prefId, defaultValue);
+	private static void restoreDefaultString(IEclipsePreferences prefs, String name) {
+		prefs.put(name, (String) DEFAULTS.get(name));
 	}
 
-	public static int getInt(String prefId, int defaultValue) {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(JSpellPlugin.getPluginId());
-		return prefs.getInt(prefId, defaultValue);
+	private static void restoreDefaultBoolean(IEclipsePreferences prefs, String name) {
+		prefs.putBoolean(name, (Boolean) DEFAULTS.get(name));
 	}
 
-	public static String getString(String prefId, String defaultValue) {
+	private static void restoreDefaultInt(IEclipsePreferences prefs, String name) {
+		prefs.putBoolean(name, (Boolean) DEFAULTS.get(name));
+	}
+
+	public static boolean getBoolean(String prefId) {
 		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(JSpellPlugin.getPluginId());
-		return prefs.get(prefId, defaultValue);
+		return prefs.getBoolean(prefId, (Boolean) DEFAULTS.get(prefId));
+	}
+
+	public static int getInt(String prefId) {
+		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(JSpellPlugin.getPluginId());
+		return prefs.getInt(prefId, (Integer) DEFAULTS.get(prefId));
+	}
+
+	public static String getString(String prefId) {
+		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(JSpellPlugin.getPluginId());
+		return prefs.get(prefId, (String) DEFAULTS.get(prefId));
 	}
 
 	public static void setBoolean(String prefId, boolean value) throws BackingStoreException {
@@ -82,7 +112,7 @@ public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
 	}
 
 	public static JavaNameType getJavaNameType(JavaType javaType) {
-		String name = getString(javaType.name(), "");
+		String name = getString(javaType.name());
 		return JavaNameType.valueOf(name);
 	}
 }

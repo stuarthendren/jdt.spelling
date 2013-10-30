@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import jspell.JSpellConfiguration;
+import jspell.JSpellPluginPrefs;
 import jspell.JavaType;
 import jspell.dictionary.PersistentSpellDictionary;
 
@@ -23,8 +23,6 @@ import org.eclipse.jdt.internal.ui.text.spelling.engine.RankedWordProposal;
 
 @SuppressWarnings("restriction")
 public class JSpellChecker {
-
-	private final JSpellConfiguration configuration;
 
 	/**
 	 * Does this word contain digits?
@@ -90,9 +88,8 @@ public class JSpellChecker {
 	 * @param locale
 	 *            the locale
 	 */
-	public JSpellChecker(JSpellConfiguration configuration, PersistentSpellDictionary additionsDictionary,
-			PersistentSpellDictionary ignoreDictionary, Locale locale) {
-		this.configuration = configuration;
+	public JSpellChecker(PersistentSpellDictionary additionsDictionary, PersistentSpellDictionary ignoreDictionary,
+			Locale locale) {
 		this.additionsDictionary = additionsDictionary;
 		this.ignoreDictionary = ignoreDictionary;
 		Assert.isLegal(locale != null);
@@ -131,13 +128,19 @@ public class JSpellChecker {
 			// Ignore element
 			return;
 		}
-		JavaNameType javaNameType = configuration.getJavaNameType(convert);
+
+		boolean ignoreSingleLetter = JSpellPluginPrefs.getBoolean(JSpellPluginPrefs.JSPELL_IGNORE_SINGLE_LETTER);
+		JavaNameType javaNameType = JSpellPluginPrefs.getJavaNameType(convert);
 		JavaName javaName = new JavaName(javaNameType, element);
 
 		String[] words = javaName.getWords();
 		for (int i = 0; i < words.length; i++) {
 			String word = words[i];
 			if (word != null) {
+
+				if (ignoreSingleLetter && word.length() == 1) {
+					continue;
+				}
 
 				// synchronizing is necessary as this is called inside the reconciler
 				if (!isCorrect(word)) {

@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import jspell.JSpellConfiguration;
 import jspell.JSpellPlugin;
 import jspell.dictionary.PersistentSpellDictionary;
 
@@ -86,9 +85,7 @@ public class JSpellCheckerFactory {
 		PersistentSpellDictionary ignored = new PersistentSpellDictionary(
 				getWorkspaceDictionaryLocation(IGNORE_DICTIONARY));
 
-		JSpellConfiguration configuration = JSpellConfiguration.getInstance();
-
-		checker = new JSpellChecker(configuration, added, ignored, locale);
+		checker = new JSpellChecker(added, ignored, locale);
 
 		for (Iterator<ISpellDictionary> iterator = dictionaries.iterator(); iterator.hasNext();) {
 			ISpellDictionary dictionary = iterator.next();
@@ -227,7 +224,7 @@ public class JSpellCheckerFactory {
 		try {
 			File file = path.toFile();
 			if (!file.exists()) {
-				file.mkdirs();
+				file.getParentFile().mkdirs();
 				file.createNewFile();
 			}
 			return new URL("file", null, path.toString());

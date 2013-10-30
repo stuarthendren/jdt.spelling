@@ -51,7 +51,7 @@ public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPr
 			combo.setText(JSpellPluginPrefs.getJavaNameType(javaType).getDisplayName());
 		}
 
-		singleLetter.setSelection(JSpellPluginPrefs.getBoolean(JSpellPluginPrefs.JSPELL_SINGLE_LETTER, true));
+		singleLetter.setSelection(JSpellPluginPrefs.getBoolean(JSpellPluginPrefs.JSPELL_IGNORE_SINGLE_LETTER));
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPr
 		}
 
 		Label label = new Label(parentComposite, SWT.NONE);
-		label.setText(Messages.JSpellPluginPrefs_single_letter);
+		label.setText(Messages.JSpellPluginPrefs_ignore_single_letter);
 
 		singleLetter = new Button(parentComposite, SWT.CHECK);
 
@@ -103,7 +103,7 @@ public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPr
 				}
 			}
 
-			JSpellPluginPrefs.setBoolean(JSpellPluginPrefs.JSPELL_SINGLE_LETTER, singleLetter.getSelection());
+			JSpellPluginPrefs.setBoolean(JSpellPluginPrefs.JSPELL_IGNORE_SINGLE_LETTER, singleLetter.getSelection());
 
 			// rebuild?
 

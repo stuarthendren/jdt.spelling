@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import jspell.JSpellConfiguration;
-import jspell.JavaType;
 import jspell.dictionary.PersistentSpellDictionary;
 import jspell.messages.Messages;
 
@@ -29,6 +27,8 @@ public class JSpellCheckerTest {
 
 	private static final String INCORRECT = "incorect";
 
+	private static final String SINGLE = "sSingle";
+
 	private static final String CORRECT = "incorrect";
 
 	private static final Locale LOCALE = Locale.getDefault();
@@ -36,16 +36,14 @@ public class JSpellCheckerTest {
 	private JSpellChecker checker;
 	private PersistentSpellDictionary additionsDictionary;
 	private PersistentSpellDictionary ignoreDictionary;
-	private JSpellConfiguration configuration;
 	private IJavaElement element;
 
 	@Before
 	public void setUp() throws Exception {
 		additionsDictionary = mock(PersistentSpellDictionary.class);
 		ignoreDictionary = mock(PersistentSpellDictionary.class);
-		configuration = mock(JSpellConfiguration.class);
 		element = mock(IJavaElement.class);
-		checker = new JSpellChecker(configuration, additionsDictionary, ignoreDictionary, LOCALE);
+		checker = new JSpellChecker(additionsDictionary, ignoreDictionary, LOCALE);
 	}
 
 	@After
@@ -72,10 +70,22 @@ public class JSpellCheckerTest {
 	}
 
 	@Test
+	public void testSingle() {
+		Collection<JSpellEvent> events = new HashSet<JSpellEvent>();
+		when(element.getElementType()).thenReturn(IJavaElement.METHOD);
+		when(element.getElementName()).thenReturn(SINGLE);
+		checker.execute(events, element);
+		assertEquals(1, events.size());
+		JSpellEvent event = events.iterator().next();
+		assertEquals(element, event.getJavaElement());
+		assertTrue(event.getLength() > 1);
+
+	}
+
+	@Test
 	public void testExecute() {
 		Collection<JSpellEvent> events = new HashSet<JSpellEvent>();
 		when(element.getElementType()).thenReturn(IJavaElement.METHOD);
-		when(configuration.getJavaNameType(JavaType.METHOD)).thenReturn(JavaNameType.LOWER_CAMEL_CASE);
 		when(element.getElementName()).thenReturn(INCORRECT);
 		checker.execute(events, element);
 		assertEquals(1, events.size());
