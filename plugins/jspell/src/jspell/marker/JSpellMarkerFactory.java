@@ -20,8 +20,7 @@ public class JSpellMarkerFactory {
 
 	public IMarker create(IResource resource) {
 		try {
-			IMarker marker = resource.createMarker(JSPELL_MARKER);
-			return marker;
+			return resource.createMarker(JSPELL_MARKER);
 		} catch (CoreException e) {
 			JSpellPlugin.log(e);
 			return null;
@@ -32,8 +31,6 @@ public class JSpellMarkerFactory {
 		try {
 			IJavaElement javaElement = event.getJavaElement();
 			IResource resource = javaElement.getResource();
-
-			IMarker marker = create(resource);
 
 			ISourceRange range = null;
 			if (javaElement instanceof ISourceReference) {
@@ -59,9 +56,12 @@ public class JSpellMarkerFactory {
 
 			int end = start + event.getLength();
 
-			marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END,
-					IMarker.SOURCE_ID }, new Object[] { event.getMessage(), new Integer(start), new Integer(end),
-					JSpellPlugin.getPluginId() });
+			IMarker marker = create(resource);
+			if (marker != null) {
+				marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END,
+						IMarker.SOURCE_ID }, new Object[] { event.getMessage(), new Integer(start), new Integer(end),
+						JSpellPlugin.getPluginId() });
+			}
 
 			return marker;
 		} catch (CoreException e) {
@@ -81,10 +81,11 @@ public class JSpellMarkerFactory {
 
 	public void clear(IResource resource) {
 		try {
-			resource.deleteMarkers(JSPELL_MARKER, true, IResource.DEPTH_INFINITE);
+			if (!resource.getWorkspace().isTreeLocked()) {
+				resource.deleteMarkers(JSPELL_MARKER, true, IResource.DEPTH_INFINITE);
+			}
 		} catch (CoreException e) {
 			JSpellPlugin.log(e);
 		}
-
 	}
 }
