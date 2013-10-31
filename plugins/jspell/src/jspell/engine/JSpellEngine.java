@@ -8,6 +8,7 @@ import jspell.processor.JSpellProcessor;
 import jspell.spelling.JSpellChecker;
 import jspell.spelling.JSpellEvent;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IElementChangedListener;
@@ -16,12 +17,17 @@ import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IParent;
 import org.eclipse.jdt.core.ISourceReference;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.ide.ResourceUtil;
 
-public class JSpellEngine implements IElementChangedListener {
+public class JSpellEngine extends EditorTracker implements IElementChangedListener {
 
 	private final JSpellChecker checker;
 
 	private final JSpellProcessor processor;
+
+	private IResource currentResource;
 
 	public JSpellEngine(JSpellChecker checker, JSpellProcessor processor) {
 		this.checker = checker;
@@ -49,7 +55,11 @@ public class JSpellEngine implements IElementChangedListener {
 		}
 
 		IJavaElement element = delta.getElement();
-		checkElement(element);
+
+		if (isCurrent(element)) {
+			checkElement(element);
+		}
+
 	}
 
 	public void checkElement(IJavaElement element) {
@@ -97,4 +107,53 @@ public class JSpellEngine implements IElementChangedListener {
 	private void handle(Collection<JSpellEvent> events, IJavaElement element) {
 		checker.execute(events, element);
 	}
+
+	@Override
+	public void editorOpened(IEditorPart editor) {
+		setCurrentResource(editor);
+	}
+
+	@Override
+	public void editorClosed(IEditorPart editor) {
+		clearEditor(editor);
+		setCurrentResource(null);
+	}
+
+	@Override
+	public void editorActivated(IEditorPart editor) {
+		setCurrentResource(editor);
+	}
+
+	@Override
+	public void editorBroughtToTop(IEditorPart editor) {
+		setCurrentResource(editor);
+	}
+
+	private boolean isCurrent(IJavaElement element) {
+		IResource resource = element.getResource();
+		if (resource == null) {
+			return false;
+		}
+		return resource.equals(currentResource);
+	}
+
+	private void setCurrentResource(IEditorPart editor) {
+		currentResource = getResource(editor);
+	}
+
+	private void clearEditor(IEditorPart editor) {
+		IResource resource = getResource(editor);
+		if (resource != null) {
+			processor.complete(resource);
+		}
+	}
+
+	private IResource getResource(IEditorPart editor) {
+		if (editor != null) {
+			IEditorInput editorInput = editor.getEditorInput();
+			return ResourceUtil.getResource(editorInput);
+		}
+		return null;
+	}
+
 }

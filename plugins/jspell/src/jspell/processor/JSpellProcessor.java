@@ -5,6 +5,7 @@ import java.util.Collection;
 import jspell.marker.JSpellMarkerFactory;
 import jspell.spelling.JSpellEvent;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaElement;
 
 public class JSpellProcessor {
@@ -29,5 +30,9 @@ public class JSpellProcessor {
 
 	public void prepare(IJavaElement element) {
 		markerFactory.clear(element.getResource());
+	}
+
+	public void complete(IResource resource) {
+		markerFactory.clear(resource);
 	}
 }
