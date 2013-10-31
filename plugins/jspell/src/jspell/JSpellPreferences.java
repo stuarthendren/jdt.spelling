@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
+public class JSpellPreferences extends AbstractPreferenceInitializer {
 
 	public static final String JSPELL_MARKER_COLOR = "jspell.marker.color";
 	public static final String JSPELL_MARKER_HIGHLIGHT = "jspell.marker.highlight";
@@ -37,7 +37,7 @@ public class JSpellPluginPrefs extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		JSpellPluginPrefs.restoreDefaults();
+		JSpellPreferences.restoreDefaults();
 	}
 
 	public static void restoreDefaults() {

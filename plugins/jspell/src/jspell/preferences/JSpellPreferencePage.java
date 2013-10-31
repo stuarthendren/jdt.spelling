@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import jspell.JSpellPlugin;
-import jspell.JSpellPluginPrefs;
+import jspell.JSpellPreferences;
 import jspell.JavaType;
 import jspell.messages.Messages;
 import jspell.spelling.JavaNameType;
@@ -39,7 +39,7 @@ public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPr
 
 	@Override
 	protected void performDefaults() {
-		JSpellPluginPrefs.restoreDefaults();
+		JSpellPreferences.restoreDefaults();
 		setValues();
 		super.performDefaults();
 	}
@@ -48,10 +48,10 @@ public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPr
 		for (Entry<Combo, JavaType> entry : comboMap.entrySet()) {
 			Combo combo = entry.getKey();
 			JavaType javaType = entry.getValue();
-			combo.setText(JSpellPluginPrefs.getJavaNameType(javaType).getDisplayName());
+			combo.setText(JSpellPreferences.getJavaNameType(javaType).getDisplayName());
 		}
 
-		singleLetter.setSelection(JSpellPluginPrefs.getBoolean(JSpellPluginPrefs.JSPELL_IGNORE_SINGLE_LETTER));
+		singleLetter.setSelection(JSpellPreferences.getBoolean(JSpellPreferences.JSPELL_IGNORE_SINGLE_LETTER));
 	}
 
 	@Override
@@ -99,11 +99,11 @@ public class JSpellPreferencePage extends PreferencePage implements IWorkbenchPr
 				int selectionIndex = combo.getSelectionIndex();
 				if (selectionIndex > -1) {
 					JavaNameType value = values[selectionIndex];
-					JSpellPluginPrefs.setJavaNameType(javaType, value);
+					JSpellPreferences.setJavaNameType(javaType, value);
 				}
 			}
 
-			JSpellPluginPrefs.setBoolean(JSpellPluginPrefs.JSPELL_IGNORE_SINGLE_LETTER, singleLetter.getSelection());
+			JSpellPreferences.setBoolean(JSpellPreferences.JSPELL_IGNORE_SINGLE_LETTER, singleLetter.getSelection());
 
 			// rebuild?
 

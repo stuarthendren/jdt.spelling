@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import jspell.JSpellPluginPrefs;
+import jspell.JSpellPreferences;
 import jspell.JavaType;
 import jspell.dictionary.PersistentSpellDictionary;
 
@@ -129,8 +129,8 @@ public class JSpellChecker {
 			return;
 		}
 
-		boolean ignoreSingleLetter = JSpellPluginPrefs.getBoolean(JSpellPluginPrefs.JSPELL_IGNORE_SINGLE_LETTER);
-		JavaNameType javaNameType = JSpellPluginPrefs.getJavaNameType(convert);
+		boolean ignoreSingleLetter = JSpellPreferences.getBoolean(JSpellPreferences.JSPELL_IGNORE_SINGLE_LETTER);
+		JavaNameType javaNameType = JSpellPreferences.getJavaNameType(convert);
 		JavaName javaName = new JavaName(javaNameType, element);
 
 		String[] words = javaName.getWords();

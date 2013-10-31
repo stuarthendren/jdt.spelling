@@ -57,7 +57,7 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="jspell.JSpellPluginPrefs">
+            class="jspell.JSpellPreferences">
       </initializer>
    </extension>
    <extension
