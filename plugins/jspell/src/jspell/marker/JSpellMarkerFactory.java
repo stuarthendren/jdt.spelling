@@ -20,7 +20,11 @@ public class JSpellMarkerFactory {
 
 	public IMarker create(IResource resource) {
 		try {
-			return resource.createMarker(JSPELL_MARKER);
+			if (resource.exists()) {
+				return resource.createMarker(JSPELL_MARKER);
+			} else {
+				return null;
+			}
 		} catch (CoreException e) {
 			JSpellPlugin.log(e);
 			return null;
@@ -81,7 +85,7 @@ public class JSpellMarkerFactory {
 
 	public void clear(IResource resource) {
 		try {
-			if (!resource.getWorkspace().isTreeLocked()) {
+			if (!resource.getWorkspace().isTreeLocked() && resource.exists()) {
 				resource.deleteMarkers(JSPELL_MARKER, true, IResource.DEPTH_INFINITE);
 			}
 		} catch (CoreException e) {
