@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JDT Spelling
 Bundle-SymbolicName: jdt.spelling;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: jspell.JSpellPlugin
+Bundle-Activator: jdt.spelling.Plugin
 Bundle-Vendor: stuarthendren.net
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.editors,

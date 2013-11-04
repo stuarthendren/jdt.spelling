@@ -4,33 +4,33 @@
    <extension
          point="org.eclipse.jdt.ui.quickAssistProcessors">
       <quickAssistProcessor
-            class="jspell.assist.JSpellQuickAssistProcessor"
-            id="jspell.assist.JSpellQuickAssistProcessor"
-            name="JSpell">
+            class="jdt.spelling.assist.QuickAssistProcessor"
+            id="jdt.spelling.assist.QuickAssistProcessor"
+            name="JDT Spelling">
       </quickAssistProcessor>
    </extension>
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
-            annotationType="jspell"
-            colorPreferenceKey="jspell.marker.color"
+            annotationType="jdt.spelling"
+            colorPreferenceKey="jdt.spelling.marker.color"
             colorPreferenceValue="255,100,26"
             contributesToHeader="false"
-            highlightPreferenceKey="jspell.marker.highlight"
+            highlightPreferenceKey="jdt.spelling.marker.highlight"
             highlightPreferenceValue="false"
             icon="icons/marker.gif"
             includeOnPreferencePage="true"
             label="Java Spelling Marker"
-            overviewRulerPreferenceKey="jspell.marker.overview"
+            overviewRulerPreferenceKey="jdt.spelling.marker.overview"
             overviewRulerPreferenceValue="true"
             presentationLayer="0"
             quickFixIcon="icons/marker.gif"
             showInNextPrevDropdownToolbarAction="true"
-            textPreferenceKey="jspell.marker.text"
+            textPreferenceKey="jdt.spelling.marker.text"
             textPreferenceValue="true"
-            textStylePreferenceKey="jspell.marker.style"
+            textStylePreferenceKey="jdt.spelling.marker.style"
             textStylePreferenceValue="UNDERLINE"
-            verticalRulerPreferenceKey="jspell.marker.ruler"
+            verticalRulerPreferenceKey="jdt.spelling.marker.ruler"
             verticalRulerPreferenceValue="true">
       </specification>
    </extension>
@@ -38,14 +38,14 @@
          point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
-            markerType="jspell.marker"
-            name="jspell"
+            markerType="jdt.spelling.marker"
+            name="JDT Spelling"
             super="org.eclipse.ui.workbench.texteditor.spelling">
       </type>
    </extension>
    <extension
-         id="jspell.marker"
-         name="JSpell"
+         id="jdt.spelling.marker"
+         name="JDT Spelling"
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.jdt.ui.internal.spelling">
@@ -57,22 +57,22 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="jspell.JSpellPreferences">
+            class="jdt.spelling.Preferences">
       </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.jdt.ui.preferences.JavaBasePreferencePage"
-            class="jspell.preferences.JSpellPreferencePage"
-            id="jspell.preferences.JSpellPreferencePage"
+            class="jdt.spelling.preferences.SpellingPreferencePage"
+            id="jdt.spelling.preferences.SpellingPreferencePage"
             name="Java type spelling">
       </page>
    </extension>
    <extension
          point="org.eclipse.ui.startup">
       <startup
-            class="jspell.JSpellStartup">
+            class="jdt.spelling.Startup">
       </startup>
    </extension>
 
