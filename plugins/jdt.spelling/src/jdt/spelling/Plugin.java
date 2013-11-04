@@ -35,9 +35,9 @@ public class Plugin extends AbstractUIPlugin {
 
 	private static Plugin plugin;
 
-	private final Checker checker;
+	private Checker checker;
 
-	private final Engine engine;
+	private Engine engine;
 
 	public static Plugin getDefault() {
 		return plugin;
@@ -100,14 +100,6 @@ public class Plugin extends AbstractUIPlugin {
 	public Plugin() {
 		super();
 		plugin = this;
-
-		CheckerFactory checkerFactory = new CheckerFactory();
-		checker = checkerFactory.getSpellChecker();
-
-		MarkerFactory markerFactory = new MarkerFactory();
-		Processor processor = new Processor(markerFactory);
-
-		engine = new Engine(checker, processor);
 	}
 
 	@Override
@@ -115,6 +107,8 @@ public class Plugin extends AbstractUIPlugin {
 		try {
 			PlatformUI.getWorkbench().removeWindowListener(engine);
 			JavaCore.removeElementChangedListener(engine);
+			checker = null;
+			engine = null;
 		} finally {
 			super.stop(context);
 		}
@@ -131,11 +125,21 @@ public class Plugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		CheckerFactory checkerFactory = new CheckerFactory();
+		checker = checkerFactory.getSpellChecker();
+
+		MarkerFactory markerFactory = new MarkerFactory();
+		Processor processor = new Processor(markerFactory);
+
+		engine = new Engine(checker, processor);
+
 		Display.getDefault().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				IWorkbench workbench = PlatformUI.getWorkbench();
-				engine.track(workbench);
+				if (PlatformUI.isWorkbenchRunning()) {
+					IWorkbench workbench = PlatformUI.getWorkbench();
+					engine.track(workbench);
+				}
 			}
 		});
 		JavaCore.addElementChangedListener(engine);

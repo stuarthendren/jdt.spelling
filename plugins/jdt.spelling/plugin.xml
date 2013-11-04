@@ -39,7 +39,7 @@
       <type
             markerSeverity="0"
             markerType="jdt.spelling.marker"
-            name="JDT Spelling"
+            name="jdt.spelling"
             super="org.eclipse.ui.workbench.texteditor.spelling">
       </type>
    </extension>

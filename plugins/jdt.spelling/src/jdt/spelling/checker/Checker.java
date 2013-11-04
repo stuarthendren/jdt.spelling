@@ -14,7 +14,6 @@ import java.util.TreeSet;
 import jdt.spelling.Preferences;
 import jdt.spelling.dictionary.PersistentSpellDictionary;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.ISpellDictionary;
@@ -186,7 +185,7 @@ public class Checker {
 	}
 
 	public final boolean isCorrect(final String word) {
-		if (StringUtils.isEmpty(word) || isDigits(word)) {
+		if (word == null || word.length() == 0 || isDigits(word)) {
 			return true;
 		}
 

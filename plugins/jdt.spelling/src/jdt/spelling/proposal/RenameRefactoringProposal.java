@@ -2,8 +2,8 @@ package jdt.spelling.proposal;
 
 import java.lang.reflect.InvocationTargetException;
 
-import jdt.spelling.Plugin;
 import jdt.spelling.Images;
+import jdt.spelling.Plugin;
 import jdt.spelling.messages.Messages;
 
 import org.eclipse.core.runtime.CoreException;
@@ -16,7 +16,6 @@ import org.eclipse.jdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
 import org.eclipse.jdt.internal.ui.text.correction.AssistContext;
 import org.eclipse.jdt.ui.refactoring.RenameSupport;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
-import org.eclipse.jdt.ui.text.java.correction.ICommandAccess;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension6;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -29,8 +28,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  * A quick assist proposal that starts the Rename refactoring.
  */
 @SuppressWarnings("restriction")
-public class RenameRefactoringProposal implements IJavaCompletionProposal, ICompletionProposalExtension6,
-		ICommandAccess {
+public class RenameRefactoringProposal implements IJavaCompletionProposal, ICompletionProposalExtension6 {
 
 	private final String label;
 	private final int relevance;
@@ -95,11 +93,6 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 	@Override
 	public int getRelevance() {
 		return relevance;
-	}
-
-	@Override
-	public String getCommandId() {
-		return null;
 	}
 
 	/**

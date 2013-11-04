@@ -8,7 +8,6 @@ Bundle-Vendor: stuarthendren.net
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.editors,
  org.eclipse.jdt,
- org.eclipse.jdt.annotation,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.eclipse.core.resources,
@@ -17,8 +16,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.ide,
- org.eclipse.jdt.core.manipulation,
- org.apache.commons.lang,
- org.apache.commons.io
+ org.eclipse.jdt.core.manipulation
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

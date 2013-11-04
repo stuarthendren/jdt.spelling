@@ -9,7 +9,6 @@ import java.nio.charset.Charset;
 
 import jdt.spelling.Plugin;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.AbstractSpellDictionary;
 
 /**
@@ -81,7 +80,13 @@ public class PersistentSpellDictionary extends AbstractSpellDictionary {
 			Plugin.log(exception);
 			return;
 		} finally {
-			IOUtils.closeQuietly(fileStream);
+			if (fileStream != null) {
+				try {
+					fileStream.close();
+				} catch (IOException e) {
+					Plugin.log(e);
+				}
+			}
 		}
 
 		hashWord(word);
