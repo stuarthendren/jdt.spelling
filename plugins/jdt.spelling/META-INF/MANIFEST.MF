@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JSpell
-Bundle-SymbolicName: jspell;singleton:=true
+Bundle-Name: JDT Spelling
+Bundle-SymbolicName: jdt.spelling;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: jspell.JSpellPlugin
 Bundle-Vendor: stuarthendren.net
