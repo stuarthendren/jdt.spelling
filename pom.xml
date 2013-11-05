@@ -57,7 +57,8 @@
 	</pluginRepositories>
 	
 	<modules>
-      <module>plugins</module>
+		<module>features</module>
+		<module>plugins</module>
     </modules>
 
 	<build>
