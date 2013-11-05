@@ -9,6 +9,7 @@ import jdt.spelling.checker.JavaType;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class Preferences extends AbstractPreferenceInitializer {
@@ -42,7 +43,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 	}
 
 	public static void restoreDefaults() {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Plugin.getPluginId());
+		IEclipsePreferences prefs = getPreferences();
 
 		restoreDefaultString(prefs, JavaType.TYPE.name());
 		restoreDefaultString(prefs, JavaType.ENUM_TYPE.name());
@@ -76,36 +77,40 @@ public class Preferences extends AbstractPreferenceInitializer {
 	}
 
 	public static boolean getBoolean(String prefId) {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Plugin.getPluginId());
+		IEclipsePreferences prefs = getPreferences();
 		return prefs.getBoolean(prefId, (Boolean) DEFAULTS.get(prefId));
 	}
 
 	public static int getInt(String prefId) {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Plugin.getPluginId());
+		IEclipsePreferences prefs = getPreferences();
 		return prefs.getInt(prefId, (Integer) DEFAULTS.get(prefId));
 	}
 
 	public static String getString(String prefId) {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Plugin.getPluginId());
+		IEclipsePreferences prefs = getPreferences();
 		return prefs.get(prefId, (String) DEFAULTS.get(prefId));
 	}
 
 	public static void setBoolean(String prefId, boolean value) throws BackingStoreException {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Plugin.getPluginId());
+		IEclipsePreferences prefs = getPreferences();
 		prefs.putBoolean(prefId, value);
 		prefs.flush();
 	}
 
 	public static void setInt(String prefId, int value) throws BackingStoreException {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Plugin.getPluginId());
+		IEclipsePreferences prefs = getPreferences();
 		prefs.putInt(prefId, value);
 		prefs.flush();
 	}
 
 	public static void setString(String prefId, String value) throws BackingStoreException {
-		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Plugin.getPluginId());
+		IEclipsePreferences prefs = getPreferences();
 		prefs.put(prefId, value);
 		prefs.flush();
+	}
+
+	private static IEclipsePreferences getPreferences() {
+		return DefaultScope.INSTANCE.getNode(Plugin.getPluginId());
 	}
 
 	public static void setJavaNameType(JavaType javaType, JavaNameType javaNameType) throws BackingStoreException {
@@ -116,4 +121,13 @@ public class Preferences extends AbstractPreferenceInitializer {
 		String name = getString(javaType.name());
 		return JavaNameType.valueOf(name);
 	}
+
+	public static void addListener(IPreferenceChangeListener listener) {
+		getPreferences().addPreferenceChangeListener(listener);
+	}
+
+	public static void removeListener(IPreferenceChangeListener listener) {
+		getPreferences().removePreferenceChangeListener(listener);
+	}
+
 }

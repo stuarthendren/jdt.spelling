@@ -9,6 +9,8 @@ import jdt.spelling.checker.SpellingEvent;
 import jdt.spelling.processor.Processor;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IElementChangedListener;
@@ -16,12 +18,13 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IParent;
 import org.eclipse.jdt.core.ISourceReference;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ide.ResourceUtil;
 
-public class Engine extends EditorTracker implements IElementChangedListener {
+public class Engine extends EditorTracker implements IElementChangedListener, IPreferenceChangeListener {
 
 	private final Checker checker;
 
@@ -62,7 +65,17 @@ public class Engine extends EditorTracker implements IElementChangedListener {
 
 	}
 
+	public void checkResource(IResource resource) {
+		if (resource != null) {
+			checkElement(JavaCore.create(resource));
+		}
+	}
+
 	public void checkElement(IJavaElement element) {
+		if (element == null) {
+			return;
+		}
+
 		ICompilationUnit cu = (ICompilationUnit) element.getAncestor(IJavaElement.COMPILATION_UNIT);
 
 		if (cu == null) {
@@ -139,6 +152,7 @@ public class Engine extends EditorTracker implements IElementChangedListener {
 
 	private void setCurrentResource(IEditorPart editor) {
 		currentResource = getResource(editor);
+		checkResource(currentResource);
 	}
 
 	private void clearEditor(IEditorPart editor) {
@@ -154,6 +168,11 @@ public class Engine extends EditorTracker implements IElementChangedListener {
 			return ResourceUtil.getResource(editorInput);
 		}
 		return null;
+	}
+
+	@Override
+	public void preferenceChange(PreferenceChangeEvent event) {
+		checkResource(currentResource);
 	}
 
 }

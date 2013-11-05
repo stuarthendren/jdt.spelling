@@ -107,6 +107,7 @@ public class Plugin extends AbstractUIPlugin {
 		try {
 			PlatformUI.getWorkbench().removeWindowListener(engine);
 			JavaCore.removeElementChangedListener(engine);
+			Preferences.removeListener(engine);
 			checker = null;
 			engine = null;
 		} finally {
@@ -132,6 +133,8 @@ public class Plugin extends AbstractUIPlugin {
 		Processor processor = new Processor(markerFactory);
 
 		engine = new Engine(checker, processor);
+
+		Preferences.addListener(engine);
 
 		Display.getDefault().syncExec(new Runnable() {
 			@Override
