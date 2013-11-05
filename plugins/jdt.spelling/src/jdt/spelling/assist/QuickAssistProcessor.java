@@ -60,15 +60,13 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 
 		List<IJavaCompletionProposal> proposals = new ArrayList<IJavaCompletionProposal>();
 		for (SpellingEvent event : events) {
-			if (event.isError()) {
-				String word = event.getWord();
-				for (String proposal : event.getProposals()) {
-					String newName = event.getNewName(proposal);
-					proposals.add(new RenameRefactoringProposal(assistContext, element, word, newName));
-				}
-				proposals.add(new IgnoreWordProposal(assistContext, element, word));
-				proposals.add(new AddWordProposal(assistContext, element, word));
+			String word = event.getWord();
+			for (String proposal : event.getProposals()) {
+				String newName = event.getNewName(proposal);
+				proposals.add(new RenameRefactoringProposal(assistContext, element, word, newName));
 			}
+			proposals.add(new IgnoreWordProposal(assistContext, element, word));
+			proposals.add(new AddWordProposal(assistContext, element, word));
 		}
 
 		return proposals.toArray(new IJavaCompletionProposal[proposals.size()]);

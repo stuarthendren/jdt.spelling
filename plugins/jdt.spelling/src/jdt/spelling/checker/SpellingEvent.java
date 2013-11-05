@@ -8,25 +8,18 @@ import org.eclipse.jdt.core.IJavaElement;
 
 public class SpellingEvent {
 
-	private static final String CORRECT = "correct";
 	private static final String INCORRECT = "incorrect";
 
 	private final Checker javaSpellChecker;
 	private final int index;
 	private final String word;
 	private final JavaName javaName;
-	private final boolean error;
 
-	public SpellingEvent(Checker javaSpellChecker, int index, String word, JavaName javaName, boolean error) {
+	public SpellingEvent(Checker javaSpellChecker, int index, String word, JavaName javaName) {
 		this.javaSpellChecker = javaSpellChecker;
 		this.index = index;
 		this.word = word;
 		this.javaName = javaName;
-		this.error = error;
-	}
-
-	public boolean isError() {
-		return error;
 	}
 
 	public IJavaElement getJavaElement() {
@@ -65,12 +58,7 @@ public class SpellingEvent {
 	public String toString() {
 		StringBuilder sb = new StringBuilder(word);
 		sb.append(" ");
-		if (error) {
-			sb.append(INCORRECT);
-		} else {
-			sb.append(CORRECT);
-		}
-
+		sb.append(INCORRECT);
 		return sb.toString();
 	}
 

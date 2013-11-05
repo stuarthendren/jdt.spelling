@@ -97,7 +97,6 @@ public class CheckerTest {
 		assertEquals(8, event.getLength());
 		assertEquals(0, event.getOffset());
 		assertEquals(INCORRECT + Messages.Checker_has_incorrect_spelling, event.getMessage());
-		assertTrue(event.isError());
 	}
 
 	@Test

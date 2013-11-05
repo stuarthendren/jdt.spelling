@@ -23,9 +23,7 @@ public class Processor {
 	}
 
 	private void process(SpellingEvent event) {
-		if (event.isError()) {
-			markerFactory.create(event);
-		}
+		markerFactory.create(event);
 	}
 
 	public void prepare(IJavaElement element) {

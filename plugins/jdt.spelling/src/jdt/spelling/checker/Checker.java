@@ -142,9 +142,7 @@ public class Checker {
 
 				// synchronizing is necessary as this is called inside the reconciler
 				if (!isCorrect(word)) {
-					events.add(new SpellingEvent(this, i, word, javaName, true));
-				} else {
-					events.add(new SpellingEvent(this, i, word, javaName, false));
+					events.add(new SpellingEvent(this, i, word, javaName));
 				}
 			}
 		}
