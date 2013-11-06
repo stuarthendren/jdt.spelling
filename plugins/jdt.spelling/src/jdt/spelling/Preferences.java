@@ -3,8 +3,8 @@ package jdt.spelling;
 import java.util.HashMap;
 import java.util.Map;
 
-import jdt.spelling.checker.JavaNameType;
-import jdt.spelling.checker.JavaType;
+import jdt.spelling.enums.JavaNameType;
+import jdt.spelling.enums.JavaType;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;

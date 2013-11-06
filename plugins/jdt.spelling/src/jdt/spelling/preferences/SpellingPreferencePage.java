@@ -6,8 +6,8 @@ import java.util.Map.Entry;
 
 import jdt.spelling.Plugin;
 import jdt.spelling.Preferences;
-import jdt.spelling.checker.JavaNameType;
-import jdt.spelling.checker.JavaType;
+import jdt.spelling.enums.JavaNameType;
+import jdt.spelling.enums.JavaType;
 import jdt.spelling.messages.Messages;
 
 import org.eclipse.jface.layout.GridDataFactory;

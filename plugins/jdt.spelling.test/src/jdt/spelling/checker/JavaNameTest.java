@@ -1,11 +1,11 @@
-package jdt.spelling.spelling;
+package jdt.spelling.checker;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import jdt.spelling.checker.JavaName;
-import jdt.spelling.checker.JavaNameType;
+import jdt.spelling.enums.JavaNameType;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.junit.Before;

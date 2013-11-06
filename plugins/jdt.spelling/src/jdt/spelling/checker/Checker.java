@@ -13,6 +13,8 @@ import java.util.TreeSet;
 
 import jdt.spelling.Preferences;
 import jdt.spelling.dictionary.PersistentSpellDictionary;
+import jdt.spelling.enums.JavaNameType;
+import jdt.spelling.enums.JavaType;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.IJavaElement;

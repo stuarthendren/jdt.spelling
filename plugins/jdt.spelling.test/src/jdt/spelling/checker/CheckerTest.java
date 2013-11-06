@@ -1,4 +1,4 @@
-package jdt.spelling.spelling;
+package jdt.spelling.checker;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

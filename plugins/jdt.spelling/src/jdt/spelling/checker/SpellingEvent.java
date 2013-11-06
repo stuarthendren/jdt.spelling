@@ -2,6 +2,7 @@ package jdt.spelling.checker;
 
 import java.util.List;
 
+import jdt.spelling.enums.JavaNameType;
 import jdt.spelling.messages.Messages;
 
 import org.eclipse.jdt.core.IJavaElement;

@@ -1,4 +1,4 @@
-package jdt.spelling.checker;
+package jdt.spelling.enums;
 
 import java.util.regex.Pattern;
 

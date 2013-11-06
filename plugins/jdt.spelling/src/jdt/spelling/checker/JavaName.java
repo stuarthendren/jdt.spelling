@@ -1,5 +1,7 @@
 package jdt.spelling.checker;
 
+import jdt.spelling.enums.JavaNameType;
+
 import org.eclipse.jdt.core.IJavaElement;
 
 public class JavaName {

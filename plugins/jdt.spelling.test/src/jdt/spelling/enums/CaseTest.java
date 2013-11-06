@@ -1,7 +1,7 @@
-package jdt.spelling.spelling;
+package jdt.spelling.enums;
 
 import static org.junit.Assert.assertEquals;
-import jdt.spelling.checker.Case;
+import jdt.spelling.enums.Case;
 
 import org.junit.Test;
 

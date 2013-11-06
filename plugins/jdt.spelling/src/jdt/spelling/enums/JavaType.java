@@ -1,4 +1,4 @@
-package jdt.spelling.checker;
+package jdt.spelling.enums;
 
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaElement;

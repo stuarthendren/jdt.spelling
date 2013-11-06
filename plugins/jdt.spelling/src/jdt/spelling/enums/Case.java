@@ -1,4 +1,4 @@
-package jdt.spelling.checker;
+package jdt.spelling.enums;
 
 public enum Case {
 

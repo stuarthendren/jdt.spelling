@@ -1,7 +1,7 @@
-package jdt.spelling.spelling;
+package jdt.spelling.enums;
 
 import static org.junit.Assert.assertArrayEquals;
-import jdt.spelling.checker.JavaNameType;
+import jdt.spelling.enums.JavaNameType;
 
 import org.junit.Test;
 
