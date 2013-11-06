@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="JDT Spelling" url="http://stuarthendren.net/updates">
+      Spelling support for java names.
+   </description>
+   <feature url="features/jdt.spelling.feature_1.0.0.qualifier.jar" id="jdt.spelling.feature" version="1.0.0.qualifier"/>
+</site>

@@ -1,0 +1,5 @@
+plugins
+features
+target
+*.jar
+site.xml

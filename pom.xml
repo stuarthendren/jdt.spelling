@@ -59,6 +59,7 @@
 	<modules>
 		<module>features</module>
 		<module>plugins</module>
+		<module>update</module>
     </modules>
 
 	<build>
