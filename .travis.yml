@@ -1,2 +1,6 @@
 language: java
-script: mvn clean verify
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+script: mvn verify
+after_failure: "cat /home/travis/build/hendrens/jdt.spelling/plugins/jdt.spelling.test/target/work/data/.metadata/.log"
