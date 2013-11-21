@@ -49,6 +49,12 @@ public enum JavaType {
 				if (Flags.isEnum(flags)) {
 					return ENUM_INSTANCE;
 				}
+				IJavaElement parent = javaElement.getParent();
+				if (parent instanceof IType) {
+					if (Flags.isInterface(((IType) parent).getFlags())) {
+						return CONSTANT;
+					}
+				}
 			} catch (JavaModelException e) {
 				// IGNORE
 			}
