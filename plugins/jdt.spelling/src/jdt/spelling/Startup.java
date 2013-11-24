@@ -6,6 +6,8 @@ public class Startup implements IStartup {
 
 	@Override
 	public void earlyStartup() {
-		Plugin.logMessage("Started");
+		if (Plugin.isDebug()) {
+			Plugin.logMessage("Started");
+		}
 	}
 }
