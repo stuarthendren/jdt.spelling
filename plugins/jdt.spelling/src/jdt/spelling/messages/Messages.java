@@ -16,6 +16,8 @@ public class Messages {
 
 	public static String RenameRefactoringProposal_additionalInfo;
 
+	public static String SpellingEvent_incorrect;
+
 	public static String SpellingPreferencePage_ignore_single_letter;
 
 	static {

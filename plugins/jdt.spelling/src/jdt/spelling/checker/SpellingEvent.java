@@ -9,7 +9,7 @@ import org.eclipse.jdt.core.IJavaElement;
 
 public class SpellingEvent {
 
-	private static final String INCORRECT = "incorrect";
+	public static final char SPACE = ' ';
 
 	private final Checker javaSpellChecker;
 	private final int index;
@@ -28,7 +28,7 @@ public class SpellingEvent {
 	}
 
 	public String getMessage() {
-		return word + Messages.Checker_has_incorrect_spelling;
+		return word + SPACE + Messages.Checker_has_incorrect_spelling;
 	}
 
 	public int getOffset() {
@@ -58,8 +58,8 @@ public class SpellingEvent {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(word);
-		sb.append(" ");
-		sb.append(INCORRECT);
+		sb.append(SPACE);
+		sb.append(Messages.SpellingEvent_incorrect);
 		return sb.toString();
 	}
 

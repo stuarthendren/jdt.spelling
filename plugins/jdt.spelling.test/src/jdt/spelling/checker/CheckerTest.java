@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import jdt.spelling.checker.Checker;
-import jdt.spelling.checker.SpellingEvent;
 import jdt.spelling.dictionary.PersistentSpellDictionary;
 import jdt.spelling.messages.Messages;
 
@@ -96,7 +94,7 @@ public class CheckerTest {
 		assertEquals(INCORRECT, event.getWord());
 		assertEquals(8, event.getLength());
 		assertEquals(0, event.getOffset());
-		assertEquals(INCORRECT + Messages.Checker_has_incorrect_spelling, event.getMessage());
+		assertEquals(INCORRECT + SpellingEvent.SPACE + Messages.Checker_has_incorrect_spelling, event.getMessage());
 	}
 
 	@Test
