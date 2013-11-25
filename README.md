@@ -14,6 +14,14 @@ CI provided by [Travis CI](http://travis-ci.org/)
 
 [![Build Status](https://secure.travis-ci.org/hendrens/jdt.spelling.png)](http://travis-ci.org/hendrens/jdt.spelling)
 
+## Eclipse update site
+
+[http://stuarthendren.net/update](http://stuarthendren.net/update)
+
 ## Copyright
 
-Copyright (c) 2013 Stuart Hendren. Licensed under the [EPL License](http://www.eclipse.org/legal/epl-v10.html).
+Copyright (c) 2013 Stuart Hendren. 
+
+## License
+
+Licensed under the [EPL License](http://www.eclipse.org/legal/epl-v10.html).
