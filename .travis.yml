@@ -1,6 +1,13 @@
 language: java
 before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 script: mvn verify
-after_failure: "cat /home/travis/build/hendrens/jdt.spelling/plugins/jdt.spelling.test/target/work/data/.metadata/.log"
+after_failure: cat /home/travis/build/hendrens/jdt.spelling/plugins/jdt.spelling.test/target/work/data/.metadata/.log
+
+env:
+  global:
+  - secure: "LJ5/QfUoPbDW+Zk/U1R3BxJ10dfnbcfISZMN0LjRGhc1w2I1omkJ2+vvwNXmI259UVsFnc4NhrqSwuox7VzPf3lMgO1zr2F6oeBWgH7lrvg2vUiKeIHelJFjGl4cOco3OOfQ1RBlfI4GD0rQxu8DOEbKpe2PrUPmWwKvPsFH2nI="
+  - secure: "i67ERxJRnd9oSco6ai0JXrbbMoAcpRsvB/TyAYJbnYTRjVj4CLWlu7DNvQghbCK8P2gn3BUH6/XN/KvCPi9GHABNJ8FyZzm81v5fEKmP6dy56KESRZjK8q82jKWxg9cD3O9OAoK00q3QbcjuWlhRiceSDYCFhjxYwPVBFTpabho="
+
+after_success: unzip update/target/jdt.spelling*.zip -d upload && find upload -type f -exec curl -u $FTP_USER:$FTP_PASSWORD --ftp-create-dirs -T {} ftp://ftp.stuarthendren.net/{} \;
