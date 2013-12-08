@@ -53,22 +53,25 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 		ICompilationUnit compilationUnit = context.getCompilationUnit();
 		IJavaElement element = compilationUnit.getElementAt(context.getSelectionOffset());
 
-		Checker spellChecker = Plugin.getDefault().getSpellChecker();
-
-		Collection<SpellingEvent> events = new ArrayList<SpellingEvent>();
-		spellChecker.execute(events, element);
-
 		List<IJavaCompletionProposal> proposals = new ArrayList<IJavaCompletionProposal>();
-		for (SpellingEvent event : events) {
-			String word = event.getWord();
-			for (String proposal : event.getProposals()) {
-				String newName = event.getNewName(proposal);
-				proposals.add(new RenameRefactoringProposal(assistContext, element, word, newName));
-			}
-			proposals.add(new IgnoreWordProposal(assistContext, element, word));
-			proposals.add(new AddWordProposal(assistContext, element, word));
-		}
 
+		if (element != null) {
+
+			Checker spellChecker = Plugin.getDefault().getSpellChecker();
+
+			Collection<SpellingEvent> events = new ArrayList<SpellingEvent>();
+			spellChecker.execute(events, element);
+
+			for (SpellingEvent event : events) {
+				String word = event.getWord();
+				for (String proposal : event.getProposals()) {
+					String newName = event.getNewName(proposal);
+					proposals.add(new RenameRefactoringProposal(assistContext, element, word, newName));
+				}
+				proposals.add(new IgnoreWordProposal(assistContext, element, word));
+				proposals.add(new AddWordProposal(assistContext, element, word));
+			}
+		}
 		return proposals.toArray(new IJavaCompletionProposal[proposals.size()]);
 	}
 }

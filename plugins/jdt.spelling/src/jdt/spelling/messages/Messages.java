@@ -18,7 +18,19 @@ public class Messages {
 
 	public static String SpellingEvent_incorrect;
 
+	public static String SpellingPreferencePage_browse_label;
+
+	public static String SpellingPreferencePage_dictionary_error;
+
+	public static String SpellingPreferencePage_dictionary_tooltip;
+
+	public static String SpellingPreferencePage_ignore_dictionary_label;
+
 	public static String SpellingPreferencePage_ignore_single_letter;
+
+	public static String SpellingPreferencePage_user_dictionary_label;
+
+	public static String SpellingPreferencePage_variables_label;
 
 	static {
 		NLS.initializeMessages(Messages.class.getName(), Messages.class);

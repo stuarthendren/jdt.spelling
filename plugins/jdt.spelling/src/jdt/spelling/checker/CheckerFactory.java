@@ -15,11 +15,17 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import jdt.spelling.Plugin;
+import jdt.spelling.Preferences;
 import jdt.spelling.dictionary.PersistentSpellDictionary;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.ISpellDictionary;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.LocaleSensitiveSpellDictionary;
 import org.eclipse.jdt.ui.PreferenceConstants;
@@ -27,11 +33,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.Bundle;
 
 @SuppressWarnings("restriction")
-public class CheckerFactory {
+public class CheckerFactory implements IPreferenceChangeListener {
 
 	private static final String DICTIONARY_LOCATION = "dictionaries";
-	private static final String ADDED_DICTIONARY = "added.dic";
-	private static final String IGNORE_DICTIONARY = "ignored.dic";
+	private static final String DEFAULT_ADDED_DICTIONARY = "added.dic";
+	private static final String DEFAULT_IGNORE_DICTIONARY = "ignored.dic";
 
 	private final Set<ISpellDictionary> dictionaries;
 
@@ -80,10 +86,12 @@ public class CheckerFactory {
 
 		resetSpellChecker();
 
-		PersistentSpellDictionary added = new PersistentSpellDictionary(
-				getWorkspaceDictionaryLocation(ADDED_DICTIONARY));
-		PersistentSpellDictionary ignored = new PersistentSpellDictionary(
-				getWorkspaceDictionaryLocation(IGNORE_DICTIONARY));
+		String defaultAddedDictionary = DEFAULT_ADDED_DICTIONARY;
+		String defaultIgnoreDictionary = DEFAULT_IGNORE_DICTIONARY;
+		PersistentSpellDictionary added = createDictionary(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY,
+				defaultAddedDictionary);
+		PersistentSpellDictionary ignored = createDictionary(Preferences.JDT_SPELLING_IGNORE_DICTIONARY,
+				defaultIgnoreDictionary);
 
 		checker = new Checker(added, ignored, locale);
 
@@ -98,6 +106,44 @@ public class CheckerFactory {
 		}
 
 		return checker;
+	}
+
+	private PersistentSpellDictionary createDictionary(String preferenceKey, String defaultAddedDictionary) {
+		URL url = getPath(preferenceKey);
+		if (url == null) {
+			url = getWorkspaceDictionaryLocation(defaultAddedDictionary);
+		}
+		return new PersistentSpellDictionary(url);
+	}
+
+	private URL getPath(String preferenceKey) {
+		String preferenceValue = Preferences.getString(preferenceKey);
+		if (!preferenceValue.isEmpty()) {
+			IStringVariableManager variableManager = VariablesPlugin.getDefault().getStringVariableManager();
+			try {
+				String path = variableManager.performStringSubstitution(preferenceValue);
+				if (path.length() > 0) {
+					File file = new File(path);
+					if (canCreateOrWriteTo(file)) {
+						return file.toURI().toURL();
+					}
+				}
+			} catch (CoreException e) {
+				Plugin.log(e);
+			} catch (MalformedURLException e) {
+				Plugin.log(e);
+			}
+		}
+		return null;
+	}
+
+	private boolean canCreateOrWriteTo(File file) {
+		if (!file.exists() && (!file.isAbsolute() || !file.getParentFile().canWrite())) {
+			return false;
+		} else if (file.exists() && (!file.isFile() || !file.isAbsolute() || !file.canRead() || !file.canWrite())) {
+			return false;
+		}
+		return true;
 	}
 
 	public ISpellDictionary findDictionary(Locale locale) {
@@ -234,5 +280,20 @@ public class CheckerFactory {
 			Plugin.log(e);
 		}
 		return null;
+	}
+
+	@Override
+	public void preferenceChange(PreferenceChangeEvent event) {
+		String key = event.getKey();
+		if (Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY.equals(key)) {
+			PersistentSpellDictionary dictionary = createDictionary(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY,
+					DEFAULT_ADDED_DICTIONARY);
+			getSpellChecker().setAdditionsDictionary(dictionary);
+		} else if (Preferences.JDT_SPELLING_IGNORE_DICTIONARY.equals(key)) {
+			PersistentSpellDictionary dictionary = createDictionary(Preferences.JDT_SPELLING_IGNORE_DICTIONARY,
+					DEFAULT_IGNORE_DICTIONARY);
+			getSpellChecker().setIgnoreDictionary(dictionary);
+		}
+
 	}
 }

@@ -31,7 +31,13 @@ public class PersistentSpellDictionary extends AbstractSpellDictionary {
 		fLocation = url;
 		File file = new File(url.getFile());
 		if (!file.exists()) {
-			throw new RuntimeException("File must exist: " + url.getFile());
+			try {
+				if (!file.createNewFile()) {
+					throw new RuntimeException("File does not exist and could not be created: " + url.getFile());
+				}
+			} catch (IOException e) {
+				throw new RuntimeException("File does not exist and could not be created: " + url.getFile());
+			}
 		}
 	}
 

@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class Preferences extends AbstractPreferenceInitializer {
@@ -20,6 +21,8 @@ public class Preferences extends AbstractPreferenceInitializer {
 	public static final String JDT_SPELLING_MARKER_TEXT = "jdt.spelling.marker.text";
 	public static final String JDT_SPELLING_MARKER_RULER = "jdt.spelling.marker.ruler";
 	public static final String JDT_SPELLING_IGNORE_SINGLE_LETTER = "jdt.spelling.ignore.single.letter";
+	public static final String JDT_SPELLING_ADDITIONS_DICTIONARY = "jdt.spelling.additions.dictionary";
+	public static final String JDT_SPELLING_IGNORE_DICTIONARY = "jdt.spelling.ignore.dictionary";
 
 	private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>();
 
@@ -35,16 +38,18 @@ public class Preferences extends AbstractPreferenceInitializer {
 		DEFAULTS.put(JavaType.LOCAL_VARIABLE.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		DEFAULTS.put(JDT_SPELLING_IGNORE_SINGLE_LETTER, true);
+		DEFAULTS.put(JDT_SPELLING_ADDITIONS_DICTIONARY, "");
+		DEFAULTS.put(JDT_SPELLING_IGNORE_DICTIONARY, "");
 	}
 
 	@Override
 	public void initializeDefaultPreferences() {
-		Preferences.restoreDefaults();
+		IEclipsePreferences prefs = getDefaultPreferences();
+
+		setToDefaults(prefs);
 	}
 
-	public static void restoreDefaults() {
-		IEclipsePreferences prefs = getPreferences();
-
+	private static void setToDefaults(IEclipsePreferences prefs) {
 		restoreDefaultString(prefs, JavaType.TYPE.name());
 		restoreDefaultString(prefs, JavaType.ENUM_TYPE.name());
 		restoreDefaultString(prefs, JavaType.ANNOTATION.name());
@@ -56,9 +61,20 @@ public class Preferences extends AbstractPreferenceInitializer {
 		restoreDefaultString(prefs, JavaType.LOCAL_VARIABLE.name());
 		restoreDefaultString(prefs, JavaType.FIELD.name());
 		restoreDefaultBoolean(prefs, JDT_SPELLING_IGNORE_SINGLE_LETTER);
+		restoreDefaultString(prefs, JDT_SPELLING_ADDITIONS_DICTIONARY);
+		restoreDefaultString(prefs, JDT_SPELLING_IGNORE_DICTIONARY);
 
+		flush();
+	}
+
+	public static void restoreDefaults() {
+		IEclipsePreferences prefs = getPreferences();
+		setToDefaults(prefs);
+	}
+
+	public static void flush() {
 		try {
-			prefs.flush();
+			getPreferences().flush();
 		} catch (BackingStoreException e) {
 			Plugin.log(e);
 		}
@@ -91,25 +107,26 @@ public class Preferences extends AbstractPreferenceInitializer {
 		return prefs.get(prefId, (String) DEFAULTS.get(prefId));
 	}
 
-	public static void setBoolean(String prefId, boolean value) throws BackingStoreException {
+	public static void setBoolean(String prefId, boolean value) {
 		IEclipsePreferences prefs = getPreferences();
 		prefs.putBoolean(prefId, value);
-		prefs.flush();
 	}
 
-	public static void setInt(String prefId, int value) throws BackingStoreException {
+	public static void setInt(String prefId, int value) {
 		IEclipsePreferences prefs = getPreferences();
 		prefs.putInt(prefId, value);
-		prefs.flush();
 	}
 
-	public static void setString(String prefId, String value) throws BackingStoreException {
+	public static void setString(String prefId, String value) {
 		IEclipsePreferences prefs = getPreferences();
 		prefs.put(prefId, value);
-		prefs.flush();
 	}
 
 	private static IEclipsePreferences getPreferences() {
+		return InstanceScope.INSTANCE.getNode(Plugin.getPluginId());
+	}
+
+	private static IEclipsePreferences getDefaultPreferences() {
 		return DefaultScope.INSTANCE.getNode(Plugin.getPluginId());
 	}
 

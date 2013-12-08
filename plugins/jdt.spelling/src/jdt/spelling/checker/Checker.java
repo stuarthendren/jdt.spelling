@@ -66,12 +66,12 @@ public class Checker {
 	/**
 	 * The dictionary used for added words.
 	 */
-	private final PersistentSpellDictionary additionsDictionary;
+	private PersistentSpellDictionary additionsDictionary;
 
 	/**
 	 * The dictionary used for ignored words
 	 */
-	private final PersistentSpellDictionary ignoreDictionary;
+	private PersistentSpellDictionary ignoreDictionary;
 
 	/**
 	 * The locale of this checker.
@@ -95,8 +95,6 @@ public class Checker {
 		Assert.isLegal(locale != null);
 
 		this.locale = locale;
-
-		addDictionary(this.additionsDictionary);
 	}
 
 	/*
@@ -158,6 +156,7 @@ public class Checker {
 		Set<ISpellDictionary> copy;
 		synchronized (dictionaries) {
 			copy = new HashSet<ISpellDictionary>(dictionaries);
+			copy.add(additionsDictionary);
 		}
 
 		ISpellDictionary dictionary = null;
@@ -190,6 +189,10 @@ public class Checker {
 		}
 
 		if (ignoreDictionary.isCorrect(word)) {
+			return true;
+		}
+
+		if (additionsDictionary.isCorrect(word)) {
 			return true;
 		}
 
@@ -229,5 +232,19 @@ public class Checker {
 		synchronized (additionsDictionary) {
 			additionsDictionary.clear();
 		}
+	}
+
+	public synchronized void setAdditionsDictionary(PersistentSpellDictionary additionsDictionary) {
+		if (additionsDictionary == null || !additionsDictionary.acceptsWords()) {
+			throw new IllegalArgumentException("Additions dictionary must not be null and must accept new words");
+		}
+		this.additionsDictionary = additionsDictionary;
+	}
+
+	public synchronized void setIgnoreDictionary(PersistentSpellDictionary ignoreDictionary) {
+		if (ignoreDictionary == null || !ignoreDictionary.acceptsWords()) {
+			throw new IllegalArgumentException("Ignore dictionary must not be null and must accept new words");
+		}
+		this.ignoreDictionary = ignoreDictionary;
 	}
 }

@@ -35,6 +35,8 @@ public class Plugin extends AbstractUIPlugin {
 
 	private static Plugin plugin;
 
+	private CheckerFactory checkerFactory;
+
 	private Checker checker;
 
 	private Engine engine;
@@ -108,6 +110,7 @@ public class Plugin extends AbstractUIPlugin {
 			PlatformUI.getWorkbench().removeWindowListener(engine);
 			JavaCore.removeElementChangedListener(engine);
 			Preferences.removeListener(engine);
+			Preferences.removeListener(checkerFactory);
 			checker = null;
 			engine = null;
 		} finally {
@@ -126,7 +129,7 @@ public class Plugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		CheckerFactory checkerFactory = new CheckerFactory();
+		checkerFactory = new CheckerFactory();
 		checker = checkerFactory.getSpellChecker();
 
 		MarkerFactory markerFactory = new MarkerFactory();
@@ -134,6 +137,7 @@ public class Plugin extends AbstractUIPlugin {
 
 		engine = new Engine(checker, processor);
 
+		Preferences.addListener(checkerFactory);
 		Preferences.addListener(engine);
 
 		Display.getDefault().asyncExec(new Runnable() {
