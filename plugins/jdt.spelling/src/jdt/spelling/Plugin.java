@@ -136,16 +136,22 @@ public class Plugin extends AbstractUIPlugin {
 
 		Preferences.addListener(engine);
 
-		Display.getDefault().syncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable() {
+
 			@Override
 			public void run() {
-				if (PlatformUI.isWorkbenchRunning()) {
-					IWorkbench workbench = PlatformUI.getWorkbench();
-					engine.track(workbench);
-				}
+				Display.getDefault().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						if (PlatformUI.isWorkbenchRunning()) {
+							IWorkbench workbench = PlatformUI.getWorkbench();
+							engine.track(workbench);
+						}
+					}
+				});
+				JavaCore.addElementChangedListener(engine);
 			}
 		});
-		JavaCore.addElementChangedListener(engine);
 	}
 
 	private IWorkbenchPage internalGetActivePage() {
