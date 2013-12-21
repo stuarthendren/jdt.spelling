@@ -14,24 +14,12 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.compiler.CharOperation;
 import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 
+@SuppressWarnings("restriction")
 public class MarkerFactory {
 
 	public static final String JDT_SPELLING_MARKER = "jdt.spelling.marker";
 
-	public IMarker create(IResource resource) {
-		try {
-			if (resource.exists()) {
-				return resource.createMarker(JDT_SPELLING_MARKER);
-			} else {
-				return null;
-			}
-		} catch (CoreException e) {
-			Plugin.log(e);
-			return null;
-		}
-	}
-
-	public IMarker create(SpellingEvent event) {
+	public void create(SpellingEvent event) {
 		try {
 			IJavaElement javaElement = event.getJavaElement();
 			IResource resource = javaElement.getResource();
@@ -60,18 +48,43 @@ public class MarkerFactory {
 
 			int end = start + event.getLength();
 
-			IMarker marker = create(resource);
-			if (marker != null) {
-				marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END,
-						IMarker.SOURCE_ID }, new Object[] { event.getMessage(), new Integer(start), new Integer(end),
-						Plugin.getPluginId() });
-			}
+			scheduleWorkspaceJob(event.getMessage(), resource, start, end);
 
-			return marker;
 		} catch (CoreException e) {
 			Plugin.log(e);
 		}
-		return null;
+
+	}
+
+	private void scheduleWorkspaceJob(final String message, final IResource resource, final int start, final int end)
+			throws CoreException {
+		MarkerJob job = new MarkerJob(resource, new MarkerJob.MarkerRunnable() {
+
+			@Override
+			public void run() throws CoreException {
+				IMarker marker = create(resource);
+				if (marker != null) {
+					marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END,
+							IMarker.SOURCE_ID },
+							new Object[] { message, new Integer(start), new Integer(end), Plugin.getPluginId() });
+				}
+			}
+		});
+		job.schedule();
+
+	}
+
+	private IMarker create(IResource resource) {
+		try {
+			if (resource.exists()) {
+				return resource.createMarker(JDT_SPELLING_MARKER);
+			} else {
+				return null;
+			}
+		} catch (CoreException e) {
+			Plugin.log(e);
+			return null;
+		}
 	}
 
 	public IMarker[] find(IResource target) {
@@ -83,13 +96,17 @@ public class MarkerFactory {
 		}
 	}
 
-	public void clear(IResource resource) {
-		try {
-			if (!resource.getWorkspace().isTreeLocked() && resource.exists()) {
-				resource.deleteMarkers(JDT_SPELLING_MARKER, true, IResource.DEPTH_INFINITE);
+	public void clear(final IResource resource) {
+		MarkerJob job = new MarkerJob(resource, new MarkerJob.MarkerRunnable() {
+
+			@Override
+			public void run() throws CoreException {
+				if (resource.exists()) {
+					resource.deleteMarkers(JDT_SPELLING_MARKER, true, IResource.DEPTH_INFINITE);
+				}
+
 			}
-		} catch (CoreException e) {
-			Plugin.log(e);
-		}
+		});
+		job.schedule();
 	}
 }
