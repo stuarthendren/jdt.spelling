@@ -58,20 +58,12 @@ public class MarkerFactory {
 
 	private void scheduleWorkspaceJob(final String message, final IResource resource, final int start, final int end)
 			throws CoreException {
-		MarkerJob job = new MarkerJob(resource, new MarkerJob.MarkerRunnable() {
-
-			@Override
-			public void run() throws CoreException {
-				IMarker marker = create(resource);
-				if (marker != null) {
-					marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END,
-							IMarker.SOURCE_ID },
-							new Object[] { message, new Integer(start), new Integer(end), Plugin.getPluginId() });
-				}
-			}
-		});
-		job.schedule();
-
+		IMarker marker = create(resource);
+		if (marker != null) {
+			marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END,
+					IMarker.SOURCE_ID },
+					new Object[] { message, new Integer(start), new Integer(end), Plugin.getPluginId() });
+		}
 	}
 
 	private IMarker create(IResource resource) {
@@ -96,17 +88,9 @@ public class MarkerFactory {
 		}
 	}
 
-	public void clear(final IResource resource) {
-		MarkerJob job = new MarkerJob(resource, new MarkerJob.MarkerRunnable() {
-
-			@Override
-			public void run() throws CoreException {
-				if (resource.exists()) {
-					resource.deleteMarkers(JDT_SPELLING_MARKER, true, IResource.DEPTH_INFINITE);
-				}
-
-			}
-		});
-		job.schedule();
+	public void clear(final IResource resource) throws CoreException {
+		if (resource.exists()) {
+			resource.deleteMarkers(JDT_SPELLING_MARKER, true, IResource.DEPTH_INFINITE);
+		}
 	}
 }

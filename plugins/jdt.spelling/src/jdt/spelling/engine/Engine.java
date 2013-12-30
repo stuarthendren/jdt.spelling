@@ -97,8 +97,7 @@ public class Engine extends EditorTracker implements IElementChangedListener, IP
 		}
 		Collection<SpellingEvent> events = new ArrayList<SpellingEvent>();
 		cascadeHandle(events, element);
-		processor.prepare(element);
-		processor.process(events);
+		processor.process(element, events);
 
 	}
 

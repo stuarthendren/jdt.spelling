@@ -15,7 +15,7 @@ public class MarkerJob extends WorkspaceJob {
 
 	private final MarkerRunnable runnable;
 
-	MarkerJob(IResource resource, MarkerRunnable runnable) {
+	public MarkerJob(IResource resource, MarkerRunnable runnable) {
 		super(MarkerFactory.JDT_SPELLING_MARKER);
 		this.runnable = runnable;
 		setRule(ResourcesPlugin.getWorkspace().getRuleFactory().markerRule(resource));
