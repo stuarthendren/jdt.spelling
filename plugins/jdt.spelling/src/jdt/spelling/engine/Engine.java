@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import jdt.spelling.Plugin;
+import jdt.spelling.Preferences;
 import jdt.spelling.checker.Checker;
 import jdt.spelling.checker.SpellingEvent;
+import jdt.spelling.local.LocalVariableDetector;
 import jdt.spelling.processor.Processor;
 
 import org.eclipse.core.resources.IResource;
@@ -16,6 +18,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
+import org.eclipse.jdt.core.ILocalVariable;
 import org.eclipse.jdt.core.IParent;
 import org.eclipse.jdt.core.ISourceReference;
 import org.eclipse.jdt.core.JavaCore;
@@ -89,14 +92,21 @@ public class Engine extends EditorTracker implements IElementChangedListener, IP
 		handleParentSourceReference(cu);
 	}
 
-	private void handleParentSourceReference(IJavaElement element) {
+	private void handleParentSourceReference(ICompilationUnit element) {
 		if (element instanceof ISourceReference) {
-			element = getParentSourceReference(element);
+			element = (ICompilationUnit) getParentSourceReference(element);
 		} else {
 			return;
 		}
 		Collection<SpellingEvent> events = new ArrayList<SpellingEvent>();
 		cascadeHandle(events, element);
+		if (Preferences.getBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL)) {
+			LocalVariableDetector localVariableDetector = new LocalVariableDetector(element);
+			localVariableDetector.process();
+			for (ILocalVariable localVariable : localVariableDetector.getLocalVariables()) {
+				handle(events, localVariable);
+			}
+		}
 		processor.process(element, events);
 
 	}

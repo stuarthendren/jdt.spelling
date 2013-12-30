@@ -46,6 +46,8 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 	private Button singleLetter;
 
+	private Button localVariables;
+
 	private Text additionText;
 
 	private Text ignoreText;
@@ -74,6 +76,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		}
 
 		singleLetter.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER));
+		localVariables.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL));
 		additionText.setText(Preferences.getString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY));
 		ignoreText.setText(Preferences.getString(Preferences.JDT_SPELLING_IGNORE_DICTIONARY));
 		validate();
@@ -108,10 +111,10 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 			grab.applyTo(combo);
 		}
 
-		Label label = new Label(configComposite, SWT.NONE);
-		label.setText(Messages.SpellingPreferencePage_ignore_single_letter);
+		singleLetter = createCheckButton(configComposite, Messages.SpellingPreferencePage_ignore_single_letter);
 
-		singleLetter = new Button(configComposite, SWT.CHECK);
+		localVariables = createCheckButton(configComposite, Messages.SpellingPreferencePage_check_local_variables);
+		localVariables.setToolTipText(Messages.SpellingPreferencePage_check_local_variables_tooltip);
 
 		Composite dictionariesComposite = new Composite(parentComposite, SWT.NONE);
 		GridLayoutFactory.fillDefaults().numColumns(3).applyTo(dictionariesComposite);
@@ -123,6 +126,13 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		setValues();
 
 		return dictionariesComposite;
+	}
+
+	private Button createCheckButton(Composite configComposite, String spellingPreferencePage_ignore_single_letter) {
+		Label label = new Label(configComposite, SWT.NONE);
+		label.setText(spellingPreferencePage_ignore_single_letter);
+
+		return new Button(configComposite, SWT.CHECK);
 	}
 
 	private Text addTextField(Composite dictionariesComposite, String label) {
@@ -255,6 +265,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 			}
 
 			Preferences.setBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER, singleLetter.getSelection());
+			Preferences.setBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL, localVariables.getSelection());
 			Preferences.setString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY, additionText.getText());
 			Preferences.setString(Preferences.JDT_SPELLING_IGNORE_DICTIONARY, ignoreText.getText());
 

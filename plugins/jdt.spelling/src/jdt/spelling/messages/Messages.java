@@ -20,6 +20,10 @@ public class Messages {
 
 	public static String SpellingPreferencePage_browse_label;
 
+	public static String SpellingPreferencePage_check_local_variables;
+
+	public static String SpellingPreferencePage_check_local_variables_tooltip;
+
 	public static String SpellingPreferencePage_dictionary_error;
 
 	public static String SpellingPreferencePage_dictionary_tooltip;

@@ -23,6 +23,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 	public static final String JDT_SPELLING_IGNORE_SINGLE_LETTER = "jdt.spelling.ignore.single.letter";
 	public static final String JDT_SPELLING_ADDITIONS_DICTIONARY = "jdt.spelling.additions.dictionary";
 	public static final String JDT_SPELLING_IGNORE_DICTIONARY = "jdt.spelling.ignore.dictionary";
+	public static final String JDT_SPELLING_CHECK_LOCAL = "jdt.spelling.check.local";
 
 	private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>();
 
@@ -40,6 +41,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		DEFAULTS.put(JDT_SPELLING_IGNORE_SINGLE_LETTER, true);
 		DEFAULTS.put(JDT_SPELLING_ADDITIONS_DICTIONARY, "");
 		DEFAULTS.put(JDT_SPELLING_IGNORE_DICTIONARY, "");
+		DEFAULTS.put(JDT_SPELLING_CHECK_LOCAL, false);
 	}
 
 	@Override
@@ -63,6 +65,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		restoreDefaultBoolean(prefs, JDT_SPELLING_IGNORE_SINGLE_LETTER);
 		restoreDefaultString(prefs, JDT_SPELLING_ADDITIONS_DICTIONARY);
 		restoreDefaultString(prefs, JDT_SPELLING_IGNORE_DICTIONARY);
+		restoreDefaultBoolean(prefs, JDT_SPELLING_CHECK_LOCAL);
 
 		flush();
 	}

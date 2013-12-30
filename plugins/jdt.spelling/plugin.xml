@@ -51,7 +51,7 @@
             type="org.eclipse.jdt.ui.internal.spelling">
       </super>
       <persistent
-            value="true">
+            value="false">
       </persistent>
    </extension>
    <extension
