@@ -86,7 +86,7 @@ public class LocalVariableDetector extends ASTVisitor {
 	 */
 	private void resolve(VariableDeclaration declaration) {
 		IVariableBinding binding = declaration.resolveBinding();
-		if (!binding.isField() && !binding.isEnumConstant()) {
+		if (binding != null && !binding.isField() && !binding.isEnumConstant()) {
 			ILocalVariable local = (ILocalVariable) binding.getJavaElement();
 			localVariables.add(local);
 		}
