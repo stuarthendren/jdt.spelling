@@ -6,6 +6,10 @@ import jdt.spelling.enums.JavaNameType;
 import jdt.spelling.messages.Messages;
 
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.ISourceRange;
+import org.eclipse.jdt.core.ISourceReference;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.SourceRange;
 
 public class SpellingEvent {
 
@@ -53,6 +57,33 @@ public class SpellingEvent {
 		builder.replace(getOffset(), getOffset() + getLength(), replacement);
 
 		return builder.toString();
+	}
+
+	public ISourceRange getJavaElementSourceRange() throws JavaModelException {
+		IJavaElement javaElement = getJavaElement();
+
+		if (javaElement instanceof ISourceReference) {
+			ISourceReference sourceReference = (ISourceReference) javaElement;
+			return sourceReference.getNameRange();
+
+		} else {
+			return null;
+		}
+	}
+
+	public ISourceRange getSourceRange() throws JavaModelException {
+		IJavaElement javaElement = getJavaElement();
+
+		ISourceRange range = null;
+		if (javaElement instanceof ISourceReference) {
+			ISourceReference sourceReference = (ISourceReference) javaElement;
+			range = sourceReference.getNameRange();
+		}
+
+		int start = range == null ? 0 : range.getOffset();
+		start += getOffset();
+
+		return new SourceRange(start, getLength());
 	}
 
 	@Override

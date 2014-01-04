@@ -7,14 +7,8 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaModelStatusConstants;
 import org.eclipse.jdt.core.ISourceRange;
-import org.eclipse.jdt.core.ISourceReference;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.compiler.CharOperation;
-import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 
-@SuppressWarnings("restriction")
 public class MarkerFactory {
 
 	public static final String JDT_SPELLING_MARKER = "jdt.spelling.marker";
@@ -23,32 +17,10 @@ public class MarkerFactory {
 		try {
 			IJavaElement javaElement = event.getJavaElement();
 			IResource resource = javaElement.getResource();
+			ISourceRange sourceRange = event.getSourceRange();
 
-			ISourceRange range = null;
-			if (javaElement instanceof ISourceReference) {
-				ISourceReference sourceReference = (ISourceReference) javaElement;
-				try {
-					range = sourceReference.getNameRange();
-				} catch (JavaModelException e) {
-					if (e.getJavaModelStatus().getCode() != IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST) {
-						throw e;
-					}
-					if (!CharOperation.equals(javaElement.getElementName().toCharArray(),
-							TypeConstants.PACKAGE_INFO_NAME)) {
-						throw e;
-					}
-					// else silently swallow the exception as the synthetic interface type
-					// package-info has no source range really.
-					// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=258145
-				}
-			}
-
-			int start = range == null ? 0 : range.getOffset();
-			start += event.getOffset();
-
-			int end = start + event.getLength();
-
-			scheduleWorkspaceJob(event.getMessage(), resource, start, end);
+			scheduleWorkspaceJob(event.getMessage(), resource, sourceRange.getOffset(), sourceRange.getOffset()
+					+ sourceRange.getLength());
 
 		} catch (CoreException e) {
 			Plugin.log(e);
