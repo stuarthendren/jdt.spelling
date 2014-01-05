@@ -8,6 +8,7 @@ import jdt.spelling.Plugin;
 import jdt.spelling.Preferences;
 import jdt.spelling.checker.Checker;
 import jdt.spelling.checker.SpellingEvent;
+import jdt.spelling.local.LocalVariableDetector;
 import jdt.spelling.proposal.AddWordProposal;
 import jdt.spelling.proposal.IgnoreWordProposal;
 import jdt.spelling.proposal.RenameRefactoringProposal;
@@ -57,27 +58,37 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 		int selectionOffset = context.getSelectionOffset();
 		int selectionLength = context.getSelectionLength();
 
-		IJavaElement element = compilationUnit.getElementAt(selectionOffset);
+		List<IJavaElement> elements = new ArrayList<IJavaElement>();
+
+		elements.add(compilationUnit.getElementAt(selectionOffset));
+
+		if (Preferences.getBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL)) {
+			LocalVariableDetector localVariableDetector = new LocalVariableDetector(compilationUnit);
+			localVariableDetector.process();
+			elements.addAll(localVariableDetector.getLocalVariables());
+		}
 
 		List<IJavaCompletionProposal> proposals = new ArrayList<IJavaCompletionProposal>();
 
-		if (element != null) {
+		for (IJavaElement element : elements) {
+			if (element != null) {
 
-			Checker spellChecker = Plugin.getDefault().getSpellChecker();
+				Checker spellChecker = Plugin.getDefault().getSpellChecker();
 
-			Collection<SpellingEvent> events = new ArrayList<SpellingEvent>();
-			spellChecker.execute(events, element);
+				Collection<SpellingEvent> events = new ArrayList<SpellingEvent>();
+				spellChecker.execute(events, element);
 
-			for (SpellingEvent event : events) {
-				ISourceRange sourceRange = event.getJavaElementSourceRange();
-				if (isSelectionInRange(selectionOffset, selectionLength, sourceRange)) {
-					String word = event.getWord();
-					for (String proposal : event.getProposals()) {
-						String newName = event.getNewName(proposal);
-						proposals.add(new RenameRefactoringProposal(assistContext, element, word, newName));
+				for (SpellingEvent event : events) {
+					ISourceRange sourceRange = event.getJavaElementSourceRange();
+					if (isSelectionInRange(selectionOffset, selectionLength, sourceRange)) {
+						String word = event.getWord();
+						for (String proposal : event.getProposals()) {
+							String newName = event.getNewName(proposal);
+							proposals.add(new RenameRefactoringProposal(assistContext, element, word, newName));
+						}
+						proposals.add(new IgnoreWordProposal(assistContext, element, word));
+						proposals.add(new AddWordProposal(assistContext, element, word));
 					}
-					proposals.add(new IgnoreWordProposal(assistContext, element, word));
-					proposals.add(new AddWordProposal(assistContext, element, word));
 				}
 			}
 		}

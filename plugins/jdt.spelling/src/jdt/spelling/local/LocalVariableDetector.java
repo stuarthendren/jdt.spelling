@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.ILocalVariable;
+import org.eclipse.jdt.core.ISourceRange;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -17,6 +19,8 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.jdt.internal.core.JavaElement;
+import org.eclipse.jdt.internal.core.LocalVariable;
 
 /**
  * This class looks for local declarations of local variables
@@ -29,6 +33,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
  * 
  * 
  */
+@SuppressWarnings("restriction")
 public class LocalVariableDetector extends ASTVisitor {
 
 	private final List<ILocalVariable> localVariables = new ArrayList<ILocalVariable>();
@@ -36,7 +41,7 @@ public class LocalVariableDetector extends ASTVisitor {
 	private final CompilationUnit compilationUnit;
 
 	public LocalVariableDetector(ICompilationUnit unit) {
-		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		ASTParser parser = ASTParser.newParser(AST.JLS4);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(unit);
 		parser.setResolveBindings(true);
@@ -88,8 +93,28 @@ public class LocalVariableDetector extends ASTVisitor {
 		IVariableBinding binding = declaration.resolveBinding();
 		if (binding != null && !binding.isField() && !binding.isEnumConstant()) {
 			ILocalVariable local = (ILocalVariable) binding.getJavaElement();
+
+			local = adjustNameRange(local);
+
 			localVariables.add(local);
 		}
+	}
+
+	/*
+	 * Name range in some locals includes the '= 0' this stops the refactoring working so adjust to
+	 * the simple name only
+	 */
+	private ILocalVariable adjustNameRange(ILocalVariable local) {
+		try {
+			ISourceRange sourceRange = local.getSourceRange();
+			local = new LocalVariable((JavaElement) local.getParent(), local.getElementName(), sourceRange.getOffset(),
+					sourceRange.getLength(), local.getNameRange().getOffset(), local.getNameRange().getOffset()
+							+ local.getElementName().length() - 1, local.getTypeSignature(), null, local.getFlags(),
+					local.isParameter());
+		} catch (JavaModelException e) {
+			// IGNORE
+		}
+		return local;
 	}
 
 	/**
