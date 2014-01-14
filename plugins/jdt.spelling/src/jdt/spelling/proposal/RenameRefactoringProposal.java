@@ -54,6 +54,10 @@ public class RenameRefactoringProposal implements IJavaCompletionProposal, IComp
 
 			renameSupport.perform(workbenchWindow.getShell(), workbenchWindow);
 
+			if (IJavaRefactorings.RENAME_TYPE.equals(descriptor.getID())) {
+				Plugin.getDefault().getSpellEngine().partActivated(context.getEditor());
+			}
+
 		} catch (JavaModelException e) {
 			Plugin.log(e);
 		} catch (InterruptedException e) {

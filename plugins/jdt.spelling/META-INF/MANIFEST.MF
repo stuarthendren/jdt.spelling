@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.eclipse.jdt.core.manipulation,
  org.eclipse.core.variables;bundle-version="3.2.500",
- org.eclipse.debug.ui;bundle-version="3.7.102"
+ org.eclipse.debug.ui;bundle-version="3.7.102",
+ org.eclipse.ltk.core.refactoring;bundle-version="3.5.201"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
