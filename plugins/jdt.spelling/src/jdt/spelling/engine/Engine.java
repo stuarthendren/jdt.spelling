@@ -69,10 +69,8 @@ public class Engine extends EditorTracker implements IElementChangedListener, IP
 	}
 
 	public void checkResource(IResource resource) {
-		if (resource != null) {
-			if (resource.exists()) {
-				checkElement(JavaCore.create(resource));
-			}
+		if (resource != null && resource.exists()) {
+			checkElement(JavaCore.create(resource));
 		}
 	}
 

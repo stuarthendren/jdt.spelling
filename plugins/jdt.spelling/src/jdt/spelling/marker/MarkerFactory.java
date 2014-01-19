@@ -60,9 +60,11 @@ public class MarkerFactory {
 		}
 	}
 
-	public void clear(final IResource resource) throws CoreException {
-		if (resource.exists()) {
+	public void clear(final IResource resource) {
+		try {
 			resource.deleteMarkers(JDT_SPELLING_MARKER, true, IResource.DEPTH_INFINITE);
+		} catch (CoreException e) {
+			Plugin.log(e);
 		}
 	}
 }

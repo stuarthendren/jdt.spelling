@@ -7,7 +7,6 @@ import jdt.spelling.marker.MarkerFactory;
 import jdt.spelling.marker.MarkerJob;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 
 public class Processor {
@@ -23,7 +22,7 @@ public class Processor {
 		MarkerJob job = new MarkerJob(resource, new MarkerJob.MarkerRunnable() {
 
 			@Override
-			public void run() throws CoreException {
+			public void run() {
 				prepare(resource);
 				for (SpellingEvent event : events) {
 					process(event);
@@ -37,7 +36,7 @@ public class Processor {
 		markerFactory.create(event);
 	}
 
-	private void prepare(IResource resource) throws CoreException {
+	private void prepare(IResource resource) {
 		markerFactory.clear(resource);
 	}
 
@@ -45,7 +44,7 @@ public class Processor {
 		MarkerJob job = new MarkerJob(resource, new MarkerJob.MarkerRunnable() {
 
 			@Override
-			public void run() throws CoreException {
+			public void run() {
 				markerFactory.clear(resource);
 			}
 		});
