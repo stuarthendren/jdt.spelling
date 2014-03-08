@@ -8,6 +8,12 @@ Splitting out the names using regular naming patters for Java names.
 
 This relies heavily on org.eclipse.jdt, and currently uses internal components.
 
+## Screenshots
+
+![Incorrect spellings in the editor](screenshots/interface.png)
+
+![Refactoring support](screenshots/refactor.png)
+
 ## Continuous Integration
 
 CI provided by [Travis CI](http://travis-ci.org/)
@@ -20,7 +26,7 @@ CI provided by [Travis CI](http://travis-ci.org/)
 
 ## Copyright
 
-Copyright (c) 2013 Stuart Hendren. 
+Copyright (c) 2013-2014 Stuart Hendren. 
 
 ## License
 
