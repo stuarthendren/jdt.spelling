@@ -1,14 +1,10 @@
 package jdt.spelling.preferences;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import jdt.spelling.Plugin;
 import jdt.spelling.Preferences;
 import jdt.spelling.enums.JavaNameType;
-import jdt.spelling.enums.JavaType;
 import jdt.spelling.messages.Messages;
 
 import org.eclipse.core.runtime.CoreException;
@@ -30,7 +26,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
@@ -41,8 +36,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 @SuppressWarnings("restriction")
 public class SpellingPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-
-	private final Map<Combo, JavaType> comboMap = new HashMap<Combo, JavaType>();
 
 	private Button singleLetter;
 
@@ -69,12 +62,6 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 	}
 
 	public void setValues() {
-		for (Entry<Combo, JavaType> entry : comboMap.entrySet()) {
-			Combo combo = entry.getKey();
-			JavaType javaType = entry.getValue();
-			combo.setText(Preferences.getJavaNameType(javaType).getDisplayName());
-		}
-
 		singleLetter.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER));
 		localVariables.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL));
 		additionText.setText(Preferences.getString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY));
@@ -98,17 +85,6 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		String[] names = new String[values.length];
 		for (int i = 0; i < values.length; i++) {
 			names[i] = values[i].getDisplayName();
-		}
-
-		for (JavaType type : JavaType.values()) {
-			Label label = new Label(configComposite, SWT.NONE);
-			label.setText(type.getDisplayName());
-			label.setToolTipText(type.getTooltip());
-
-			Combo combo = new Combo(configComposite, SWT.NONE);
-			combo.setItems(names);
-			comboMap.put(combo, type);
-			grab.applyTo(combo);
 		}
 
 		singleLetter = createCheckButton(configComposite, Messages.SpellingPreferencePage_ignore_single_letter);
@@ -252,18 +228,6 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 	@Override
 	public boolean performOk() {
 		try {
-			JavaNameType[] values = JavaNameType.values();
-
-			for (Entry<Combo, JavaType> entry : comboMap.entrySet()) {
-				Combo combo = entry.getKey();
-				JavaType javaType = entry.getValue();
-				int selectionIndex = combo.getSelectionIndex();
-				if (selectionIndex > -1) {
-					JavaNameType value = values[selectionIndex];
-					Preferences.setJavaNameType(javaType, value);
-				}
-			}
-
 			Preferences.setBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER, singleLetter.getSelection());
 			Preferences.setBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL, localVariables.getSelection());
 			Preferences.setString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY, additionText.getText());
