@@ -128,7 +128,7 @@ public class Checker {
 		}
 
 		boolean ignoreSingleLetter = Preferences.getBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER);
-		JavaNameType javaNameType = Preferences.getJavaNameType(convert);
+		JavaNameType javaNameType = Preferences.getJavaNameType(element.getElementName(), convert);
 		JavaName javaName = new JavaName(javaNameType, element);
 
 		String[] words = javaName.getWords();
@@ -140,7 +140,6 @@ public class Checker {
 					continue;
 				}
 
-				// synchronizing is necessary as this is called inside the reconciler
 				if (!isCorrect(word)) {
 					events.add(new SpellingEvent(this, i, word, javaName));
 				}
@@ -152,7 +151,7 @@ public class Checker {
 
 		// synchronizing might not be needed here since getProposals is
 		// a read-only access and only called in the same thread as
-		// the modifing methods add/removeDictionary (?)
+		// the modifying methods addDictionary/removeDictionary
 		Set<ISpellDictionary> copy;
 		synchronized (dictionaries) {
 			copy = new HashSet<ISpellDictionary>(dictionaries);

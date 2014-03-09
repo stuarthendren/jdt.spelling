@@ -29,4 +29,13 @@ public enum Case {
 		return word;
 	}
 
+	public static boolean isUpper(String elementName) {
+		for (char c : elementName.toCharArray()) {
+			if (Character.isLetter(c) && Character.isLowerCase(c)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

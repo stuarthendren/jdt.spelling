@@ -3,6 +3,7 @@ package jdt.spelling;
 import java.util.HashMap;
 import java.util.Map;
 
+import jdt.spelling.enums.Case;
 import jdt.spelling.enums.JavaNameType;
 import jdt.spelling.enums.JavaType;
 
@@ -31,7 +32,6 @@ public class Preferences extends AbstractPreferenceInitializer {
 		DEFAULTS.put(JavaType.TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.ENUM_TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.ANNOTATION.name(), JavaNameType.UPPER_CAMEL_CASE.name());
-		DEFAULTS.put(JavaType.CONSTANT.name(), JavaNameType.UPPER.name());
 		DEFAULTS.put(JavaType.METHOD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.PACKAGE_DECLARATION.name(), JavaNameType.DOT.name());
 		DEFAULTS.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
@@ -55,7 +55,6 @@ public class Preferences extends AbstractPreferenceInitializer {
 		restoreDefaultString(prefs, JavaType.TYPE.name());
 		restoreDefaultString(prefs, JavaType.ENUM_TYPE.name());
 		restoreDefaultString(prefs, JavaType.ANNOTATION.name());
-		restoreDefaultString(prefs, JavaType.CONSTANT.name());
 		restoreDefaultString(prefs, JavaType.METHOD.name());
 		restoreDefaultString(prefs, JavaType.PACKAGE_DECLARATION.name());
 		restoreDefaultString(prefs, JavaType.FIELD.name());
@@ -88,10 +87,6 @@ public class Preferences extends AbstractPreferenceInitializer {
 	}
 
 	private static void restoreDefaultBoolean(IEclipsePreferences prefs, String name) {
-		prefs.putBoolean(name, (Boolean) DEFAULTS.get(name));
-	}
-
-	private static void restoreDefaultInt(IEclipsePreferences prefs, String name) {
 		prefs.putBoolean(name, (Boolean) DEFAULTS.get(name));
 	}
 
@@ -137,7 +132,15 @@ public class Preferences extends AbstractPreferenceInitializer {
 		setString(javaType.name(), javaNameType.name());
 	}
 
-	public static JavaNameType getJavaNameType(JavaType javaType) {
+	public static JavaNameType getJavaNameType(String elementName, JavaType javaType) {
+		if (JavaType.CONSTANT == javaType) {
+			if (Case.isUpper(elementName)) {
+				return JavaNameType.UPPER;
+			} else {
+				return JavaNameType.LOWER_CAMEL_CASE;
+			}
+		}
+
 		String name = getString(javaType.name());
 		return JavaNameType.valueOf(name);
 	}
