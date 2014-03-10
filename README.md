@@ -16,9 +16,12 @@ This relies heavily on org.eclipse.jdt, and currently uses internal components.
 
 ## Continuous Integration
 
-CI provided by [Travis CI](http://travis-ci.org/)
+CI provided by [Travis CI](http://travis-ci.org/) and 
+code coverage provided by [Coveralls](https://coveralls.io)
 
 [![Build Status](https://secure.travis-ci.org/hendrens/jdt.spelling.png)](http://travis-ci.org/hendrens/jdt.spelling)
+
+[![Coverage Status](https://coveralls.io/repos/hendrens/jdt.spelling/badge.png?branch=master)](https://coveralls.io/r/hendrens/jdt.spelling?branch=master)
 
 ## Eclipse update site
 
