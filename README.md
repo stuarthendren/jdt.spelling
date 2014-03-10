@@ -31,3 +31,7 @@ Copyright (c) 2013-2014 Stuart Hendren.
 ## License
 
 Licensed under the [EPL License](http://www.eclipse.org/legal/epl-v10.html).
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/hendrens/jdt.spelling/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
