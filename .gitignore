@@ -8,3 +8,4 @@ bin
 *.ear
 
 com.bdaum*
+cov-int

@@ -23,6 +23,8 @@ code coverage provided by [Coveralls](https://coveralls.io)
 
 [![Coverage Status](https://coveralls.io/repos/hendrens/jdt.spelling/badge.png?branch=master)](https://coveralls.io/r/hendrens/jdt.spelling?branch=master)
 
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/1664/badge.svg)](https://scan.coverity.com/projects/1664)
+
 ## Eclipse update site
 
 [http://stuarthendren.net/update](http://stuarthendren.net/update)
