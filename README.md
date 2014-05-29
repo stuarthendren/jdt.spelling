@@ -25,9 +25,26 @@ code coverage provided by [Coveralls](https://coveralls.io)
 
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/1664/badge.svg)](https://scan.coverity.com/projects/1664)
 
-## Eclipse update site
+## Installing
 
-[http://stuarthendren.net/update](http://stuarthendren.net/update)
+<table style="border: none; width:100%">
+  <tbody>
+    <tr style="border:none;">
+      <td style="vertical-align: middle; padding-top: 10px; border: none;">
+        <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1479767" title="Drag and drop onto a running Eclipse Main Toolbar to install JDT Spelling">
+          <img src="http://marketplace.eclipse.org/misc/installbutton.png">
+        </a>
+      </td>
+      <td style="vertical-align: middle; text-align: left; border: none;">
+        ← Drag it onto your Eclipse Main Toolbar to install!</td>
+    </tr>
+  </tbody>
+</table>
+
+or use `http://stuarthendren.net/update` in Help -> Install New Software ... Dialog.
+
+
+
 
 ## Copyright
 
