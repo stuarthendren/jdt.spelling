@@ -32,6 +32,8 @@ public class Messages {
 
 	public static String SpellingPreferencePage_ignore_single_letter;
 
+	public static String SpellingPreferencePage_locale_dictionary_label;
+
 	public static String SpellingPreferencePage_user_dictionary_label;
 
 	public static String SpellingPreferencePage_variables_label;

@@ -2,6 +2,7 @@ package jdt.spelling;
 
 import jdt.spelling.checker.Checker;
 import jdt.spelling.checker.CheckerFactory;
+import jdt.spelling.dictionary.DictionaryFactory;
 import jdt.spelling.engine.Engine;
 import jdt.spelling.marker.MarkerFactory;
 import jdt.spelling.messages.Messages;
@@ -11,10 +12,10 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -40,6 +41,8 @@ public class Plugin extends AbstractUIPlugin {
 	private Checker checker;
 
 	private Engine engine;
+
+	private volatile boolean initialised;
 
 	public static Plugin getDefault() {
 		return plugin;
@@ -102,19 +105,24 @@ public class Plugin extends AbstractUIPlugin {
 	public Plugin() {
 		super();
 		plugin = this;
+
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {
-			PlatformUI.getWorkbench().removeWindowListener(engine);
-			JavaCore.removeElementChangedListener(engine);
-			Preferences.removeListener(engine);
-			Preferences.removeListener(checkerFactory);
+			if (initialised) {
+				PlatformUI.getWorkbench().removeWindowListener(engine);
+				JavaCore.removeElementChangedListener(engine);
+				Preferences.removeListener(engine);
+				Preferences.removeListener(checkerFactory);
+			}
+		} finally {
 			checker = null;
 			engine = null;
-		} finally {
-			super.stop(context);
+			if (Platform.isRunning()) {
+				super.stop(context);
+			}
 		}
 	}
 
@@ -124,38 +132,6 @@ public class Plugin extends AbstractUIPlugin {
 
 	public Engine getSpellEngine() {
 		return engine;
-	}
-
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		checkerFactory = new CheckerFactory();
-		checker = checkerFactory.getSpellChecker();
-
-		MarkerFactory markerFactory = new MarkerFactory();
-		Processor processor = new Processor(markerFactory);
-
-		engine = new Engine(checker, processor);
-
-		Preferences.addListener(checkerFactory);
-		Preferences.addListener(engine);
-
-		Display.getDefault().asyncExec(new Runnable() {
-
-			@Override
-			public void run() {
-				Display.getDefault().syncExec(new Runnable() {
-					@Override
-					public void run() {
-						if (PlatformUI.isWorkbenchRunning()) {
-							IWorkbench workbench = PlatformUI.getWorkbench();
-							engine.track(workbench);
-						}
-					}
-				});
-				JavaCore.addElementChangedListener(engine);
-			}
-		});
 	}
 
 	private IWorkbenchPage internalGetActivePage() {
@@ -168,6 +144,25 @@ public class Plugin extends AbstractUIPlugin {
 
 	public static ImageDescriptor imageDescriptorFromPlugin(String name) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, "icons/" + name);
+	}
+
+	public void initialise(IWorkbench workbench) {
+		initialised = true;
+		DictionaryFactory dictionaryFactory = new DictionaryFactory();
+		Preferences.setAvailableLocales(dictionaryFactory.getAvailableDictionaries());
+		checkerFactory = new CheckerFactory(dictionaryFactory);
+		checker = checkerFactory.getSpellChecker();
+
+		MarkerFactory markerFactory = new MarkerFactory();
+		Processor processor = new Processor(markerFactory);
+
+		engine = new Engine(checker, processor);
+
+		Preferences.addListener(checkerFactory);
+		Preferences.addListener(engine);
+
+		engine.track(workbench);
+		JavaCore.addElementChangedListener(engine);
 	}
 
 }

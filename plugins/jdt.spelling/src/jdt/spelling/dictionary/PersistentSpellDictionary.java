@@ -16,6 +16,7 @@ import org.eclipse.jdt.internal.ui.text.spelling.engine.AbstractSpellDictionary;
  * 
  * @since 3.0
  */
+@SuppressWarnings("restriction")
 public class PersistentSpellDictionary extends AbstractSpellDictionary {
 
 	/** The word list location */
@@ -99,8 +100,13 @@ public class PersistentSpellDictionary extends AbstractSpellDictionary {
 	}
 
 	public void clear() {
-		File file = new File(fLocation.getPath());
-		file.delete();
+		try {
+			File file = new File(fLocation.getPath());
+			file.delete();
+			file.createNewFile();
+		} catch (IOException e) {
+			Plugin.log(e);
+		}
 		unload();
 	}
 

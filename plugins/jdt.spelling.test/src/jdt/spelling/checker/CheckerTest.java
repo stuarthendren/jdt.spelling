@@ -10,19 +10,19 @@ import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import jdt.spelling.dictionary.PersistentSpellDictionary;
 import jdt.spelling.messages.Messages;
 
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.internal.ui.text.spelling.engine.ISpellDictionary;
+import org.eclipse.jdt.internal.ui.text.spelling.engine.LocaleSensitiveSpellDictionary;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.RankedWordProposal;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("restriction")
 public class CheckerTest {
 
 	private static final String INCORRECT = "incorect";
@@ -31,19 +31,20 @@ public class CheckerTest {
 
 	private static final String CORRECT = "incorrect";
 
-	private static final Locale LOCALE = Locale.getDefault();
-
 	private Checker checker;
 	private PersistentSpellDictionary additionsDictionary;
 	private PersistentSpellDictionary ignoreDictionary;
+	private LocaleSensitiveSpellDictionary mainDictionary;
 	private IJavaElement element;
 
 	@Before
 	public void setUp() throws Exception {
 		additionsDictionary = mock(PersistentSpellDictionary.class);
 		ignoreDictionary = mock(PersistentSpellDictionary.class);
+		mainDictionary = mock(LocaleSensitiveSpellDictionary.class);
+
 		element = mock(IJavaElement.class);
-		checker = new Checker(additionsDictionary, ignoreDictionary, LOCALE);
+		checker = new Checker(additionsDictionary, ignoreDictionary, mainDictionary);
 	}
 
 	@After
@@ -54,11 +55,11 @@ public class CheckerTest {
 	}
 
 	@Test
-	public void testAddDictionary() {
-		ISpellDictionary dict = mock(ISpellDictionary.class);
+	public void testSetMainDictionary() {
+		LocaleSensitiveSpellDictionary dict = mock(LocaleSensitiveSpellDictionary.class);
 		when(dict.isCorrect(INCORRECT)).thenReturn(true);
 		assertFalse(checker.isCorrect(INCORRECT));
-		checker.addDictionary(dict);
+		checker.setMainDictionary(dict);
 		assertTrue(checker.isCorrect(INCORRECT));
 	}
 
@@ -115,16 +116,6 @@ public class CheckerTest {
 		checker.ignoreWord(INCORRECT);
 		assertTrue(checker.isCorrect(INCORRECT));
 		verify(ignoreDictionary).addWord(INCORRECT);
-	}
-
-	@Test
-	public void testRemoveDictionary() {
-		ISpellDictionary dict = mock(ISpellDictionary.class);
-		when(dict.isCorrect(INCORRECT)).thenReturn(true);
-		assertFalse(checker.isCorrect(INCORRECT));
-		checker.addDictionary(dict);
-		checker.removeDictionary(dict);
-		assertFalse(checker.isCorrect(INCORRECT));
 	}
 
 	@Test

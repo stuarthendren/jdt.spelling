@@ -1,12 +1,15 @@
 package jdt.spelling;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import jdt.spelling.enums.Case;
 import jdt.spelling.enums.JavaNameType;
 import jdt.spelling.enums.JavaType;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -22,9 +25,12 @@ public class Preferences extends AbstractPreferenceInitializer {
 	public static final String JDT_SPELLING_MARKER_TEXT = "jdt.spelling.marker.text";
 	public static final String JDT_SPELLING_MARKER_RULER = "jdt.spelling.marker.ruler";
 	public static final String JDT_SPELLING_IGNORE_SINGLE_LETTER = "jdt.spelling.ignore.single.letter";
+	public static final String JDT_SPELLING_LOCALE_DICTIONARY = "jdt.spelling.locale.dictionary";
 	public static final String JDT_SPELLING_ADDITIONS_DICTIONARY = "jdt.spelling.additions.dictionary";
 	public static final String JDT_SPELLING_IGNORE_DICTIONARY = "jdt.spelling.ignore.dictionary";
 	public static final String JDT_SPELLING_CHECK_LOCAL = "jdt.spelling.check.local";
+
+	private static List<Locale> availableLocales;
 
 	private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>();
 
@@ -39,6 +45,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		DEFAULTS.put(JavaType.LOCAL_VARIABLE.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		DEFAULTS.put(JDT_SPELLING_IGNORE_SINGLE_LETTER, true);
+		DEFAULTS.put(JDT_SPELLING_LOCALE_DICTIONARY, Locale.US.toString());
 		DEFAULTS.put(JDT_SPELLING_ADDITIONS_DICTIONARY, "");
 		DEFAULTS.put(JDT_SPELLING_IGNORE_DICTIONARY, "");
 		DEFAULTS.put(JDT_SPELLING_CHECK_LOCAL, false);
@@ -62,6 +69,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		restoreDefaultString(prefs, JavaType.LOCAL_VARIABLE.name());
 		restoreDefaultString(prefs, JavaType.FIELD.name());
 		restoreDefaultBoolean(prefs, JDT_SPELLING_IGNORE_SINGLE_LETTER);
+		restoreDefaultLocale(prefs, JDT_SPELLING_LOCALE_DICTIONARY);
 		restoreDefaultString(prefs, JDT_SPELLING_ADDITIONS_DICTIONARY);
 		restoreDefaultString(prefs, JDT_SPELLING_IGNORE_DICTIONARY);
 		restoreDefaultBoolean(prefs, JDT_SPELLING_CHECK_LOCAL);
@@ -84,6 +92,10 @@ public class Preferences extends AbstractPreferenceInitializer {
 
 	private static void restoreDefaultString(IEclipsePreferences prefs, String name) {
 		prefs.put(name, (String) DEFAULTS.get(name));
+	}
+
+	private static void restoreDefaultLocale(IEclipsePreferences prefs, String name) {
+		prefs.put(name, ((Locale) DEFAULTS.get(name)).toString());
 	}
 
 	private static void restoreDefaultBoolean(IEclipsePreferences prefs, String name) {
@@ -151,6 +163,27 @@ public class Preferences extends AbstractPreferenceInitializer {
 
 	public static void removeListener(IPreferenceChangeListener listener) {
 		getPreferences().removePreferenceChangeListener(listener);
+	}
+
+	public static void setAvailableLocales(List<Locale> availableLocales) {
+		Preferences.availableLocales = availableLocales;
+		Locale defaultLocale = Locale.getDefault();
+		if (Preferences.availableLocales.contains(defaultLocale)) {
+			DEFAULTS.put(JDT_SPELLING_LOCALE_DICTIONARY, defaultLocale.toString());
+		}
+	}
+
+	public static List<Locale> getAvailableLocales() {
+		return availableLocales;
+	}
+
+	public static void setDictionaryLocale(Locale locale) {
+		setString(JDT_SPELLING_LOCALE_DICTIONARY, locale.toString());
+	}
+
+	public static Locale getDictionaryLocale() {
+		String localString = getString(JDT_SPELLING_LOCALE_DICTIONARY);
+		return LocaleUtils.toLocale(localString);
 	}
 
 }

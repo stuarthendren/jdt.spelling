@@ -2,12 +2,8 @@ package jdt.spelling.checker;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -16,9 +12,8 @@ import jdt.spelling.dictionary.PersistentSpellDictionary;
 import jdt.spelling.enums.JavaNameType;
 import jdt.spelling.enums.JavaType;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.internal.ui.text.spelling.engine.ISpellDictionary;
+import org.eclipse.jdt.internal.ui.text.spelling.engine.LocaleSensitiveSpellDictionary;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.RankedWordProposal;
 
 @SuppressWarnings("restriction")
@@ -59,9 +54,9 @@ public class Checker {
 	}
 
 	/**
-	 * The dictionaries to use for spell checking. Synchronized to avoid concurrent modifications.
+	 * The main dictionaries to used for spell checking
 	 */
-	private final Set<ISpellDictionary> dictionaries = Collections.synchronizedSet(new HashSet<ISpellDictionary>());
+	private LocaleSensitiveSpellDictionary mainDictionary;
 
 	/**
 	 * The dictionary used for added words.
@@ -74,13 +69,6 @@ public class Checker {
 	private PersistentSpellDictionary ignoreDictionary;
 
 	/**
-	 * The locale of this checker.
-	 * 
-	 * @since 3.3
-	 */
-	private final Locale locale;
-
-	/**
 	 * Creates a new default spell checker.
 	 * 
 	 * @param preferences
@@ -89,35 +77,19 @@ public class Checker {
 	 *            the locale
 	 */
 	public Checker(PersistentSpellDictionary additionsDictionary, PersistentSpellDictionary ignoreDictionary,
-			Locale locale) {
+			LocaleSensitiveSpellDictionary mainDictionary) {
 		this.additionsDictionary = additionsDictionary;
 		this.ignoreDictionary = ignoreDictionary;
-		Assert.isLegal(locale != null);
-
-		this.locale = locale;
+		this.mainDictionary = mainDictionary;
 	}
 
-	/*
-	 * @see
-	 * org.eclipse.spelling.done.ISpellChecker#addDictionary(org.eclipse.spelling.done.ISpellDictionary
-	 * )
-	 */
-	public final void addDictionary(final ISpellDictionary dictionary) {
-		// synchronizing is necessary as this is a write access
-		dictionaries.add(dictionary);
-	}
-
-	public void addWord(final String word) {
-		// synchronizing is necessary as this is a write access
-		synchronized (additionsDictionary) {
-			final String addable = word.toLowerCase();
-			if (additionsDictionary.acceptsWords()) {
-				additionsDictionary.addWord(addable);
-			} else {
-				throw new IllegalStateException("Unable to add to dictionary");
-			}
+	public synchronized void addWord(final String word) {
+		final String addable = word.toLowerCase();
+		if (additionsDictionary.acceptsWords()) {
+			additionsDictionary.addWord(addable);
+		} else {
+			throw new IllegalStateException("Unable to add to dictionary");
 		}
-
 	}
 
 	public void execute(Collection<SpellingEvent> events, IJavaElement element) {
@@ -148,23 +120,11 @@ public class Checker {
 	}
 
 	public List<String> getProposals(final String word) {
-
-		// synchronizing might not be needed here since getProposals is
-		// a read-only access and only called in the same thread as
-		// the modifying methods addDictionary/removeDictionary
-		Set<ISpellDictionary> copy;
-		synchronized (dictionaries) {
-			copy = new HashSet<ISpellDictionary>(dictionaries);
-			copy.add(additionsDictionary);
-		}
-
-		ISpellDictionary dictionary = null;
 		final SortedSet<RankedWordProposal> proposals = new TreeSet<RankedWordProposal>();
 
-		for (final Iterator<ISpellDictionary> iterator = copy.iterator(); iterator.hasNext();) {
-
-			dictionary = iterator.next();
-			proposals.addAll(dictionary.getProposals(word, false));
+		synchronized (this) {
+			proposals.addAll(additionsDictionary.getProposals(word, false));
+			proposals.addAll(mainDictionary.getProposals(word, false));
 		}
 
 		List<String> words = new ArrayList<String>(proposals.size());
@@ -175,11 +135,8 @@ public class Checker {
 		return words;
 	}
 
-	public final void ignoreWord(final String word) {
-		// synchronizing is necessary as this is a write access
-		synchronized (ignoreDictionary) {
-			ignoreDictionary.addWord(word);
-		}
+	public synchronized void ignoreWord(final String word) {
+		ignoreDictionary.addWord(word);
 	}
 
 	public final boolean isCorrect(final String word) {
@@ -195,48 +152,30 @@ public class Checker {
 			return true;
 		}
 
-		// synchronizing is necessary as this is called from execute
-		Set<ISpellDictionary> copy;
-		synchronized (dictionaries) {
-			copy = new HashSet<ISpellDictionary>(dictionaries);
+		if (mainDictionary.isCorrect(word)) {
+			return true;
 		}
 
-		ISpellDictionary dictionary = null;
-		for (final Iterator<ISpellDictionary> iterator = copy.iterator(); iterator.hasNext();) {
-
-			dictionary = iterator.next();
-			if (dictionary.isCorrect(word)) {
-				return true;
-			}
-		}
 		return false;
 	}
 
-	public final void removeDictionary(final ISpellDictionary dictionary) {
-		// synchronizing is necessary as this is a write access
-		dictionaries.remove(dictionary);
-	}
-
 	public Locale getLocale() {
-		return locale;
+		return mainDictionary.getLocale();
 	}
 
-	public void clearIgnoredWords() {
-		synchronized (ignoreDictionary) {
-			ignoreDictionary.clear();
-		}
+	public synchronized void clearIgnoredWords() {
+		ignoreDictionary.clear();
 	}
 
-	public void clearAddedWords() {
-		synchronized (additionsDictionary) {
-			additionsDictionary.clear();
-		}
+	public synchronized void clearAddedWords() {
+		additionsDictionary.clear();
 	}
 
 	public synchronized void setAdditionsDictionary(PersistentSpellDictionary additionsDictionary) {
 		if (additionsDictionary == null || !additionsDictionary.acceptsWords()) {
 			throw new IllegalArgumentException("Additions dictionary must not be null and must accept new words");
 		}
+		this.additionsDictionary.unload();
 		this.additionsDictionary = additionsDictionary;
 	}
 
@@ -244,6 +183,16 @@ public class Checker {
 		if (ignoreDictionary == null || !ignoreDictionary.acceptsWords()) {
 			throw new IllegalArgumentException("Ignore dictionary must not be null and must accept new words");
 		}
+		this.ignoreDictionary.unload();
 		this.ignoreDictionary = ignoreDictionary;
+	}
+
+	public synchronized void setMainDictionary(LocaleSensitiveSpellDictionary mainDictionary) {
+		if (mainDictionary == null) {
+			throw new IllegalArgumentException("Main dictionary must not be null");
+		}
+		this.mainDictionary.unload();
+		this.mainDictionary = mainDictionary;
+
 	}
 }
