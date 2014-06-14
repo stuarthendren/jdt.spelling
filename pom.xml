@@ -28,8 +28,10 @@
 	<properties>
 		<tycho-version>0.20.0</tycho-version>
 		<tycho-extras.version>0.20.0</tycho-extras.version>
-		<eclipse-repo.url>http://download.eclipse.org/releases/kepler/</eclipse-repo.url>
-		<!-- <eclipse-repo.urlhttp://download.eclipse.org/releases/indigo/</eclipse-repo.url> -->
+		<!-- <eclipse-repo.url>http://download.eclipse.org/releases/kepler/</eclipse-repo.url> -->
+		<!-- <eclipse-repo.url>http://download.eclipse.org/releases/indigo/</eclipse-repo.url> -->
+		<!-- <eclipse-repo.url>http://download.eclipse.org/releases/juno/</eclipse-repo.url> --> 
+		<eclipse-repo.url>http://download.eclipse.org/releases/kepler/</eclipse-repo.url>  
 		<tycho-repo.url>https://oss.sonatype.org/content/groups/public/</tycho-repo.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
