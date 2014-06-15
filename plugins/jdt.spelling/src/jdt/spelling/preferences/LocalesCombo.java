@@ -14,12 +14,12 @@ public class LocalesCombo extends Composite {
 
 	private final Combo combo;
 
-	public LocalesCombo(Composite parent, int style, List<Locale> list) {
+	public LocalesCombo(Composite parent, int style, List<Locale> listToChooseFrom) {
 		super(parent, style);
 		setLayout(new FillLayout());
 		combo = new Combo(this, SWT.NONE);
 
-		availableLocales = list;
+		availableLocales = listToChooseFrom;
 		String[] localesDisplay = new String[availableLocales.size()];
 		for (int i = 0; i < availableLocales.size(); i++) {
 			localesDisplay[i] = availableLocales.get(i).getDisplayName();
@@ -33,6 +33,12 @@ public class LocalesCombo extends Composite {
 
 	public Locale getSelectedLocale() {
 		return availableLocales.get(combo.getSelectionIndex());
+	}
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		combo.setEnabled(enabled);
 	}
 
 }

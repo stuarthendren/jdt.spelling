@@ -68,7 +68,7 @@ public class Engine extends EditorTracker implements IElementChangedListener, IP
 
 	}
 
-	public void checkResource(IResource resource) {
+	private void checkResource(IResource resource) {
 		if (resource != null && resource.exists()) {
 			checkElement(JavaCore.create(resource));
 		}
@@ -131,23 +131,16 @@ public class Engine extends EditorTracker implements IElementChangedListener, IP
 	}
 
 	@Override
-	public void editorOpened(IEditorPart editor) {
-		setCurrentResource(editor);
-	}
-
-	@Override
-	public void editorClosed(IEditorPart editor) {
+	public void editorDeactivated(IEditorPart editor) {
 		clearEditor(editor);
-		setCurrentResource(null);
+		IResource resource = getResource(editor);
+		if (resource != null && resource.equals(currentResource)) {
+			setCurrentResource(null);
+		}
 	}
 
 	@Override
 	public void editorActivated(IEditorPart editor) {
-		setCurrentResource(editor);
-	}
-
-	@Override
-	public void editorBroughtToTop(IEditorPart editor) {
 		setCurrentResource(editor);
 	}
 
@@ -172,16 +165,20 @@ public class Engine extends EditorTracker implements IElementChangedListener, IP
 	}
 
 	private IResource getResource(IEditorPart editor) {
-		if (editor != null) {
-			IEditorInput editorInput = editor.getEditorInput();
-			return ResourceUtil.getResource(editorInput);
+		if (editor == null) {
+			return null;
 		}
-		return null;
+		IEditorInput editorInput = editor.getEditorInput();
+		return ResourceUtil.getResource(editorInput);
 	}
 
 	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		checkResource(currentResource);
+	}
+
+	public void clear() {
+		processor.complete(currentResource);
 	}
 
 }

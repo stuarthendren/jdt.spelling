@@ -45,7 +45,7 @@ public class Processor {
 
 			@Override
 			public void run() {
-				markerFactory.clear(resource);
+				prepare(resource);
 			}
 		});
 		job.schedule();

@@ -19,6 +19,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class Preferences extends AbstractPreferenceInitializer {
 
+	public static final String JDT_SPELLING_ENABLED = "jdt.spelling.enabled";
 	public static final String JDT_SPELLING_MARKER_COLOR = "jdt.spelling.marker.color";
 	public static final String JDT_SPELLING_MARKER_HIGHLIGHT = "jdt.spelling.marker.highlight";
 	public static final String JDT_SPELLING_MARKER_OVERVIEW = "jdt.spelling.marker.overview";
@@ -36,6 +37,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 
 	static {
 		DEFAULTS.put(JavaType.TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
+		DEFAULTS.put(JavaType.TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.ENUM_TYPE.name(), JavaNameType.UPPER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.ANNOTATION.name(), JavaNameType.UPPER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.METHOD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
@@ -44,6 +46,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		DEFAULTS.put(JavaType.ENUM_INSTANCE.name(), JavaNameType.UPPER.name());
 		DEFAULTS.put(JavaType.LOCAL_VARIABLE.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
+		DEFAULTS.put(JDT_SPELLING_ENABLED, true);
 		DEFAULTS.put(JDT_SPELLING_IGNORE_SINGLE_LETTER, true);
 		DEFAULTS.put(JDT_SPELLING_LOCALE_DICTIONARY, Locale.US.toString());
 		DEFAULTS.put(JDT_SPELLING_ADDITIONS_DICTIONARY, "");
@@ -68,6 +71,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		restoreDefaultString(prefs, JavaType.ENUM_INSTANCE.name());
 		restoreDefaultString(prefs, JavaType.LOCAL_VARIABLE.name());
 		restoreDefaultString(prefs, JavaType.FIELD.name());
+		restoreDefaultBoolean(prefs, JDT_SPELLING_ENABLED);
 		restoreDefaultBoolean(prefs, JDT_SPELLING_IGNORE_SINGLE_LETTER);
 		restoreDefaultLocale(prefs, JDT_SPELLING_LOCALE_DICTIONARY);
 		restoreDefaultString(prefs, JDT_SPELLING_ADDITIONS_DICTIONARY);

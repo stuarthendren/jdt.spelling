@@ -4,7 +4,6 @@ import java.io.File;
 
 import jdt.spelling.Plugin;
 import jdt.spelling.Preferences;
-import jdt.spelling.enums.JavaNameType;
 import jdt.spelling.messages.Messages;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,11 +23,11 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
@@ -37,15 +36,21 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 @SuppressWarnings("restriction")
 public class SpellingPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	private Button singleLetter;
+	private Button enableButton;
 
-	private Button localVariables;
+	private Button singleLetterButton;
+
+	private Button localVariablesButton;
 
 	private Text additionText;
 
 	private Text ignoreText;
 
 	private LocalesCombo mainDictionaryCombo;
+
+	private Group optionsGroup;
+
+	private Group dictionariesGroup;
 
 	public SpellingPreferencePage() {
 		setPreferenceStore(Plugin.getDefault().getPreferenceStore());
@@ -64,12 +69,26 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 	}
 
 	public void setValues() {
-		singleLetter.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER));
-		localVariables.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL));
+		boolean enabled = Preferences.getBoolean(Preferences.JDT_SPELLING_ENABLED);
+		enableButton.setSelection(enabled);
+		setEnabled(enabled);
+
+		singleLetterButton.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER));
+		localVariablesButton.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL));
 		additionText.setText(Preferences.getString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY));
 		ignoreText.setText(Preferences.getString(Preferences.JDT_SPELLING_IGNORE_DICTIONARY));
 		mainDictionaryCombo.setSelectedLocale(Preferences.getDictionaryLocale());
 		validate();
+	}
+
+	private void setEnabled(boolean enabled) {
+		optionsGroup.setEnabled(enabled);
+		dictionariesGroup.setEnabled(enabled);
+		singleLetterButton.setEnabled(enabled);
+		localVariablesButton.setEnabled(enabled);
+		additionText.setEnabled(enabled);
+		ignoreText.setEnabled(enabled);
+		mainDictionaryCombo.setEnabled(enabled);
 	}
 
 	@Override
@@ -79,35 +98,48 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(parentComposite);
 		GridLayoutFactory.fillDefaults().numColumns(1).applyTo(parentComposite);
 
-		Composite configComposite = new Composite(parentComposite, SWT.NONE);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(configComposite);
-		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(configComposite);
+		enableButton = createCheckButton(parentComposite, Messages.SpellingPreferencePage_enable);
+		enableButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setEnabled(enableButton.getSelection());
+			}
+		});
 
-		GridDataFactory grab = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false);
-		JavaNameType[] values = JavaNameType.values();
-		String[] names = new String[values.length];
-		for (int i = 0; i < values.length; i++) {
-			names[i] = values[i].getDisplayName();
-		}
+		optionsGroup = createOptionsGroup(parentComposite);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(optionsGroup);
 
-		singleLetter = createCheckButton(configComposite, Messages.SpellingPreferencePage_ignore_single_letter);
-
-		localVariables = createCheckButton(configComposite, Messages.SpellingPreferencePage_check_local_variables);
-		localVariables.setToolTipText(Messages.SpellingPreferencePage_check_local_variables_tooltip);
-
-		Composite dictionariesComposite = new Composite(parentComposite, SWT.NONE);
-		GridLayoutFactory.fillDefaults().numColumns(3).applyTo(dictionariesComposite);
-		grab.applyTo(dictionariesComposite);
-
-		mainDictionaryCombo = addLocalesField(dictionariesComposite,
-				Messages.SpellingPreferencePage_locale_dictionary_label);
-
-		additionText = addTextField(dictionariesComposite, Messages.SpellingPreferencePage_user_dictionary_label);
-		ignoreText = addTextField(dictionariesComposite, Messages.SpellingPreferencePage_ignore_dictionary_label);
+		dictionariesGroup = createDictionariesGroup(parentComposite);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dictionariesGroup);
 
 		setValues();
 
-		return dictionariesComposite;
+		return dictionariesGroup;
+	}
+
+	private Group createDictionariesGroup(Composite parentComposite) {
+		Group dictionariesGroup = new Group(parentComposite, SWT.NONE);
+		dictionariesGroup.setText(Messages.SpellingPreferencePage_dictionary_group_label);
+
+		GridLayoutFactory.swtDefaults().numColumns(3).applyTo(dictionariesGroup);
+
+		mainDictionaryCombo = addLocalesField(dictionariesGroup,
+				Messages.SpellingPreferencePage_locale_dictionary_label);
+
+		additionText = addTextField(dictionariesGroup, Messages.SpellingPreferencePage_user_dictionary_label);
+		ignoreText = addTextField(dictionariesGroup, Messages.SpellingPreferencePage_ignore_dictionary_label);
+		return dictionariesGroup;
+	}
+
+	private Group createOptionsGroup(Composite parentComposite) {
+		Group optionsGroup = new Group(parentComposite, SWT.NONE);
+		optionsGroup.setText(Messages.SpellingPreferencePage_options_label);
+		GridLayoutFactory.swtDefaults().numColumns(1).applyTo(optionsGroup);
+
+		singleLetterButton = createCheckButton(optionsGroup, Messages.SpellingPreferencePage_ignore_single_letter);
+		localVariablesButton = createCheckButton(optionsGroup, Messages.SpellingPreferencePage_check_local_variables);
+		localVariablesButton.setToolTipText(Messages.SpellingPreferencePage_check_local_variables_tooltip);
+		return optionsGroup;
 	}
 
 	private LocalesCombo addLocalesField(Composite dictionariesComposite, String label) {
@@ -115,20 +147,21 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		dictionaryLabel.setText(label);
 		LocalesCombo combo = new LocalesCombo(dictionariesComposite, SWT.NONE, Preferences.getAvailableLocales());
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(combo);
+
 		return combo;
 	}
 
-	private Button createCheckButton(Composite configComposite, String spellingPreferencePage_ignore_single_letter) {
-		Label label = new Label(configComposite, SWT.NONE);
-		label.setText(spellingPreferencePage_ignore_single_letter);
-		return new Button(configComposite, SWT.CHECK);
+	private Button createCheckButton(Composite configComposite, String label) {
+		Button button = new Button(configComposite, SWT.CHECK);
+		button.setText(label);
+		return button;
 	}
 
-	private Text addTextField(Composite dictionariesComposite, String label) {
-		Label additionsLabel = new Label(dictionariesComposite, SWT.NONE);
+	private Text addTextField(Composite parent, String label) {
+		Label additionsLabel = new Label(parent, SWT.NONE);
 		additionsLabel.setText(label);
 
-		final Text text = new Text(dictionariesComposite, SWT.BORDER | SWT.SINGLE);
+		final Text text = new Text(parent, SWT.BORDER | SWT.SINGLE);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(text);
 		text.addModifyListener(new ModifyListener() {
 
@@ -138,8 +171,8 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 			}
 		});
 
-		Composite buttons = new Composite(dictionariesComposite, SWT.NONE);
-		buttons.setLayout(new GridLayout(2, true));
+		Composite buttons = new Composite(parent, SWT.NONE);
+		GridLayoutFactory.fillDefaults().equalWidth(true).numColumns(2).applyTo(buttons);
 		buttons.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 
 		Button browseButton = new Button(buttons, SWT.PUSH);
@@ -241,8 +274,9 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 	@Override
 	public boolean performOk() {
 		try {
-			Preferences.setBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER, singleLetter.getSelection());
-			Preferences.setBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL, localVariables.getSelection());
+			Preferences.setBoolean(Preferences.JDT_SPELLING_ENABLED, enableButton.getSelection());
+			Preferences.setBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER, singleLetterButton.getSelection());
+			Preferences.setBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL, localVariablesButton.getSelection());
 			Preferences.setString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY, additionText.getText());
 			Preferences.setString(Preferences.JDT_SPELLING_IGNORE_DICTIONARY, ignoreText.getText());
 			Preferences.setDictionaryLocale(mainDictionaryCombo.getSelectedLocale());

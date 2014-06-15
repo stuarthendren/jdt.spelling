@@ -26,13 +26,19 @@ public class Messages {
 
 	public static String SpellingPreferencePage_dictionary_error;
 
+	public static String SpellingPreferencePage_dictionary_group_label;
+
 	public static String SpellingPreferencePage_dictionary_tooltip;
+
+	public static String SpellingPreferencePage_enable;
 
 	public static String SpellingPreferencePage_ignore_dictionary_label;
 
 	public static String SpellingPreferencePage_ignore_single_letter;
 
 	public static String SpellingPreferencePage_locale_dictionary_label;
+
+	public static String SpellingPreferencePage_options_label;
 
 	public static String SpellingPreferencePage_user_dictionary_label;
 
