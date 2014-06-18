@@ -43,8 +43,9 @@ code coverage provided by [Coveralls](https://coveralls.io)
 
 or use `http://stuarthendren.net/update` in Help -> Install New Software ... Dialog.
 
+## Developing
 
-
+Version increase with `mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=1.1.0-SNAPSHOT`
 
 ## Copyright
 
