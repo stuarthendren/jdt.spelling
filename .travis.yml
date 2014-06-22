@@ -26,8 +26,8 @@ after_failure:
   - cat /home/travis/build/hendrens/jdt.spelling/cov-int/build-log.txt
   
 after_success: 
-  - mvn verify cobertura:cobertura coveralls:cobertura
   - unzip update/target/jdt.spelling*.zip -d beta && find beta -type f -exec curl -u $FTP_USER:$FTP_PASSWORD --ftp-create-dirs -T {} ftp://ftp.stuarthendren.net/{} \;
-
+  - mvn verify cobertura:cobertura coveralls:cobertura
+  - ls -R update
 
   
