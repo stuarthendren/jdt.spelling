@@ -8,9 +8,11 @@ Splitting out the names using regular naming patters for Java names.
 
 This relies heavily on org.eclipse.jdt, and currently uses internal components.
 
-## Screenshots
+## Screenshots and Usage
 
 ![Incorrect spellings in the editor](screenshots/interface.png)
+
+Click on the word and press <kbd>Ctrl+1</kbd> (quick fix)
 
 ![Refactoring support](screenshots/refactor.png)
 
