@@ -45,7 +45,7 @@ code coverage provided by [Coveralls](https://coveralls.io)
 
 or use `http://stuarthendren.net/update` in Help -> Install New Software ... Dialog.
 
-
+For unreleased current version use `http://stuarthendren.net/update/beta`
 
 
 ## Copyright
