@@ -26,8 +26,9 @@ after_failure:
   - cat /home/travis/build/hendrens/jdt.spelling/cov-int/build-log.txt
   
 after_success: 
-  - unzip update/target/jdt.spelling*.zip -d beta && find beta -type f -exec curl -u $FTP_USER:$FTP_PASSWORD --ftp-create-dirs -T {} ftp://ftp.stuarthendren.net/{} \;
+  - mv update/target/jdt.spelling*.zip jdt.spelling.zip && rm -R update && ls -R 
+  - test $TRAVIS_BRANCH == "dev" && unzip jdt.spelling.zip -d beta && find beta -type f -exec curl -u $FTP_USER:$FTP_PASSWORD --ftp-create-dirs -T {} ftp://ftp.stuarthendren.net/{} \;
+  - test $TRAVIS_BRANCH == "master" && unzip jdt.spelling.zip -d update && find update -type f -exec curl -u $FTP_USER:$FTP_PASSWORD --ftp-create-dirs -T {} ftp://ftp.stuarthendren.net/{} \;
   - mvn verify cobertura:cobertura coveralls:cobertura
-  - ls -R update
 
   
