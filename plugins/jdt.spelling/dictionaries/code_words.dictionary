@@ -3,9 +3,11 @@ com
 init
 enum
 enums
+ip
 jdt
 locales
 plugin
+mac
 msg
 ok
 refactor
