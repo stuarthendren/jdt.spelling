@@ -1,3 +1,6 @@
+admin
+args
+clazz
 config
 com
 init
@@ -8,7 +11,10 @@ jdt
 locales
 plugin
 mac
+max
+min
 msg
+num
 ok
 refactor
 refactoring
