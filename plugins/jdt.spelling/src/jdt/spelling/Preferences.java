@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import jdt.spelling.dictionary.CodeWordStatus;
 import jdt.spelling.enums.Case;
 import jdt.spelling.enums.JavaNameType;
 import jdt.spelling.enums.JavaType;
@@ -29,6 +30,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 	public static final String JDT_SPELLING_LOCALE_DICTIONARY = "jdt.spelling.locale.dictionary";
 	public static final String JDT_SPELLING_ADDITIONS_DICTIONARY = "jdt.spelling.additions.dictionary";
 	public static final String JDT_SPELLING_IGNORE_DICTIONARY = "jdt.spelling.ignore.dictionary";
+	public static final String JDT_SPELLING_CODE_WORD_STATUS = "jdt.spelling.code.words";
 	public static final String JDT_SPELLING_CHECK_LOCAL = "jdt.spelling.check.local";
 
 	private static List<Locale> availableLocales;
@@ -52,6 +54,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		DEFAULTS.put(JDT_SPELLING_ADDITIONS_DICTIONARY, "");
 		DEFAULTS.put(JDT_SPELLING_IGNORE_DICTIONARY, "");
 		DEFAULTS.put(JDT_SPELLING_CHECK_LOCAL, false);
+		DEFAULTS.put(JDT_SPELLING_CODE_WORD_STATUS, CodeWordStatus.OFF.name());
 	}
 
 	@Override
@@ -71,6 +74,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		restoreDefaultString(prefs, JavaType.ENUM_INSTANCE.name());
 		restoreDefaultString(prefs, JavaType.LOCAL_VARIABLE.name());
 		restoreDefaultString(prefs, JavaType.FIELD.name());
+		restoreDefaultString(prefs, JDT_SPELLING_CODE_WORD_STATUS);
 		restoreDefaultBoolean(prefs, JDT_SPELLING_ENABLED);
 		restoreDefaultBoolean(prefs, JDT_SPELLING_IGNORE_SINGLE_LETTER);
 		restoreDefaultLocale(prefs, JDT_SPELLING_LOCALE_DICTIONARY);
@@ -146,6 +150,14 @@ public class Preferences extends AbstractPreferenceInitializer {
 
 	public static void setJavaNameType(JavaType javaType, JavaNameType javaNameType) throws BackingStoreException {
 		setString(javaType.name(), javaNameType.name());
+	}
+
+	public static void setCodeWordStatus(CodeWordStatus codeWordStatus) {
+		setString(JDT_SPELLING_CODE_WORD_STATUS, codeWordStatus.name());
+	}
+
+	public static CodeWordStatus getCodeWordStatus() {
+		return CodeWordStatus.valueOf(getString(JDT_SPELLING_CODE_WORD_STATUS));
 	}
 
 	public static JavaNameType getJavaNameType(String elementName, JavaType javaType) {
