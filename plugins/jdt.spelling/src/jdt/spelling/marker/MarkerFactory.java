@@ -13,6 +13,8 @@ public class MarkerFactory {
 
 	public static final String JDT_SPELLING_MARKER = "jdt.spelling.marker";
 
+	public static final String JDT_SPELLING_MARKER_WORD = "jdt.spelling.marker.word";
+
 	public void create(SpellingEvent event) {
 		try {
 			IJavaElement javaElement = event.getJavaElement();
@@ -20,7 +22,7 @@ public class MarkerFactory {
 			ISourceRange sourceRange = event.getSourceRange();
 
 			scheduleWorkspaceJob(event.getMessage(), resource, sourceRange.getOffset(), sourceRange.getOffset()
-					+ sourceRange.getLength());
+					+ sourceRange.getLength(), event.getWord());
 
 		} catch (CoreException e) {
 			Plugin.log(e);
@@ -28,13 +30,14 @@ public class MarkerFactory {
 
 	}
 
-	private void scheduleWorkspaceJob(final String message, final IResource resource, final int start, final int end)
+	private void scheduleWorkspaceJob(final String message, final IResource resource, final int start, final int end,
+			String word)
 			throws CoreException {
 		IMarker marker = create(resource);
 		if (marker != null) {
 			marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.CHAR_START, IMarker.CHAR_END,
-					IMarker.SOURCE_ID },
-					new Object[] { message, new Integer(start), new Integer(end), Plugin.getPluginId() });
+					IMarker.SOURCE_ID, JDT_SPELLING_MARKER_WORD },
+					new Object[] { message, new Integer(start), new Integer(end), Plugin.getPluginId(), word });
 		}
 	}
 

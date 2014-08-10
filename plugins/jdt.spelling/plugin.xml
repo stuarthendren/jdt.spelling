@@ -2,14 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.jdt.ui.quickAssistProcessors">
-      <quickAssistProcessor
-            class="jdt.spelling.assist.QuickAssistProcessor"
-            id="jdt.spelling.assist.QuickAssistProcessor"
-            name="JDT Spelling">
-      </quickAssistProcessor>
-   </extension>
-   <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
             annotationType="jdt.spelling"
@@ -39,8 +31,7 @@
       <type
             markerSeverity="0"
             markerType="jdt.spelling.marker"
-            name="jdt.spelling"
-            super="org.eclipse.ui.workbench.texteditor.spelling">
+            name="jdt.spelling">
       </type>
    </extension>
    <extension
@@ -48,7 +39,10 @@
          name="JDT Spelling"
          point="org.eclipse.core.resources.markers">
       <super
-            type="org.eclipse.jdt.ui.internal.spelling">
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.textmarker">
       </super>
       <persistent
             value="false">
@@ -75,5 +69,13 @@
             class="jdt.spelling.Startup">
       </startup>
    </extension>
-
+ 
+   <extension
+         point="org.eclipse.jdt.ui.quickFixProcessors">
+      <quickFixProcessor
+            class="jdt.spelling.assist.QuickFixProcessor"
+            id="jdt.spelling.assist.QuickFixProcessor"
+            name="JDT Spelling Quick Fix">
+      </quickFixProcessor>
+   </extension>plugin>
 </plugin>
