@@ -3,7 +3,7 @@ jdt.spelling
 
 Spelling for Java names using JDT.
 
-The aim is to provide spelling support for words contained in the names of Java artifacts: Interfaces, Classes, Methods, ...
+The aim is to provide spelling support for words contained in the names of Java artefacts: Interfaces, Classes, Methods, ...
 Splitting out the names using regular naming patters for Java names, that is usually `CamelCase` for types and variables, `UNDERSCORE_SEPARATED` for constants and `dot.separated` for package names.
 
 This relies heavily on org.eclipse.jdt, and currently uses internal components.
@@ -38,14 +38,12 @@ code coverage provided by [Coveralls](https://coveralls.io)
         </a>
       </td>
       <td style="vertical-align: middle; text-align: left; border: none;">
-        â†� Drag it onto your Eclipse Main Toolbar to install!</td>
+        Drag it onto your Eclipse Main Toolbar to install!</td>
     </tr>
   </tbody>
 </table>
 
-or use `http://stuarthendren.net/update` in Help -> Install New Software ... Dialog.
-
-For unreleased current version use `http://stuarthendren.net/update/beta`
+or use `http://update.jtdspelling.info` in Help -> Install New Software ... Dialog.
 
 
 ## Copyright
