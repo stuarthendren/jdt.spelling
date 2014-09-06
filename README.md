@@ -18,7 +18,7 @@ Click on the word and press <kbd>Ctrl+1</kbd> (quick fix)
 
 ## Continuous Integration
 
-CI provided by [Travis CI](http://travis-ci.org/) and 
+CI provided by [Travis CI](http://travis-ci.org/) and
 code coverage provided by [Coveralls](https://coveralls.io)
 
 [![Build Status](https://secure.travis-ci.org/hendrens/jdt.spelling.png)](http://travis-ci.org/hendrens/jdt.spelling)
@@ -43,12 +43,12 @@ code coverage provided by [Coveralls](https://coveralls.io)
   </tbody>
 </table>
 
-or use `http://update.jtdspelling.info` in Help -> Install New Software ... Dialog.
+or use `http://jdt.spelling.s3-website-us-east-1.amazonaws.com` in Help -> Install New Software ... Dialog.
 
 
 ## Copyright
 
-Copyright (c) 2013-2014 Stuart Hendren. 
+Copyright (c) 2013-2014 Stuart Hendren.
 
 ## License
 
