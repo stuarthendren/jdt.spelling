@@ -22,6 +22,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -29,9 +31,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
 @SuppressWarnings("restriction")
 public class SpellingPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
@@ -108,6 +112,21 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 		optionsGroup = createOptionsGroup(parentComposite);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(optionsGroup);
+		
+		Link link = new Link(parentComposite, SWT.NONE);
+		link.setText("Configure general text editors spelling <A>here</A>.");
+		FontData[] fontData = link.getFont().getFontData();
+		for (FontData fd : fontData) {
+			fd.setHeight(10);
+			//-fd.setStyle(SWT.BOLD);
+		}
+		link.setFont(new Font(getShell().getDisplay(), fontData));
+		link.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				IWorkbenchPreferenceContainer container= (IWorkbenchPreferenceContainer) getContainer();
+				container.openPage("org.eclipse.ui.preferencePages.GeneralTextEditor", null);
+			}
+		});		
 
 		dictionariesGroup = createDictionariesGroup(parentComposite);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dictionariesGroup);
@@ -128,6 +147,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 		additionText = addTextField(dictionariesGroup, Messages.SpellingPreferencePage_user_dictionary_label);
 		ignoreText = addTextField(dictionariesGroup, Messages.SpellingPreferencePage_ignore_dictionary_label);
+		
 		return dictionariesGroup;
 	}
 
