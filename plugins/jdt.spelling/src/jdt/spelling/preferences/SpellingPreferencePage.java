@@ -124,7 +124,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		link.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				IWorkbenchPreferenceContainer container= (IWorkbenchPreferenceContainer) getContainer();
-				container.openPage("org.eclipse.ui.preferencePages.GeneralTextEditor", null);
+				container.openPage("org.eclipse.ui.editors.preferencePages.Spelling", null);
 			}
 		});		
 
