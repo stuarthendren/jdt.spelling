@@ -16,6 +16,8 @@ Click on the word and press <kbd>Ctrl+1</kbd> (quick fix)
 
 ![Refactoring support](screenshots/refactor.png)
 
+You can add word to User or IgnoredWords dictionaries (check Preferences -> Java -> JDT Spelling). IgnoredWords dictionary is not used for suggestions.
+
 ## Continuous Integration
 
 CI provided by [Travis CI](http://travis-ci.org/) and
