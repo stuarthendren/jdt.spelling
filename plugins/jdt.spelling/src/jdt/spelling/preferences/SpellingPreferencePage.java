@@ -126,8 +126,10 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		mainDictionaryCombo = addLocalesField(dictionariesGroup,
 				Messages.SpellingPreferencePage_locale_dictionary_label);
 
-		additionText = addTextField(dictionariesGroup, Messages.SpellingPreferencePage_user_dictionary_label);
-		ignoreText = addTextField(dictionariesGroup, Messages.SpellingPreferencePage_ignore_dictionary_label);
+		additionText = addTextField(dictionariesGroup, Messages.SpellingPreferencePage_user_dictionary_label,
+				Messages.SpellingPreferencePage_user_dictionary_hint);
+		ignoreText = addTextField(dictionariesGroup, Messages.SpellingPreferencePage_ignore_dictionary_label,
+				Messages.SpellingPreferencePage_ignore_dictionary_hint);
 		return dictionariesGroup;
 	}
 
@@ -157,11 +159,16 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		return button;
 	}
 
-	private Text addTextField(Composite parent, String label) {
+	private Text addTextField(Composite parent, String label, String toolTip) {
 		Label additionsLabel = new Label(parent, SWT.NONE);
 		additionsLabel.setText(label);
 
 		final Text text = new Text(parent, SWT.BORDER | SWT.SINGLE);
+
+		if (toolTip != null) {
+			text.setToolTipText(toolTip);
+		}
+
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(text);
 		text.addModifyListener(new ModifyListener() {
 
