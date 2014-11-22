@@ -16,7 +16,11 @@ Click on the word and press <kbd>Ctrl+1</kbd> (quick fix)
 
 ![Refactoring support](screenshots/refactor.png)
 
-You can add word to User or IgnoredWords dictionaries (check Preferences -> Java -> JDT Spelling). IgnoredWords dictionary is not used for suggestions.
+You can add words to User or Ignored dictionaries which are stored in the workspace or in files specified in the preferences. Ignored words are not used for suggestions.
+
+Local variables can also be checked, select in preferences
+
+![Incorrect spellings of local variables](screenshots/local.png)
 
 ## Continuous Integration
 
