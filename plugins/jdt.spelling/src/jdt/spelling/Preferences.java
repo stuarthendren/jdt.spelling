@@ -186,7 +186,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 	}
 
 	public static void setAvailableLocales(Set<Locale> availableLocales) {
-		Preferences.availableLocales = new ArrayList<>(availableLocales);
+		Preferences.availableLocales = new ArrayList<Locale>(availableLocales);
 		Locale defaultLocale = Locale.getDefault();
 		if (Preferences.availableLocales.contains(defaultLocale)) {
 			DEFAULTS.put(JDT_SPELLING_LOCALE_DICTIONARY, defaultLocale.toString());
@@ -194,7 +194,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 	}
 
 	public static void setAvailableCodeWords(Set<Locale> availableLocales) {
-		Preferences.availableCodeWords = new ArrayList<>(availableLocales);
+		Preferences.availableCodeWords = new ArrayList<Locale>(availableLocales);
 	}
 
 	public static List<Locale> getAvailableLocales() {
