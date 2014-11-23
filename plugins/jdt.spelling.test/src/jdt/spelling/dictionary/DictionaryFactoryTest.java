@@ -1,6 +1,7 @@
 package jdt.spelling.dictionary;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -19,8 +20,23 @@ public class DictionaryFactoryTest {
 	}
 
 	@Test
+	public void ensureWeHaveSomeDictionaries() {
+		assertTrue(dictionaryFactory.getAvailableDictionaries().size() > 0);
+	}
+
+	@Test
+	public void ensureWeHaveSomeCodeWords() {
+		assertTrue(dictionaryFactory.getAvailableCodeWords().size() > 0);
+	}
+
+	@Test
 	public void ensureDefaultLocaleHasADictionary() {
 		assertNotNull(dictionaryFactory.createDictionary(Preferences.getDictionaryLocale()));
+	}
+
+	@Test
+	public void ensureDefaultLocaleHasACodeWords() {
+		assertNotNull(dictionaryFactory.createCodeWords(Preferences.getDictionaryLocale()));
 	}
 
 	@Test

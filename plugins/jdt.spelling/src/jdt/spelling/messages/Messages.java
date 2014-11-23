@@ -24,6 +24,18 @@ public class Messages {
 
 	public static String SpellingPreferencePage_check_local_variables_tooltip;
 
+	public static String SpellingPreferencePage_code_words_ignore;
+
+	public static String SpellingPreferencePage_code_words_label;
+
+	public static String SpellingPreferencePage_code_words_off;
+
+	public static String SpellingPreferencePage_code_words_suggest;
+
+	public static String SpellingPreferencePage_code_words_tooltip;
+
+	public static String SpellingPreferencePage_code_words_unavaiable;
+
 	public static String SpellingPreferencePage_dictionary_error;
 
 	public static String SpellingPreferencePage_dictionary_group_label;

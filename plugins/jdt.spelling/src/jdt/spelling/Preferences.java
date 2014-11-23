@@ -1,9 +1,11 @@
 package jdt.spelling;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import jdt.spelling.dictionary.CodeWordStatus;
 import jdt.spelling.enums.Case;
@@ -34,6 +36,8 @@ public class Preferences extends AbstractPreferenceInitializer {
 	public static final String JDT_SPELLING_CHECK_LOCAL = "jdt.spelling.check.local";
 
 	private static List<Locale> availableLocales;
+
+	private static List<Locale> availableCodeWords;
 
 	private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>();
 
@@ -181,16 +185,24 @@ public class Preferences extends AbstractPreferenceInitializer {
 		getPreferences().removePreferenceChangeListener(listener);
 	}
 
-	public static void setAvailableLocales(List<Locale> availableLocales) {
-		Preferences.availableLocales = availableLocales;
+	public static void setAvailableLocales(Set<Locale> availableLocales) {
+		Preferences.availableLocales = new ArrayList<>(availableLocales);
 		Locale defaultLocale = Locale.getDefault();
 		if (Preferences.availableLocales.contains(defaultLocale)) {
 			DEFAULTS.put(JDT_SPELLING_LOCALE_DICTIONARY, defaultLocale.toString());
 		}
 	}
 
+	public static void setAvailableCodeWords(Set<Locale> availableLocales) {
+		Preferences.availableCodeWords = new ArrayList<>(availableLocales);
+	}
+
 	public static List<Locale> getAvailableLocales() {
 		return availableLocales;
+	}
+
+	public static boolean hasCodeWords(Locale locale) {
+		return availableCodeWords.contains(locale);
 	}
 
 	public static void setDictionaryLocale(Locale locale) {

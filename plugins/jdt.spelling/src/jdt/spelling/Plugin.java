@@ -27,7 +27,7 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Represents the jdt.spelling plug-in.
- * 
+ *
  */
 public class Plugin extends AbstractUIPlugin implements IPreferenceChangeListener {
 
@@ -114,6 +114,7 @@ public class Plugin extends AbstractUIPlugin implements IPreferenceChangeListene
 		super.start(context);
 		DictionaryFactory dictionaryFactory = new DictionaryFactory();
 		Preferences.setAvailableLocales(dictionaryFactory.getAvailableDictionaries());
+		Preferences.setAvailableCodeWords(dictionaryFactory.getAvailableCodeWords());
 	}
 
 	@Override

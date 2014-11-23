@@ -8,12 +8,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import jdt.spelling.Preferences;
+import jdt.spelling.dictionary.CodeWordStatus;
+import jdt.spelling.dictionary.LocaleSensitiveSpellDictionary;
 import jdt.spelling.dictionary.PersistentSpellDictionary;
 import jdt.spelling.enums.JavaNameType;
 import jdt.spelling.enums.JavaType;
 
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.internal.ui.text.spelling.engine.LocaleSensitiveSpellDictionary;
 import org.eclipse.jdt.internal.ui.text.spelling.engine.RankedWordProposal;
 
 @SuppressWarnings("restriction")
@@ -21,7 +22,7 @@ public class Checker {
 
 	/**
 	 * Does this word contain digits?
-	 * 
+	 *
 	 * @param word
 	 *            the word to check
 	 * @return <code>true</code> iff this word contains digits, <code>false></code> otherwise
@@ -37,7 +38,7 @@ public class Checker {
 
 	/**
 	 * Does this word contain digits?
-	 * 
+	 *
 	 * @param word
 	 *            the word to check
 	 * @return <code>true</code> iff this word contains digits, <code>false></code> otherwise
@@ -59,6 +60,11 @@ public class Checker {
 	private LocaleSensitiveSpellDictionary mainDictionary;
 
 	/**
+	 * An optional set of code words to allow
+	 */
+	private LocaleSensitiveSpellDictionary codeWordsDictionary;
+
+	/**
 	 * The dictionary used for added words.
 	 */
 	private PersistentSpellDictionary additionsDictionary;
@@ -69,24 +75,31 @@ public class Checker {
 	private PersistentSpellDictionary ignoreDictionary;
 
 	/**
+	 * Ignore, suggest status of code words
+	 *
+	 */
+	private CodeWordStatus codeWordStatus = CodeWordStatus.OFF;
+
+	/**
 	 * Creates a new default spell checker.
-	 * 
+	 *
 	 * @param preferences
 	 *            the preference store for this spell checker
 	 * @param locale
 	 *            the locale
 	 */
 	public Checker(PersistentSpellDictionary additionsDictionary, PersistentSpellDictionary ignoreDictionary,
-			LocaleSensitiveSpellDictionary mainDictionary) {
+			LocaleSensitiveSpellDictionary mainDictionary, LocaleSensitiveSpellDictionary codeWordsDictionary) {
 		this.additionsDictionary = additionsDictionary;
 		this.ignoreDictionary = ignoreDictionary;
 		this.mainDictionary = mainDictionary;
+		this.codeWordsDictionary = codeWordsDictionary;
 	}
 
 	public synchronized void addWord(final String word) {
-		final String addable = word.toLowerCase();
+		final String addWord = word.toLowerCase();
 		if (additionsDictionary.acceptsWords()) {
-			additionsDictionary.addWord(addable);
+			additionsDictionary.addWord(addWord);
 		} else {
 			throw new IllegalStateException("Unable to add to dictionary");
 		}
@@ -125,6 +138,9 @@ public class Checker {
 		synchronized (this) {
 			proposals.addAll(additionsDictionary.getProposals(word, false));
 			proposals.addAll(mainDictionary.getProposals(word, false));
+			if (CodeWordStatus.SUGGEST == codeWordStatus && codeWordsDictionary != null) {
+				proposals.addAll(codeWordsDictionary.getProposals(word, false));
+			}
 		}
 
 		List<String> words = new ArrayList<String>(proposals.size());
@@ -149,6 +165,10 @@ public class Checker {
 		}
 
 		if (additionsDictionary.isCorrect(word)) {
+			return true;
+		}
+
+		if (CodeWordStatus.OFF != codeWordStatus && codeWordsDictionary != null && codeWordsDictionary.isCorrect(word)) {
 			return true;
 		}
 
@@ -193,6 +213,19 @@ public class Checker {
 		}
 		this.mainDictionary.unload();
 		this.mainDictionary = mainDictionary;
+	}
 
+	public synchronized void setCodeWordDictionary(LocaleSensitiveSpellDictionary codeWordDictionary) {
+		if (codeWordsDictionary != null) {
+			codeWordsDictionary.unload();
+		}
+		codeWordsDictionary = codeWordDictionary;
+	}
+
+	public void setCodeWordsStatus(CodeWordStatus codeWordStatus) {
+		if (codeWordStatus == null) {
+			throw new IllegalArgumentException("Code word status can not be null");
+		}
+		this.codeWordStatus = codeWordStatus;
 	}
 }

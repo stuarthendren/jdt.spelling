@@ -4,13 +4,12 @@ import java.util.Locale;
 
 import jdt.spelling.Preferences;
 import jdt.spelling.dictionary.DictionaryFactory;
+import jdt.spelling.dictionary.LocaleSensitiveSpellDictionary;
 import jdt.spelling.dictionary.PersistentSpellDictionary;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.eclipse.jdt.internal.ui.text.spelling.engine.LocaleSensitiveSpellDictionary;
 
-@SuppressWarnings("restriction")
 public class CheckerFactory implements IPreferenceChangeListener {
 
 	private final DictionaryFactory dictionaryFactory;
@@ -31,9 +30,10 @@ public class CheckerFactory implements IPreferenceChangeListener {
 		PersistentSpellDictionary added = dictionaryFactory.createAdded();
 		PersistentSpellDictionary ignored = dictionaryFactory.createIgnored();
 		LocaleSensitiveSpellDictionary mainDictionary = dictionaryFactory.createDictionary(dictionaryLocale);
+		LocaleSensitiveSpellDictionary codeWords = dictionaryFactory.createCodeWords(dictionaryLocale);
 
-		checker = new Checker(added, ignored, mainDictionary);
-
+		checker = new Checker(added, ignored, mainDictionary, codeWords);
+		checker.setCodeWordsStatus(Preferences.getCodeWordStatus());
 		return checker;
 	}
 
@@ -44,8 +44,12 @@ public class CheckerFactory implements IPreferenceChangeListener {
 			getSpellChecker().setAdditionsDictionary(dictionaryFactory.createAdded());
 		} else if (Preferences.JDT_SPELLING_IGNORE_DICTIONARY.equals(key)) {
 			getSpellChecker().setIgnoreDictionary(dictionaryFactory.createIgnored());
+		} else if (Preferences.JDT_SPELLING_CODE_WORD_STATUS.equals(key)) {
+			getSpellChecker().setCodeWordsStatus(Preferences.getCodeWordStatus());
 		} else if (Preferences.JDT_SPELLING_LOCALE_DICTIONARY.equals(key)) {
 			getSpellChecker().setMainDictionary(dictionaryFactory.createDictionary(Preferences.getDictionaryLocale()));
+			getSpellChecker().setCodeWordDictionary(
+					dictionaryFactory.createCodeWords(Preferences.getDictionaryLocale()));
 		}
 
 	}

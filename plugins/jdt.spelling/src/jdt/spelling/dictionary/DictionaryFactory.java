@@ -4,19 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import jdt.spelling.Plugin;
 import jdt.spelling.Preferences;
-import jdt.spelling.locale.LocaleUtils;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -24,24 +18,25 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
-import org.eclipse.jdt.internal.ui.text.spelling.engine.LocaleSensitiveSpellDictionary;
 import org.osgi.framework.Bundle;
 
-@SuppressWarnings("restriction")
 public class DictionaryFactory {
 
 	private static final String DICTIONARY_LOCATION = "dictionaries";
+	private static final String DICTIONARY_TYPE = ".dictionary";
+	private static final String CODE_WORDS_TYPE = ".code_words";
 	private static final String DEFAULT_ADDED_DICTIONARY = "added.dic";
 	private static final String DEFAULT_IGNORE_DICTIONARY = "ignored.dic";
 
-	private final Map<Locale, URL> localeDictionaries = new HashMap<Locale, URL>();
+	private Set<Locale> dictionaryLocales = new HashSet<Locale>();
+	private Set<Locale> codeWordLocales = new HashSet<Locale>();
+	private URL dictionariesLocation;
 
 	public DictionaryFactory() {
 		try {
-			URL location = getDictionaryLocation();
-			for (Locale locale : getLocalesWithInstalledDictionaries(location)) {
-				localeDictionaries.put(locale, location);
-			}
+			dictionariesLocation = getDictionaryLocation();
+			dictionaryLocales = getLocalesWithInstalledDictionaries(dictionariesLocation, DICTIONARY_TYPE);
+			codeWordLocales = getLocalesWithInstalledDictionaries(dictionariesLocation, CODE_WORDS_TYPE);
 		} catch (IOException e) {
 			Plugin.log(e);
 		}
@@ -56,12 +51,14 @@ public class DictionaryFactory {
 	}
 
 	public LocaleSensitiveSpellDictionary createDictionary(Locale locale) {
-		URL location = findDictionaryLocation(locale);
-		if (location == null) {
-			return null;
-		} else {
-			return new LocaleSensitiveSpellDictionary(locale, location);
+		return new LocaleSensitiveSpellDictionary(locale, dictionariesLocation, DICTIONARY_TYPE);
+	}
+
+	public LocaleSensitiveSpellDictionary createCodeWords(Locale locale) {
+		if (codeWordLocales.contains(locale)) {
+			return new LocaleSensitiveSpellDictionary(locale, dictionariesLocation, CODE_WORDS_TYPE);
 		}
+		return null;
 	}
 
 	private PersistentSpellDictionary createDictionary(String preferenceKey, String defaultAddedDictionary) {
@@ -102,31 +99,14 @@ public class DictionaryFactory {
 		return true;
 	}
 
-	private URL findDictionaryLocation(Locale locale) {
-		URL dictionary = localeDictionaries.get(locale);
-		if (dictionary != null) {
-			return dictionary;
-		}
-
-		// Try same language
-		for (Entry<Locale, URL> entry : localeDictionaries.entrySet()) {
-			Locale dictLocale = entry.getKey();
-			if (LocaleUtils.isSameLanguage(dictLocale, locale)) {
-				return entry.getValue();
-			}
-		}
-
-		return null;
-	}
-
 	/**
 	 * Returns the locales for which this spell check engine has dictionaries in certain location.
-	 * 
+	 *
 	 * @param location
 	 *            dictionaries location
 	 * @return The available locales for this engine
 	 */
-	private Set<Locale> getLocalesWithInstalledDictionaries(URL location) {
+	private Set<Locale> getLocalesWithInstalledDictionaries(URL location, String type) {
 		String[] fileNames = getDictionaryFileNames(location);
 		if (fileNames == null) {
 			return Collections.emptySet();
@@ -137,7 +117,7 @@ public class DictionaryFactory {
 		int fileNameCount = fileNames.length;
 		for (int i = 0; i < fileNameCount; i++) {
 			String fileName = fileNames[i];
-			int localeEnd = fileName.indexOf(".dictionary");
+			int localeEnd = fileName.indexOf(type);
 			if (localeEnd > 1) {
 				String localeName = fileName.substring(0, localeEnd);
 				int languageEnd = localeName.indexOf('_');
@@ -172,8 +152,7 @@ public class DictionaryFactory {
 	}
 
 	private URL getDictionaryLocation() throws IOException {
-		final Plugin plugin = Plugin.getDefault();
-		return plugin.getBundle().getResource("/" + DICTIONARY_LOCATION);
+		return Plugin.getDefault().getBundle().getResource("/" + DICTIONARY_LOCATION);
 	}
 
 	private URL getWorkspaceDictionaryLocation(String dictionary) {
@@ -195,7 +174,11 @@ public class DictionaryFactory {
 		return null;
 	}
 
-	public List<Locale> getAvailableDictionaries() {
-		return new ArrayList<Locale>(localeDictionaries.keySet());
+	public Set<Locale> getAvailableDictionaries() {
+		return dictionaryLocales;
+	}
+
+	public Set<Locale> getAvailableCodeWords() {
+		return codeWordLocales;
 	}
 }

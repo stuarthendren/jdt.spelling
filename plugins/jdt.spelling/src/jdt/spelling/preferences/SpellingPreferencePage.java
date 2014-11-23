@@ -1,9 +1,11 @@
 package jdt.spelling.preferences;
 
 import java.io.File;
+import java.util.Locale;
 
 import jdt.spelling.Plugin;
 import jdt.spelling.Preferences;
+import jdt.spelling.dictionary.CodeWordStatus;
 import jdt.spelling.messages.Messages;
 
 import org.eclipse.core.runtime.CoreException;
@@ -42,6 +44,12 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 	private Button localVariablesButton;
 
+	private Button codeWordOffButton;
+
+	private Button codeWordIgnoreButton;
+
+	private Button codeWordSuggestButton;
+
 	private Text additionText;
 
 	private Text ignoreText;
@@ -50,7 +58,11 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 	private Group optionsGroup;
 
+	private Group codeWordsGroup;
+
 	private Group dictionariesGroup;
+
+	private Label codeWordsLabel;
 
 	public SpellingPreferencePage() {
 		setPreferenceStore(Plugin.getDefault().getPreferenceStore());
@@ -77,12 +89,33 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		localVariablesButton.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL));
 		additionText.setText(Preferences.getString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY));
 		ignoreText.setText(Preferences.getString(Preferences.JDT_SPELLING_IGNORE_DICTIONARY));
-		mainDictionaryCombo.setSelectedLocale(Preferences.getDictionaryLocale());
+		Locale locale = Preferences.getDictionaryLocale();
+		mainDictionaryCombo.setSelectedLocale(locale);
+
+		switch (Preferences.getCodeWordStatus()) {
+		case SUGGEST:
+			codeWordSuggestButton.setSelection(true);
+			break;
+		case IGNORE:
+			codeWordIgnoreButton.setSelection(true);
+			break;
+		case OFF:
+			codeWordOffButton.setSelection(true);
+			break;
+		default:
+			break;
+		}
+
+		updateCodeWordEnabled();
+
 		validate();
 	}
 
 	private void setEnabled(boolean enabled) {
 		optionsGroup.setEnabled(enabled);
+		codeWordOffButton.setEnabled(enabled);
+		codeWordIgnoreButton.setEnabled(enabled);
+		codeWordSuggestButton.setEnabled(enabled);
 		dictionariesGroup.setEnabled(enabled);
 		singleLetterButton.setEnabled(enabled);
 		localVariablesButton.setEnabled(enabled);
@@ -108,6 +141,8 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 		optionsGroup = createOptionsGroup(parentComposite);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(optionsGroup);
+		codeWordsGroup = createCodeWordsGroup(parentComposite);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(codeWordsGroup);
 
 		dictionariesGroup = createDictionariesGroup(parentComposite);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dictionariesGroup);
@@ -125,6 +160,13 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 		mainDictionaryCombo = addLocalesField(dictionariesGroup,
 				Messages.SpellingPreferencePage_locale_dictionary_label);
+
+		mainDictionaryCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateCodeWordEnabled();
+			}
+		});
 
 		additionText = addTextField(dictionariesGroup, Messages.SpellingPreferencePage_user_dictionary_label,
 				Messages.SpellingPreferencePage_user_dictionary_hint);
@@ -144,6 +186,21 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		return optionsGroup;
 	}
 
+	private Group createCodeWordsGroup(Composite parentComposite) {
+		Group codeWordsGroup = new Group(parentComposite, SWT.NONE);
+		codeWordsGroup.setText(Messages.SpellingPreferencePage_code_words_label);
+		GridLayoutFactory.swtDefaults().numColumns(1).applyTo(codeWordsGroup);
+
+		codeWordOffButton = createRadioButton(codeWordsGroup, Messages.SpellingPreferencePage_code_words_off);
+		codeWordIgnoreButton = createRadioButton(codeWordsGroup, Messages.SpellingPreferencePage_code_words_ignore);
+		codeWordSuggestButton = createRadioButton(codeWordsGroup, Messages.SpellingPreferencePage_code_words_suggest);
+
+		codeWordsLabel = new Label(codeWordsGroup, SWT.NONE);
+		codeWordsLabel.setText(Messages.SpellingPreferencePage_code_words_tooltip);
+
+		return codeWordsGroup;
+	}
+
 	private LocalesCombo addLocalesField(Composite dictionariesComposite, String label) {
 		Label dictionaryLabel = new Label(dictionariesComposite, SWT.NONE);
 		dictionaryLabel.setText(label);
@@ -155,6 +212,12 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 	private Button createCheckButton(Composite configComposite, String label) {
 		Button button = new Button(configComposite, SWT.CHECK);
+		button.setText(label);
+		return button;
+	}
+
+	private Button createRadioButton(Composite configComposite, String label) {
+		Button button = new Button(configComposite, SWT.RADIO);
 		button.setText(label);
 		return button;
 	}
@@ -248,7 +311,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 	/**
 	 * Validates that the file with the specified absolute path exists and can be opened.
-	 * 
+	 *
 	 * @param path
 	 *            The path of the file to validate
 	 * @return a status without error if the path is valid
@@ -278,6 +341,24 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		return status;
 	}
 
+	private void updateCodeWordEnabled() {
+		boolean hasCodeWords = Preferences.hasCodeWords(mainDictionaryCombo.getSelectedLocale());
+		codeWordsLabel.setVisible(!hasCodeWords);
+		codeWordOffButton.setEnabled(hasCodeWords);
+		codeWordIgnoreButton.setEnabled(hasCodeWords);
+		codeWordSuggestButton.setEnabled(hasCodeWords);
+	}
+
+	private CodeWordStatus getSelectedCodeWordStatus() {
+		if (codeWordSuggestButton.getSelection()) {
+			return CodeWordStatus.SUGGEST;
+		}
+		if (codeWordIgnoreButton.getSelection()) {
+			return CodeWordStatus.IGNORE;
+		}
+		return CodeWordStatus.OFF;
+	}
+
 	@Override
 	public boolean performOk() {
 		try {
@@ -287,6 +368,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 			Preferences.setString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY, additionText.getText());
 			Preferences.setString(Preferences.JDT_SPELLING_IGNORE_DICTIONARY, ignoreText.getText());
 			Preferences.setDictionaryLocale(mainDictionaryCombo.getSelectedLocale());
+			Preferences.setCodeWordStatus(getSelectedCodeWordStatus());
 			Preferences.flush();
 
 		} catch (Exception e) {
@@ -295,4 +377,5 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 
 		return true;
 	}
+
 }

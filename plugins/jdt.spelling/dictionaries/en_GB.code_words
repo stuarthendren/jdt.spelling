@@ -1,9 +1,11 @@
 admin
 args
 clazz
+color
 config
 com
 init
+initialize
 enum
 enums
 ip
