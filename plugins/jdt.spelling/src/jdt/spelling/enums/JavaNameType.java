@@ -5,13 +5,13 @@ import java.util.regex.Pattern;
 /*
  * Numbers can be separated when the separator size is zero, this means they are easier to handle later
  * but other numbers are included in words to maintain the separator lengths and calculate offsets
- * 
+ *
  */
 public enum JavaNameType {
 
-	UPPER_CAMEL_CASE("UpperCamelCase", "(?<!^)(?=[A-Z0-9][a-z]*)", 0),
+	UPPER_CAMEL_CASE("UpperCamelCase", "(?<!^)((?<=[$_])|(?=[$_]))|(?<!^)(?=[A-Z0-9][a-z]*)", 0),
 
-	LOWER_CAMEL_CASE("lowerCamelCase", "(?<!^)(?=[A-Z0-9][a-z]*)", 0) {
+	LOWER_CAMEL_CASE("lowerCamelCase", "(?<!^)((?<=[$_])|(?=[$_]))|(?<!^)(?=[A-Z0-9][a-z]*)", 0) {
 		@Override
 		public Case getCase(int position) {
 			if (position == 0) {
@@ -29,7 +29,7 @@ public enum JavaNameType {
 
 	},
 
-	UPPER("UPPER_CASE", "_", 1) {
+	UPPER("UPPER_CASE", "[$_]", 1) {
 		@Override
 		public Case getCase(int position) {
 			return Case.UPPER;
@@ -45,7 +45,7 @@ public enum JavaNameType {
 	private JavaNameType(String displayName, String regex, int l) {
 		this.displayName = displayName;
 		this.l = l;
-		this.pattern = Pattern.compile(regex);
+		pattern = Pattern.compile(regex);
 	}
 
 	public String[] getWords(String name) {

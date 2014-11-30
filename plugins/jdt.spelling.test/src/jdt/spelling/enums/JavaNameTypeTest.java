@@ -1,7 +1,6 @@
 package jdt.spelling.enums;
 
 import static org.junit.Assert.assertArrayEquals;
-import jdt.spelling.enums.JavaNameType;
 
 import org.junit.Test;
 
@@ -30,6 +29,14 @@ public class JavaNameTypeTest {
 				JavaNameType.LOWER_CAMEL_CASE.getWords("singleNumber9Case"));
 		assertArrayEquals(new String[] { "multi", "Number", "8", "7", "9", "Case" },
 				JavaNameType.LOWER_CAMEL_CASE.getWords("multiNumber879Case"));
+		assertArrayEquals(new String[] { "m", "_", "this", "Is", "A", "Test" },
+				JavaNameType.LOWER_CAMEL_CASE.getWords("m_thisIsATest"));
+		assertArrayEquals(new String[] { "_", "this", "Is", "A", "Test" },
+				JavaNameType.LOWER_CAMEL_CASE.getWords("_thisIsATest"));
+		assertArrayEquals(new String[] { "$", "this", "Is", "A", "Test" },
+				JavaNameType.LOWER_CAMEL_CASE.getWords("$thisIsATest"));
+		assertArrayEquals(new String[] { "$", "_", "this", "Is", "A", "Test" },
+				JavaNameType.LOWER_CAMEL_CASE.getWords("$_thisIsATest"));
 	}
 
 	@Test
@@ -43,6 +50,12 @@ public class JavaNameTypeTest {
 				JavaNameType.UPPER_CAMEL_CASE.getWords("SingleNumber9Case"));
 		assertArrayEquals(new String[] { "Multi", "Number", "8", "7", "9", "Case" },
 				JavaNameType.UPPER_CAMEL_CASE.getWords("MultiNumber879Case"));
+		assertArrayEquals(new String[] { "Multi", "Number", "8", "7", "9", "Case" },
+				JavaNameType.UPPER_CAMEL_CASE.getWords("MultiNumber879Case"));
+		assertArrayEquals(new String[] { "f", "_", "This", "Is", "A", "Test" },
+				JavaNameType.UPPER_CAMEL_CASE.getWords("f_ThisIsATest"));
+		assertArrayEquals(new String[] { "$", "_", "This", "Is", "A", "Test" },
+				JavaNameType.UPPER_CAMEL_CASE.getWords("$_ThisIsATest"));
 	}
 
 	@Test
@@ -53,6 +66,12 @@ public class JavaNameTypeTest {
 				JavaNameType.UPPER.getWords("SINGLE_NUMBER9_CASE"));
 		assertArrayEquals(new String[] { "MULTI", "87NUMBER", "CASE" },
 				JavaNameType.UPPER.getWords("MULTI_87NUMBER_CASE"));
+		assertArrayEquals(new String[] { "MULTI", "87NUMBER", "CASE" },
+				JavaNameType.UPPER.getWords("MULTI_87NUMBER_CASE"));
+		assertArrayEquals(new String[] { "", "THIS", "IS", "A", "TEST" },
+				JavaNameType.UPPER.getWords("_THIS_IS_A_TEST"));
+		assertArrayEquals(new String[] { "", "", "THIS", "IS", "A", "TEST" },
+				JavaNameType.UPPER.getWords("$_THIS_IS_A_TEST"));
 	}
 
 }

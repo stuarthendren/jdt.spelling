@@ -21,33 +21,17 @@ import org.eclipse.jdt.internal.ui.text.spelling.engine.RankedWordProposal;
 public class Checker {
 
 	/**
-	 * Does this word contain digits?
+	 * Check if the string is not a word.
+	 *
+	 * i.e. doe it contain digits or symbols
 	 *
 	 * @param word
 	 *            the word to check
-	 * @return <code>true</code> iff this word contains digits, <code>false></code> otherwise
+	 * @return <code>false</code> iff this is a word
 	 */
-	protected static boolean isDigits(final String word) {
+	protected static boolean isNotWord(final String word) {
 		for (int index = 0; index < word.length(); index++) {
-			if (!Character.isDigit(word.charAt(index))) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Does this word contain digits?
-	 *
-	 * @param word
-	 *            the word to check
-	 * @return <code>true</code> iff this word contains digits, <code>false></code> otherwise
-	 */
-	protected static boolean containsDigits(final String word) {
-
-		for (int index = 0; index < word.length(); index++) {
-
-			if (Character.isDigit(word.charAt(index))) {
+			if (!Character.isAlphabetic(word.charAt(index))) {
 				return true;
 			}
 		}
@@ -156,7 +140,7 @@ public class Checker {
 	}
 
 	public final boolean isCorrect(final String word) {
-		if (word == null || word.length() == 0 || isDigits(word)) {
+		if (word == null || word.length() == 0 || isNotWord(word)) {
 			return true;
 		}
 
