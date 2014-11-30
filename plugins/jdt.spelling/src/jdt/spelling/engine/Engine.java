@@ -1,7 +1,9 @@
 package jdt.spelling.engine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 
 import jdt.spelling.Plugin;
 import jdt.spelling.Preferences;
@@ -28,6 +30,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ide.ResourceUtil;
 
 public class Engine extends EditorTracker implements IElementChangedListener, IPreferenceChangeListener {
+
+	private static final Collection<String> JAVA_EXTENSIONS = new HashSet<String>(Arrays.asList(JavaCore
+			.getJavaLikeExtensions()));
 
 	private final Checker checker;
 
@@ -69,9 +74,18 @@ public class Engine extends EditorTracker implements IElementChangedListener, IP
 	}
 
 	private void checkResource(IResource resource) {
-		if (resource != null && resource.exists()) {
+		if (shouldProcess(resource)) {
 			checkElement(JavaCore.create(resource));
 		}
+	}
+
+	private boolean shouldProcess(IResource resource) {
+		return resource != null && resource.exists() && IResource.FILE == resource.getType()
+				&& isJavaResource(resource);
+	}
+
+	private boolean isJavaResource(IResource resource) {
+		return JAVA_EXTENSIONS.contains(resource.getFileExtension());
 	}
 
 	public void checkElement(IJavaElement element) {
@@ -159,7 +173,7 @@ public class Engine extends EditorTracker implements IElementChangedListener, IP
 
 	private void clearEditor(IEditorPart editor) {
 		IResource resource = getResource(editor);
-		if (resource != null) {
+		if (shouldProcess(resource)) {
 			processor.complete(resource);
 		}
 	}
@@ -178,7 +192,9 @@ public class Engine extends EditorTracker implements IElementChangedListener, IP
 	}
 
 	public void clear() {
-		processor.complete(currentResource);
+		if (shouldProcess(currentResource)) {
+			processor.complete(currentResource);
+		}
 	}
 
 }
