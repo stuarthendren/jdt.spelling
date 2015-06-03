@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/stuarthendren/jdt.spelling.png?label=ready&title=Ready)](https://waffle.io/stuarthendren/jdt.spelling)
 jdt.spelling
 ============
 
