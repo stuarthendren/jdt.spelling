@@ -26,12 +26,13 @@
 	
 	
 	<properties>
-		<tycho-version>0.20.0</tycho-version>
-		<tycho-extras.version>0.20.0</tycho-extras.version>
-		<!-- <eclipse-repo.url>http://download.eclipse.org/releases/kepler/</eclipse-repo.url> -->
-		<!-- <eclipse-repo.url>http://download.eclipse.org/releases/indigo/</eclipse-repo.url> -->
+		<tycho-version>0.25.0</tycho-version>
+		<tycho-extras.version>0.25.0</tycho-extras.version>
 		<!-- <eclipse-repo.url>http://download.eclipse.org/releases/juno/</eclipse-repo.url> --> 
-		<eclipse-repo.url>http://download.eclipse.org/releases/kepler/</eclipse-repo.url>  
+		<eclipse-repo.url>http://download.eclipse.org/releases/kepler/</eclipse-repo.url>
+		<!-- <eclipse-repo.url>http://download.eclipse.org/releases/luna/</eclipse-repo.url> -->
+		<!-- <eclipse-repo.url>http://download.eclipse.org/releases/mars/</eclipse-repo.url> -->
+		<!-- <eclipse-repo.url>http://download.eclipse.org/releases/neon/</eclipse-repo.url> -->
 		<tycho-repo.url>https://oss.sonatype.org/content/groups/public/</tycho-repo.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -75,9 +76,7 @@
 
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho-version}</version>
-				
+				<artifactId>target-platform-configuration</artifactId>			
 				<configuration>
 
 					<pomDependencies>consider</pomDependencies>
@@ -117,7 +116,6 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-source-plugin</artifactId>
-				<version>${tycho-version}</version>
 				<executions>
 					<execution>
 						<id>plugin-source</id>
@@ -208,15 +206,6 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-plugin</artifactId>
 					<version>${tycho-version}</version>
-					<configuration>
-						<baselineMode>warn</baselineMode>
-						<baselineReplace>none</baselineReplace>
-						<baselineRepositories>
-							<repository>
-								<url>http://download.eclipse.org/eclipse/updates/4.2</url>
-							</repository>
-						</baselineRepositories>
-					</configuration>
 				</plugin>
 				<plugin>	
 					<groupId>org.eluder.coveralls</groupId>
