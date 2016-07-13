@@ -5,6 +5,9 @@ env:
   - secure: "i67ERxJRnd9oSco6ai0JXrbbMoAcpRsvB/TyAYJbnYTRjVj4CLWlu7DNvQghbCK8P2gn3BUH6/XN/KvCPi9GHABNJ8FyZzm81v5fEKmP6dy56KESRZjK8q82jKWxg9cD3O9OAoK00q3QbcjuWlhRiceSDYCFhjxYwPVBFTpabho="
   - secure: "MwjTx+KKbjKjX31dP3Fo5NTkhGkxAa6XG+uj8omhzvwRd0A0YW/NUlhU5QPOartT1X9mJLtuJjq2m5N5q57OtFnblVcD9AjTQeGIuK5WclqunYsQ9HQI8nLo9HEuSrR62OmEjHz2d7q5yDQ/e1yVaYoDlTXpkpOnuDp+wwPKzD0="
 
+jdk:
+  - oraclejdk8
+  
 addons:
   coverity_scan:
     project:
@@ -19,7 +22,8 @@ before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 
-script: mvn verify
+script:
+  - mvn verify
 
 after_failure: 
   - cat /home/travis/build/hendrens/jdt.spelling/plugins/jdt.spelling.test/target/work/data/.metadata/.log
