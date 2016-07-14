@@ -11,6 +11,6 @@
   </parent>
   <modules>
     <module>jdt.spelling</module>
-    <module>jdt.spelling.test</module>
+    <!-- <module>jdt.spelling.test</module> -->
   </modules>
 </project>
