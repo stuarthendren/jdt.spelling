@@ -23,7 +23,7 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 
 script:
-  - mvn verify
+  - mvn cobertura:cobertura verify
 
 after_failure: 
   - cat /home/travis/build/hendrens/jdt.spelling/plugins/jdt.spelling.test/target/work/data/.metadata/.log
@@ -32,5 +32,6 @@ after_failure:
 after_success: 
   - mv update/target/jdt.spelling*.zip jdt.spelling.zip && rm -R update && ls -R 
   - mvn verify cobertura:cobertura coveralls:cobertura
+  - bash <(curl -s https://codecov.io/bash)
 
   
