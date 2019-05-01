@@ -6,5 +6,5 @@ Bundle-Version: 1.0.0.qualifier
 Fragment-Host: jdt.spelling
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit,
- org.mockito.mockito-all;bundle-version="1.9.5"
+ org.mockito;bundle-version="2.23.0"
 Bundle-Vendor: stuarthendren.net
