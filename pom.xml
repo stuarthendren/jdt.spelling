@@ -166,6 +166,7 @@
             <strictBinIncludes>false</strictBinIncludes>
             <format>'v'yyyyMMdd-HHmm</format>
             <timestampProvider>jgit</timestampProvider>
+            <jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
             <jgit.ignore>
             </jgit.ignore>
           </configuration>
