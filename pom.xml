@@ -30,12 +30,13 @@
     <tycho-version>1.4.0</tycho-version>
     <tycho-extras.version>1.4.0</tycho-extras.version>
     <!-- <eclipse-repo.url>http://download.eclipse.org/releases/juno/</eclipse-repo.url> -->
-    <eclipse-repo.url>http://download.eclipse.org/releases/kepler/</eclipse-repo.url>
+    <!-- <eclipse-repo.url>http://download.eclipse.org/releases/kepler/</eclipse-repo.url> -->
     <!-- <eclipse-repo.url>http://download.eclipse.org/releases/luna/</eclipse-repo.url> -->
     <!-- <eclipse-repo.url>http://download.eclipse.org/releases/mars/</eclipse-repo.url> -->
     <!-- <eclipse-repo.url>http://download.eclipse.org/releases/neon/</eclipse-repo.url> -->
     <!-- <eclipse-repo.url>http://download.eclipse.org/releases/oxygen/</eclipse-repo.url> -->
     <!-- <eclipse-repo.url>http://download.eclipse.org/releases/photon/</eclipse-repo.url> -->
+    <eclipse-repo.url>http://download.eclipse.org/releases/2019-03/</eclipse-repo.url>
     <tycho-repo.url>https://oss.sonatype.org/content/groups/public/</tycho-repo.url>
     <orbit.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository</orbit.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
