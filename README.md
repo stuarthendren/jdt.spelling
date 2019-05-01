@@ -24,9 +24,9 @@ Local variables can also be checked, select in preferences
 
 ## Continuous Integration
 
-[![Build Status](https://travis-ci.org/stuarthendren/jdt.spelling.svg?branch=master)](http://travis-ci.org/hendrens/jdt.spelling) Master branch 
+[![Build Status](https://travis-ci.org/stuarthendren/jdt.spelling.svg?branch=master)](http://travis-ci.org/stuarthendren/jdt.spelling) Master branch 
 
-[![Build Status](https://travis-ci.org/stuarthendren/jdt.spelling.svg?branch=dev)](http://travis-ci.org/hendrens/jdt.spelling) Dev branch
+[![Build Status](https://travis-ci.org/stuarthendren/jdt.spelling.svg?branch=dev)](http://travis-ci.org/stuarthendren/jdt.spelling) Dev branch
 
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/1664/badge.svg)](https://scan.coverity.com/projects/1664)
 
