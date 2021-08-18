@@ -28,7 +28,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 	public static final String JDT_SPELLING_MARKER_OVERVIEW = "jdt.spelling.marker.overview";
 	public static final String JDT_SPELLING_MARKER_TEXT = "jdt.spelling.marker.text";
 	public static final String JDT_SPELLING_MARKER_RULER = "jdt.spelling.marker.ruler";
-	public static final String JDT_SPELLING_IGNORE_SINGLE_LETTER = "jdt.spelling.ignore.single.letter";
+	public static final String JDT_SPELLING_IGNORE_SMALL_WORDS = "jdt.spelling.ignore.small_words";
 	public static final String JDT_SPELLING_LOCALE_DICTIONARY = "jdt.spelling.locale.dictionary";
 	public static final String JDT_SPELLING_ADDITIONS_DICTIONARY = "jdt.spelling.additions.dictionary";
 	public static final String JDT_SPELLING_IGNORE_DICTIONARY = "jdt.spelling.ignore.dictionary";
@@ -53,7 +53,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		DEFAULTS.put(JavaType.LOCAL_VARIABLE.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		DEFAULTS.put(JavaType.FIELD.name(), JavaNameType.LOWER_CAMEL_CASE.name());
 		DEFAULTS.put(JDT_SPELLING_ENABLED, true);
-		DEFAULTS.put(JDT_SPELLING_IGNORE_SINGLE_LETTER, true);
+		DEFAULTS.put(JDT_SPELLING_IGNORE_SMALL_WORDS, "1");
 		DEFAULTS.put(JDT_SPELLING_LOCALE_DICTIONARY, Locale.US.toString());
 		DEFAULTS.put(JDT_SPELLING_ADDITIONS_DICTIONARY, "");
 		DEFAULTS.put(JDT_SPELLING_IGNORE_DICTIONARY, "");
@@ -80,7 +80,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		restoreDefaultString(prefs, JavaType.FIELD.name());
 		restoreDefaultString(prefs, JDT_SPELLING_CODE_WORD_STATUS);
 		restoreDefaultBoolean(prefs, JDT_SPELLING_ENABLED);
-		restoreDefaultBoolean(prefs, JDT_SPELLING_IGNORE_SINGLE_LETTER);
+		restoreDefaultString(prefs, JDT_SPELLING_IGNORE_SMALL_WORDS);
 		restoreDefaultLocale(prefs, JDT_SPELLING_LOCALE_DICTIONARY);
 		restoreDefaultString(prefs, JDT_SPELLING_ADDITIONS_DICTIONARY);
 		restoreDefaultString(prefs, JDT_SPELLING_IGNORE_DICTIONARY);
@@ -123,7 +123,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		IEclipsePreferences prefs = getPreferences();
 		return prefs.getInt(prefId, (Integer) DEFAULTS.get(prefId));
 	}
-
+	
 	public static String getString(String prefId) {
 		IEclipsePreferences prefs = getPreferences();
 		return prefs.get(prefId, (String) DEFAULTS.get(prefId));
@@ -133,7 +133,7 @@ public class Preferences extends AbstractPreferenceInitializer {
 		IEclipsePreferences prefs = getPreferences();
 		prefs.putBoolean(prefId, value);
 	}
-
+	
 	public static void setInt(String prefId, int value) {
 		IEclipsePreferences prefs = getPreferences();
 		prefs.putInt(prefId, value);

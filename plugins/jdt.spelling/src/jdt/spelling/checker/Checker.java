@@ -95,8 +95,11 @@ public class Checker {
 			// Ignore element
 			return;
 		}
-
-		boolean ignoreSingleLetter = Preferences.getBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER);
+		String len = Preferences.getString(Preferences.JDT_SPELLING_IGNORE_SMALL_WORDS);
+		if (len.isEmpty()) {
+			len = "0";
+		}
+		int ignoreSmallWords = Integer.parseInt(len);
 		JavaNameType javaNameType = Preferences.getJavaNameType(element.getElementName(), convert);
 		JavaName javaName = new JavaName(javaNameType, element);
 
@@ -105,7 +108,7 @@ public class Checker {
 			String word = words[i];
 			if (word != null) {
 
-				if (ignoreSingleLetter && word.length() == 1) {
+				if ((ignoreSmallWords > 0) && word.length() <= ignoreSmallWords) {
 					continue;
 				}
 
