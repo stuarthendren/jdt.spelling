@@ -3,11 +3,6 @@ package jdt.spelling.preferences;
 import java.io.File;
 import java.util.Locale;
 
-import jdt.spelling.Plugin;
-import jdt.spelling.Preferences;
-import jdt.spelling.dictionary.CodeWordStatus;
-import jdt.spelling.messages.Messages;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.variables.IStringVariableManager;
@@ -28,19 +23,26 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import jdt.spelling.Plugin;
+import jdt.spelling.Preferences;
+import jdt.spelling.dictionary.CodeWordStatus;
+import jdt.spelling.messages.Messages;
 
 @SuppressWarnings("restriction")
 public class SpellingPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private Button enableButton;
 
-	private Button singleLetterButton;
+	private Text smallWordText;
 
 	private Button localVariablesButton;
 
@@ -85,7 +87,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		enableButton.setSelection(enabled);
 		setEnabled(enabled);
 
-		singleLetterButton.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER));
+		smallWordText.setText(Preferences.getString(Preferences.JDT_SPELLING_IGNORE_SMALL_WORDS));
 		localVariablesButton.setSelection(Preferences.getBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL));
 		additionText.setText(Preferences.getString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY));
 		ignoreText.setText(Preferences.getString(Preferences.JDT_SPELLING_IGNORE_DICTIONARY));
@@ -117,7 +119,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		codeWordIgnoreButton.setEnabled(enabled);
 		codeWordSuggestButton.setEnabled(enabled);
 		dictionariesGroup.setEnabled(enabled);
-		singleLetterButton.setEnabled(enabled);
+		smallWordText.setEnabled(enabled);
 		localVariablesButton.setEnabled(enabled);
 		additionText.setEnabled(enabled);
 		ignoreText.setEnabled(enabled);
@@ -180,7 +182,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		optionsGroup.setText(Messages.SpellingPreferencePage_options_label);
 		GridLayoutFactory.swtDefaults().numColumns(1).applyTo(optionsGroup);
 
-		singleLetterButton = createCheckButton(optionsGroup, Messages.SpellingPreferencePage_ignore_single_letter);
+		smallWordText = createNumericTextField(optionsGroup, Messages.SpellingPreferencePage_ignore_small_words_label, Messages.SpellingPreferencePage_ignore_small_words_hint);		
 		localVariablesButton = createCheckButton(optionsGroup, Messages.SpellingPreferencePage_check_local_variables);
 		localVariablesButton.setToolTipText(Messages.SpellingPreferencePage_check_local_variables_tooltip);
 		return optionsGroup;
@@ -220,6 +222,36 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 		Button button = new Button(configComposite, SWT.RADIO);
 		button.setText(label);
 		return button;
+	}
+	
+	private Text createNumericTextField(Composite parent, String label, String toolTip) {
+		
+		Label additionsLabel = new Label(parent, SWT.NONE);
+		additionsLabel.setText(label);
+
+		final Text text = new Text(parent, SWT.BORDER | SWT.SINGLE);
+		if (toolTip != null) {
+			text.setToolTipText(toolTip);
+		}
+		GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, false).applyTo(text);
+
+		text.addListener(SWT.Verify, new Listener() {  
+			  @Override  
+			  public void handleEvent(Event event) {  
+		          event.doit = true;  
+			      String length = ((Text)event.widget).getText().trim();
+			      if (length.length() > 0) {
+				      try {
+				          Integer.parseInt(length);
+				          event.doit = true;  
+				      } catch(Exception ex){  
+				         event.doit = false;  
+				      }
+			      }
+			   }  
+		}); 
+		
+		return text;
 	}
 
 	private Text addTextField(Composite parent, String label, String toolTip) {
@@ -363,7 +395,7 @@ public class SpellingPreferencePage extends PreferencePage implements IWorkbench
 	public boolean performOk() {
 		try {
 			Preferences.setBoolean(Preferences.JDT_SPELLING_ENABLED, enableButton.getSelection());
-			Preferences.setBoolean(Preferences.JDT_SPELLING_IGNORE_SINGLE_LETTER, singleLetterButton.getSelection());
+			Preferences.setString(Preferences.JDT_SPELLING_IGNORE_SMALL_WORDS, smallWordText.getText());
 			Preferences.setBoolean(Preferences.JDT_SPELLING_CHECK_LOCAL, localVariablesButton.getSelection());
 			Preferences.setString(Preferences.JDT_SPELLING_ADDITIONS_DICTIONARY, additionText.getText());
 			Preferences.setString(Preferences.JDT_SPELLING_IGNORE_DICTIONARY, ignoreText.getText());
