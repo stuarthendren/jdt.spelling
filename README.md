@@ -10,6 +10,10 @@ This relies heavily on org.eclipse.jdt, and currently uses internal components.
 
 ## Screenshots and Usage
 
+Used naming conventions:
+
+![conventions](https://cloud.githubusercontent.com/assets/1614482/3885980/3d3e5b38-21d0-11e4-8f48-df1dc35aeda8.PNG)
+
 ![Incorrect spellings in the editor](screenshots/interface.png)
 
 Click on the word and press <kbd>Ctrl+1</kbd> (quick fix)
